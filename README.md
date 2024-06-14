@@ -1,6 +1,6 @@
-## projetofinal-creche
+# projetofinal-creche
 
 
-# ideia do projeto:
+## ideia do projeto:
 aplicativo de gerenciamento de uma creche
 
