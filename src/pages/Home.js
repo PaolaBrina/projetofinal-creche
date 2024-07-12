@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-
+import { StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
 
 export default function Home({navigation}) {
     return (
       <View style={styles.container}>
-        <Text>Home</Text>
+            <Text style={styles.btnTxt}> home </Text>
       </View>
     );
   }
@@ -12,14 +11,25 @@ export default function Home({navigation}) {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#c3c3c3',
       alignItems: 'center',
       justifyContent: 'center',
     },
+    containerProfessor:{
+      backgroundColor: "#52796F",
+      width: 300,
+      height: 200,
+      borderRadius: 20,
+      alignItems: 'center'
+    },
     btnLogin:{
-        color: "#52796F",
-        width: 100,
-        height: 100
+        backgroundColor: "#354F52",
+        width: 80,
+        height: 50,
+        top: 80,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     btnTxt:{
         color: "#fff"
