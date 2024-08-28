@@ -5,7 +5,7 @@ class turma(db.Model):
         return{
             'codigo': self.codigo,
             'nome': self.nome,
-            'sala': self.ala,
+            'sala': self.sala,
         }
     
     codigo = db.Column(db.Integer, primary_key=True)
