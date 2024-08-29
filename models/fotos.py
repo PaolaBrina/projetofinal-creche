@@ -22,7 +22,8 @@ class fotos(db.Model):
     turma = relationship('turma', backref='fotos')
 
 
-    def __init__(self, datahora, descricao,foto):
+    def __init__(self,codturma, datahora, descricao,foto):
+        self.codturma = codturma
         self.datahora = datahora
         self.descricao = descricao
         self.foto = foto

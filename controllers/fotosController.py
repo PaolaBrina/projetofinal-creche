@@ -7,8 +7,8 @@ def fotosController():
             try: 
                 data = request.get_json()
                 print(data)
-                fotos = turma(data['codturma'],data['datahora'], data['descricao'], data['foto'])
-                db.session.add(fotos)
+                foto = fotos(data['codturma'],data['datahora'], data['descricao'], data['foto'])
+                db.session.add(foto)
                 db.session.commit()
                 return 'fotos criado com sucesso', 200 
             
@@ -47,9 +47,10 @@ def fotosController():
               foto = fotos.query.get(codigo)
               if foto is None:
                    return 'fotos não encontrado', 404
+              foto.codturma = data.get('codturma', foto.codturma)
               foto.datahora = data.get('datahora', foto.datahora)
               foto.descricao = data.get('descricao', foto.descricao)
-              foto.foto = data.get('foto', foto.sala)
+              foto.foto = data.get('foto', foto.foto)
 
               db.session.commit()
               return 'fotos atualizado com sucesso', 200 
