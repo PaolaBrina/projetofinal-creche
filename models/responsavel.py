@@ -22,7 +22,7 @@ class responsavel(db.Model):
     
     codigo = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String('50'))
-    cpf = db.Column(db.String('50'))
+    cpf = db.Column(db.Integer)
     datanascimento = db.Column(db.Date)
     sexo = db.Column(db.String('50'))
     email = db.Column(db.String('50'))
