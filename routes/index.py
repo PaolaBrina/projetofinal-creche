@@ -5,6 +5,7 @@ from routes.auxiliarRoutes import auxiliar
 from routes.horarioRoutes import horario
 from routes.responsavelRoutes import responsavel
 from routes.alunoRoutes import aluno
+from routes.alunoturmaRoutes import alunoturma
 
 
 def default_routes(app):
@@ -15,3 +16,4 @@ def default_routes(app):
     horario(app)
     responsavel(app)
     aluno(app)  
+    alunoturma(app)
