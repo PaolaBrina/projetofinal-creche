@@ -10,6 +10,7 @@ from routes.avisosRoutes import avisos
 from routes.chamadaRoutes import chamada
 from routes.informacoesadicionaisRoutes import informacoesadicionais
 from routes.colaboradorRoutes import colaborador
+from routes.professorRoutes import professor
 
 
 def default_routes(app):
@@ -25,3 +26,4 @@ def default_routes(app):
     chamada(app)
     informacoesadicionais(app)
     colaborador(app)
+    professor(app)
