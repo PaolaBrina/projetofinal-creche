@@ -38,6 +38,7 @@ class responsavel(db.Model):
 
     def __init__(self, nome, cpf, datanascimento, sexo, email, endereco, telefone, login, senha, nomeautorizado1, telefoneautorizado1, nomeautorizado2, telefoneautorizado2, status):
         self.nome = nome
+        self.cpf = cpf
         self.datanascimento = datanascimento
         self.sexo = sexo
         self.email = email

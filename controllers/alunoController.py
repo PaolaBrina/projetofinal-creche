@@ -8,7 +8,7 @@ def alunoController():
             try: 
                 data = request.get_json()
                 print(data)
-                alunos = aluno( data['codresponsavel'], data['nome'], data['nome'], data['datanascimento'], data['sexo'], data['endereco'], data['foto'], data['status'])
+                alunos = aluno( data['codresponsavel'], data['nome'], data['datanascimento'], data['sexo'], data['endereco'], data['foto'], data['status'])
                 db.session.add(alunos)
                 db.session.commit()
                 return 'aluno criado com sucesso', 200 

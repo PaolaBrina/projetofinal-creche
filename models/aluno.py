@@ -1,7 +1,6 @@
 from database.db import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 
 class aluno(db.Model): 
     def to_dict(self):
@@ -17,7 +16,7 @@ class aluno(db.Model):
         }
     
     codigo = db.Column(db.Integer, primary_key=True)
-    codresponsavel = db.Column(db.ForeignKey('responsavel.codigo'))
+    codresponsavel = db.Column(ForeignKey('responsavel.codigo'))
     nome = db.Column(db.String('50'))
     datanascimento = db.Column(db.Date)
     sexo = db.Column(db.String('50'))
