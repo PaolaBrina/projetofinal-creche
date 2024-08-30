@@ -9,6 +9,7 @@ from routes.alunoturmaRoutes import alunoturma
 from routes.avisosRoutes import avisos
 from routes.chamadaRoutes import chamada
 from routes.informacoesadicionaisRoutes import informacoesadicionais
+from routes.colaboradorRoutes import colaborador
 
 
 def default_routes(app):
@@ -23,3 +24,4 @@ def default_routes(app):
     avisos(app)
     chamada(app)
     informacoesadicionais(app)
+    colaborador(app)
