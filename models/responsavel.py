@@ -22,18 +22,18 @@ class responsavel(db.Model):
     
     codigo = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String('50'))
-    cpf = db.Column(db.Integer)
+    cpf = db.Column(db.String('50'))
     datanascimento = db.Column(db.Date)
     sexo = db.Column(db.String('50'))
     email = db.Column(db.String('50'))
     endereco = db.Column(db.String('100'))
-    telefone = db.Column(db.Integer)
+    telefone = db.Column(db.String('50'))
     login = db.Column(db.String('50'))
     senha = db.Column(db.String('50'))
     nomeautorizado1 = db.Column(db.String('50'))
-    telefoneautorizado1 = db.Column(db.Integer)
+    telefoneautorizado1 = db.Column(db.String('50'))
     nomeautorizado2 = db.Column(db.String('50'))
-    telefoneautorizado2 = db.Column(db.Integer)
+    telefoneautorizado2 = db.Column(db.String('50'))
     status = db.Column(db.Boolean)
 
     def __init__(self, nome, cpf, datanascimento, sexo, email, endereco, telefone, login, senha, nomeautorizado1, telefoneautorizado1, nomeautorizado2, telefoneautorizado2, status):
