@@ -31,8 +31,8 @@ class meudiamanha(db.Model):
     coco = db.Column(db.String('50'))
     sono = db.Column(db.String('50'))
     saude = db.Column(db.String('50'))
-    medicacao = db.Column(db.String('50'))
-    cafemanha = db.Column(db.String('100'))
+    medicacao = db.Column(db.String('100'))
+    cafemanha = db.Column(db.String('50'))
     almoco = db.Column(db.String('50'))
 
     aluno = relationship('aluno', backref='meudiamanha')
@@ -43,6 +43,7 @@ class meudiamanha(db.Model):
     def __init__(self, codturma, codaluno, codprofessor, datahora, recado, xixi, coco, sono, saude, medicacao, cafemanha, almoco):
         self.codaluno = codaluno
         self.codturma = codturma
+        self.codprofessor = codprofessor
         self.datahora = datahora
         self.recado = recado
         self.xixi = xixi

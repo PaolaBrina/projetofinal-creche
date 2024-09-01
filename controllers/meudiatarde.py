@@ -8,7 +8,7 @@ def meudiatardeController():
             try: 
                 data = request.get_json()
                 print(data)
-                meudiatardes = meudiatarde( data['codresponsavel'], data['nome'], data['datanascimento'], data['sexo'], data['endereco'], data['foto'], data['status'])
+                meudiatardes = meudiatarde(data['codaluno'], data['codturma'], data['codprofessor'], data['datahora'], data['recado'], data['xixi'], data['coco'], data['sono'], data['saude'], data['medicacao'], data['cafetarde'], data['janta'])
                 db.session.add(meudiatardes)
                 db.session.commit()
                 return 'meudiatarde criado com sucesso', 200 
@@ -49,12 +49,18 @@ def meudiatardeController():
               meudiatardes = meudiatarde.query.get(codigo)
               if meudiatardes is None:
                    return 'meudiatarde não encontrado', 404
-              meudiatardes.nome = data.get('nome', meudiatardes.nome)
-              meudiatardes.datanascimento = data.get('datanascimento', meudiatardes.datanascimento)
-              meudiatardes.sexo = data.get('sexo', meudiatardes.sexo)
-              meudiatardes.endereco = data.get('endereco', meudiatardes.endereco)
-              meudiatardes.foto = data.get('foto', meudiatardes.foto)
-              meudiatardes.status = data.get('status', meudiatardes.status)
+              meudiatardes.codaluno = data.get('codaluno', meudiatardes.codaluno)
+              meudiatardes.codturma = data.get('codturma', meudiatardes.codturma)
+              meudiatardes.codprofessor = data.get('codprofessor', meudiatardes.codprofessor)
+              meudiatardes.datahora = data.get('datahora', meudiatardes.datahora)
+              meudiatardes.recado = data.get('recado', meudiatardes.recado)
+              meudiatardes.xixi = data.get('xixi', meudiatardes.xixi)
+              meudiatardes.coco = data.get('coco', meudiatardes.coco)
+              meudiatardes.sono = data.get('sono', meudiatardes.sono)
+              meudiatardes.saude = data.get('saude', meudiatardes.saude)
+              meudiatardes.medicacao = data.get('medicacao', meudiatardes.medicacao)
+              meudiatardes.cafetarde = data.get('cafetarde', meudiatardes.cafetarde)
+              meudiatardes.janta = data.get('janta', meudiatardes.janta)
 
               db.session.commit()
               return 'meudiatarde atualizado com sucesso', 200 
