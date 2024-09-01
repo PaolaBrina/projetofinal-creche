@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-class meudiamanha(db.Model): 
+class meudiatarde(db.Model): 
     def to_dict(self):
         return{
             'codigo': self.codigo,
@@ -35,9 +35,9 @@ class meudiamanha(db.Model):
     cafetarde = db.Column(db.String('50'))
     janta = db.Column(db.String('50'))
 
-    aluno = relationship('aluno', backref='meudiamanha')
-    turma = relationship('turma', backref='meudiamanha')
-    professor = relationship('professor', backref='meudiamanha')
+    aluno = relationship('aluno', backref='meudiatarde')
+    turma = relationship('turma', backref='meudiatarde')
+    professor = relationship('professor', backref='meudiatarde')
 
 
     def __init__(self, codturma, codaluno, codprofessor, datahora, recado, xixi, coco, sono, saude, medicacao, cafetarde, janta):
