@@ -1,18 +1,39 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image} from 'react-native';
+import axios from 'axios';
 
 export default function Login({navigation}) {
-
-  const [selectedButton, setSelectedButton] = useState('Responsável');
-  const [email, setEmail] = useState('');
+  const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
+  
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/login', {
+        login,
+        senha
+      });
+      
+      if (response.status === 200) {
+        const { roles } = response.data;
 
-  const handlePress = (tipo) => {
-    setSelectedButton(tipo);
+        if (roles.length === 1) {
+          const role = roles[0];
+          if (role === 'professor') {
+            navigation.navigate('ProfessorHome');
+          } else if (role === 'colaborador') {
+            navigation.navigate('ColaboradorHome');
+          } else if (role === 'responsavel') {
+            navigation.navigate('ResponsavelHome');
+          }
+        } else if (roles.length > 1) {
+          navigation.navigate('SelectRole', { roles });
+        }
+      }
+    } catch (error) {
+      Alert.alert('Login falhou', 'Senha ou login inválido');
+    }
   };
-    
-
-
+  
     return (
       <View style={styles.container}>
         <View style={styles.topo}></View> 
@@ -20,53 +41,34 @@ export default function Login({navigation}) {
             <Image style ={styles.img} source={{uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWwWrKK8QlWgiUoUrcwzDalIpcsLgCaWkc0w&s'}}/> 
           </View>
 
-        <View style={styles.buttonContainer}>
-        <TouchableOpacity
-            style={[
-              styles.button,
-              selectedButton === 'Responsável' && styles.buttonSelected
-            ]}
-            onPress={() => handlePress('Responsável')}
-          >
-            <Text style={[
-              styles.buttonText,
-              selectedButton === 'Responsável' && styles.buttonTextSelected
-            ]}>Responsável</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={[
-              styles.button,
-              selectedButton === 'Professor' && styles.buttonSelected
-            ]}
-            onPress={() => handlePress('Professor')}
-          >
-            <Text style={[
-              styles.buttonText,
-              selectedButton === 'Professor' && styles.buttonTextSelected
-            ]}>Professor</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-            style={[
-              styles.button,
-              selectedButton === 'Secretaria' && styles.buttonSelected
-            ]}
-            onPress={() => handlePress('Secretaria')}
-          >
-            <Text style={[
-              styles.buttonText,
-              selectedButton === 'Secretaria' && styles.buttonTextSelected
-            ]}>Secretaria</Text>
-        </TouchableOpacity>
-      </View>
-        <View style={styles.containerLogin}>
-          <TouchableOpacity style={styles.btnLogin} onPress={() => navigation.navigate('Home')}>
-              <Text style={styles.btnTxt}> Entrar </Text>
-          </TouchableOpacity>
+      <View style={styles.containerLogin}>
+        <View style={styles.loginContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="Login"
+                value={login}
+                onChangeText={setLogin}
+                keyboardType="numeric"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Senha"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry
+              />
         </View>
+
+        <TouchableOpacity style={styles.btnLogin}>
+          <Text style={styles.btnTxt}>Entrar</Text>
+        </TouchableOpacity>
       </View>
-    );
-  }
-  
+    </View>
+  );
+}
+
+ /* <TouchableOpacity style={styles.btnLogin} onPress={() => navigation.navigate('Home')}> */
+      
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -83,13 +85,6 @@ export default function Login({navigation}) {
     img:{
       width: 100, 
       height: 100,
-    },
-    buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '80%',
-      paddingTop: 50,
-      paddingBottom: 50,
     },
     button: {
       flex: 1,
@@ -109,26 +104,36 @@ export default function Login({navigation}) {
     buttonTextSelected: {
       color: '#fff',
     },
-    containerLogin:{
-      backgroundColor: "#212240",
+    loginContainer: {
+      width: '80%',
+      paddingTop: 20
+    },
+    input: {
+      height: 40,
+      borderColor: '#ccc',
+      backgroundColor: '#fff',
+      borderWidth: 1,
+      marginBottom: 15,
+      paddingHorizontal: 10,
+      borderRadius: 5,
+    },
+    containerLogin: {
+      backgroundColor: '#212240',
       width: 200,
       height: 200,
       borderRadius: 20,
-      alignItems: 'center'
+      alignItems: 'center',
     },
-    btnLogin:{
-        backgroundColor: "#00923F",
-        width: 80,
-        height: 50,
-        top: 80,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center'
+    btnLogin: {
+      backgroundColor: '#00923F',
+      width: 80,
+      height: 50,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     btnTxt:{
         color: "#fff"
     }
   });
-
-
 
