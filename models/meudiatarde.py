@@ -40,7 +40,7 @@ class meudiatarde(db.Model):
     professor = relationship('professor', backref='meudiatarde')
 
 
-    def __init__(self, codturma, codaluno, codprofessor, datahora, recado, xixi, coco, sono, saude, medicacao, cafetarde, janta):
+    def __init__(self, codaluno, codturma, codprofessor, datahora, recado, xixi, coco, sono, saude, medicacao, cafetarde, janta):
         self.codaluno = codaluno
         self.codturma = codturma
         self.codprofessor = codprofessor

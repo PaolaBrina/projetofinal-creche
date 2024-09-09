@@ -32,3 +32,4 @@ def default_routes(app):
     meudiamanha(app)
     meudiatarde(app)
     login(app)
+    
