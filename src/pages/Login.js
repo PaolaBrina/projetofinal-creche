@@ -8,7 +8,6 @@ export default function Login({ navigation }) {
   const handleLogin = async () => {
     try {
       const response = await axios.post('http://localhost:3000/login', { telefone });
-
       const { status, data } = response.data;
 
       switch (status) {
@@ -30,7 +29,7 @@ export default function Login({ navigation }) {
           break;
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };

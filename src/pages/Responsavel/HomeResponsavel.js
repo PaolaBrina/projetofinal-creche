@@ -1,13 +1,28 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
 
 export default function HomeResponsavel({navigation}) {
+
+  const handleMeudia = () => {
+    navigation.navigate('MeudiaResponsavel');
+  }
+
     return (
       <View style={styles.container}>
-            <Text style={styles.btnTxt}> Responsavel </Text>
-      </View>
+      <View style={styles.topo}>
+      <Text style={styles.topotext}> dados cadastrais</Text>
+        <View> <Text >  foto filho</Text></View>
+        <View> <Text >  suporte</Text></View>
+        <View> <Text >  notificaçoes</Text></View>
+        </View> 
+            <View>
+           <TouchableOpacity style={styles.containermeudia}  onPress={handleMeudia}>
+              <Text>Meu dia na creche</Text>
+              </TouchableOpacity>
+              </View>
+        </View>
     );
   }
-  
+ 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -15,7 +30,13 @@ export default function HomeResponsavel({navigation}) {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    containerProfessor:{
+    topo: {
+      backgroundColor: "#212240",
+      height: 80,
+      width: "100%",
+      alignItems: 'flex-start'
+    },
+    containermeudia:{
       backgroundColor: "#52796F",
       width: 300,
       height: 200,

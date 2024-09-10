@@ -3,9 +3,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
-import HomeColaborador from './src/pages/HomeColaborador';
-import HomeProfessor from './src/pages/HomeProfessor';
-import HomeResponsavel from './src/pages/HomeResponsavel';
+import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
+import HomeProfessor from './src/pages/Professor/HomeProfessor';
+import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
+import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
+import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
   
 export default function App(){
 
@@ -19,6 +21,8 @@ export default function App(){
           <Stack.Screen name='HomeColaborador' component={HomeColaborador}/> 
           <Stack.Screen name='HomeProfessor' component={HomeProfessor}/>
           <Stack.Screen name='HomeResponsavel' component={HomeResponsavel}/>
+          <Stack.Screen name='MeudiaResponsavel' component={MeudiaResponsavel}/>
+          <Stack.Screen name='MeudiaProfessor' component={MeudiaProfessor}/>
         </Stack.Navigator>
     </NavigationContainer>
   );
