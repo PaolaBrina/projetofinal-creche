@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
-import axios from 'axios';
+
 
 export default function HomeSelecao({navigation}) {
     return (
@@ -23,7 +23,7 @@ export default function HomeSelecao({navigation}) {
       borderRadius: 20,
       alignItems: 'center'
     },
-    btnLogin:{
+    btnLogin:{                        
         backgroundColor: "#354F52",
         width: 80,
         height: 50,
