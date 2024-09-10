@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
@@ -152,10 +151,6 @@ const styles = StyleSheet.create({
 
 /* import { StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
 import axios from 'axios';
-=======
-import { StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
-
->>>>>>> aea397f3c616a1dded8a7e28879db949c62c457e
 
 export default function HomeSelecao({navigation}) {
     return (
