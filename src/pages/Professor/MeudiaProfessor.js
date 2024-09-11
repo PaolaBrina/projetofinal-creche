@@ -1,33 +1,53 @@
+import React, { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
 import axios from 'axios';
-import React, {useState, useEffect} from 'react';
 
 export default function MeudiaProfessor({navigation}) {
-  const [newcodaluno, setNewcodaluno] = useState(null)
-  const [newcodturma, setNewcodturma] = useState(null)
-  const [newcoco, setNewcoco] = useState(null)
-  const [newcoco, setNewcoco] = useState(null)
-  const [newcoco, setNewcoco] = useState(null)
-  const [newcoco, setNewcoco] = useState(null)
-  const [newcoco, setNewcoco] = useState(null)
+  const [newcodaluno, setNewcodaluno] =  useState('');
+  const [newcodturma, setNewcodturma] =  useState('');
+  const [newcodprofessor, setNewcodprofessor] =  useState('');
+  const [newdatahora, setNewdatahora] =  useState(new Date());
+  const [show, setShow] = useState(false);
+  const [newrecado, setNewrecado] =  useState('');
+  const [newxixi, setNewxixi] =  useState('');
+  const [newcoco, setNewcoco] =  useState('');
+  const [newsono, setNewsono] =  useState('');
+  const [newsaude, setNewsaude] =  useState('');
+  const [newmedicacao, setNewmedicacao] =  useState('');
+  const [newcafetarde, setNewcafetarde] =  useState('');
+ /*  const [newcafemanha, setNewcafemanha] =  useState('');
+  const [newalmoco, setNewalmoco] =  useState(''); */
+  const [newjanta, setNewjanta] =  useState('');
 
-    const Meudiatarde = async () => {
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || new Date();
+    setShow(Platform.OS === 'ios');
+    setNewdatahora(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+  };
+
+
+    const CadMeudiatarde = async () => {
         try{
-          const newItem{
-            codaluno:newcodaluno,
-            codturma:codturma,
-            codprofessor:
-            datahora:
-            recado:
-            xixi:
-            coco:
-            sono:
-            saude:
-            medicacao:
-            cafetarde:
-            janta:
+          const newItem = {
+            codaluno: newcodaluno,
+            codturma: newcodturma,
+            codprofessor: newcodprofessor,
+            datahora: newdatahora,
+            recado: newrecado,
+            xixi: newxixi,
+            coco: newcoco,
+            sono: newsono,
+            saude: newsaude,
+            medicacao: newmedicacao,
+            cafetarde: newcafetarde,
+            janta: newjanta,
           }
-        const response = await axios.post('http://localhost:3000/meudiatarde');
+        const response = await axios.post('http://localhost:3000/meudiatarde',newItem);
         const data = response.data; 
         console.log(data); 
     } catch (error) {
@@ -44,91 +64,105 @@ export default function MeudiaProfessor({navigation}) {
         </View> 
             <View>
             <Text>Meu dia manha</Text>
-            <Text style={styles.inputext}> Aluno: </Text>
+            <Text style={styles.inputext}> codigo Aluno: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite  o código do aluno:'
+              value={newcodaluno}
+              onChangeText={setNewcodaluno}
+              keyboardType='numeric' 
             />
             <Text style={styles.inputext}> Turma: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite  o código da turma:'
+              value={newcodturma}
+              onChangeText={setNewcodturma}
+              keyboardType='numeric' 
             />
-            <Text style={styles.inputext}> codprofessor: </Text>
+            <Text style={styles.inputext}> codigo Professor: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite  o código do professor:'
+              value={newcodprofessor}
+              onChangeText={setNewcodprofessor}
             />
-            <Text style={styles.inputext}> datahora: </Text>
-            <TextInput
-              style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
-            />
+            <Text style={styles.inputext}>Data e Hora:</Text>
+            <TouchableOpacity onPress={() => showMode('date')}>
+              <TextInput
+                style={styles.input}
+                placeholder='Escolha a data e hora'
+                value={newdatahora.toLocaleString()}
+                editable={false}
+              />
+            </TouchableOpacity>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={newdatahora}
+                mode={'datetime'}
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
+              />
+            )}
             <Text style={styles.inputext}> recado: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite o recado:'
+              value={newrecado}
+              onChangeText={setNewrecado}
             />
             <Text style={styles.inputext}> xixi: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite o xixi:'
+              value={newxixi}
+              onChangeText={setNewxixi}
             />
             <Text style={styles.inputext}> coco: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
+              placeholder='Digite o coco:'
               value={newcoco}
-              onChangeText={setNewemail}
+              onChangeText={setNewcoco}
             />
             <Text style={styles.inputext}> sono: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite o sono:'
+              value={newsono}
+              onChangeText={setNewsono}
             />
             <Text style={styles.inputext}> saude: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite a saude:'
+              value={newsaude}
+              onChangeText={setNewsaude}
             />
             <Text style={styles.inputext}> medicacao: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite a medicação:'
+              value={newmedicacao}
+              onChangeText={setNewmedicacao}
             />
             <Text style={styles.inputext}> cafetarde: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite o cafetarde:'
+              value={newcafetarde}
+              onChangeText={setNewcafetarde}
             />
             <Text style={styles.inputext}> janta: </Text>
             <TextInput
               style={styles.input}
-              placeholder='Digite email:'
-              value={newemail}
-              onChangeText={setNewemail}
+              placeholder='Digite a janta:'
+              value={newjanta}
+              onChangeText={setNewjanta}
             /> 
-             <TouchableOpacity style={styles.btnLogin} onPress={cadastrarmanha}>
+             <TouchableOpacity style={styles.btnLogin} onPress={CadMeudiatarde}>
                    <Text style={styles.btnTxt}>cadastrar</Text>
                 </TouchableOpacity>
 
