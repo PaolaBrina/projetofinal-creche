@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
 
+
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+
 export default function Login({ navigation }) {
   const [telefone, setTelefone] = useState('');
 
@@ -35,28 +38,32 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topo}></View> 
-      <View style={styles.logo}>
-        <Image style={styles.img} source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWwWrKK8QlWgiUoUrcwzDalIpcsLgCaWkc0w&s' }} />
-      </View>
-
-      <View style={styles.containerLogin}>
-        <View style={styles.loginContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Telefone"
-            value={telefone}
-            onChangeText={setTelefone}
-            keyboardType="phone-pad"
-          />
+      <View style={styles.container}>
+        <View style={styles.topo}>
+          <Text style={styles.topoTxt}>Seja Bem Vindo à Agenda Amarelinha!</Text>
+        </View> 
+    
+        <View style={styles.viewTxt}>
+          <Text style={styles.txt}>Insira seu número de celular para que possamos enviar um codigo de confirmação.</Text>
         </View>
 
-        <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
-          <Text style={styles.btnTxt}>Entrar</Text>
-        </TouchableOpacity>
+        <View style={styles.containerLogin}>
+        <View style={styles.inputContainer}>
+          <FontAwesome name="phone" size={24} color="white" style={styles.icon} />
+          <TextInput
+              style={styles.input}
+              placeholder="Telefone"
+              value={telefone}
+              onChangeText={setTelefone}
+              keyboardType="phone-pad"
+            />
+        </View>
+
+          <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
+            <Text style={styles.btnTxt}>Entrar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
   );
 }
 
@@ -66,46 +73,88 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topo: {
-    backgroundColor: "#212240",
-    height: 80,
+    backgroundColor: "#283673",
+    paddingTop: 70,
+    height: 150,
     width: "100%",
+    alignContent: 'center'
   },
-  logo: {
-    paddingTop: 50
+  topoTxt: {
+    color: "#fff",
+    fontSize: 25,
+    textAlign: 'center'
   },
-  img: {
-    width: 100, 
-    height: 100,
+  viewTxt: {
+    height: 150,
+    width: "70%",
+    alignContent: 'center',
+    fontWeight: 'bold',
+    marginBottom: 35
   },
-  loginContainer: {
-    width: '80%',
-    paddingTop: 20
+  txt: {
+    paddingTop: 50,
+    fontSize: 20,
+    textAlign: 'center'
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: "#283673",
+    width: '85%',
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  icon: {
+    marginRight: 10,
   },
   input: {
-    height: 40,
     borderColor: '#ccc',
     backgroundColor: '#fff',
     borderWidth: 1,
-    marginBottom: 15,
     paddingHorizontal: 10,
     borderRadius: 5,
+    flex: 1,
+    height: 40,
   },
   containerLogin: {
-    backgroundColor: '#212240',
-    width: 200,
-    height: 200,
-    borderRadius: 20,
+    backgroundColor: '#283673',
+    width: '80%',
+    borderRadius: 10,
+    padding: 20,
     alignItems: 'center',
+    elevation: 5,
   },
   btnLogin: {
-    backgroundColor: '#00923F',
-    width: 80,
-    height: 50,
+    backgroundColor: '#FFEF95',
+    width: '50%',
+    height: 45,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
   },
   btnTxt: {
-    color: "#fff"
-  }
+    color: '#283673',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
+
+/* 
+import { TextInputMask } from 'react-native-masked-text'; // Importa a biblioteca para máscara
+
+          <FontAwesome name="phone" size={24} color="white" style={styles.icon} />
+          <TextInputMask
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) '
+            }}
+            style={styles.input}
+            placeholder="Telefone"
+            value={telefone}
+            onChangeText={setTelefone}
+          /> 
+*/
