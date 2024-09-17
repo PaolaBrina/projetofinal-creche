@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 export default function HomeSelecao({ route, navigation }) {
   const { data } = route.params; // pega os dados do login
@@ -33,7 +33,16 @@ export default function HomeSelecao({ route, navigation }) {
   }, [data]);
 
   return (
+    
     <View style={styles.container}>
+      <View style={styles.topo}>
+          <Text style={styles.topoTxt}></Text>
+    </View>
+
+    <View style={styles.viewTxt}>
+          <Text style={styles.txt}>Selecione seu login:</Text>
+    </View>
+
       {botao.length === 0 ? (
         <Text style={styles.noOptions}>Nenhuma opção disponível.</Text>
       ) : (
@@ -55,8 +64,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#f0f0f0',
+  },
+  topo: {
+    backgroundColor: "#283673",
+    height: 80,
+    width: "100%",
+    alignContent: 'center'
+  },
+  viewImg: {
+    paddingTop: 50
+  },
+  img:{
+    width: 100, 
+    height: 100,
+  },
+  viewTxt: {
+    height: 150,
+    width: "70%",
+    alignContent: 'center',
+  },
+  txt: {
+    paddingTop: 50,
+    fontSize: 20,
+    textAlign: 'center',
   },
   btn: {
     backgroundColor: '#283673',
