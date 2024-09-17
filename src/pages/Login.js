@@ -55,7 +55,7 @@ export default function Login({ navigation }) {
               placeholder="Telefone"
               value={telefone}
               onChangeText={setTelefone}
-              keyboardType="phone-pad"
+              inputMode="phone-pad"
             />
         </View>
 
