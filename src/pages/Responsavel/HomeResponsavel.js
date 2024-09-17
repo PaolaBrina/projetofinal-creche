@@ -7,12 +7,9 @@ export default function HomeResponsavel({navigation}) {
     navigation.navigate('MeudiaResponsavel');
   }
   return(
-      <View style={styles.container}> {/* Top Bar */}
+      <View style={styles.container}> 
         <View style={styles.topBar}>
-          <TouchableOpacity style={styles.profilePic}>
-            <Text style={styles.profileText}>Foto Filho</Text>
-          </TouchableOpacity>
-          <Text style={styles.topBarText}>Dados cadastrais</Text>
+          <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
           <View style={styles.icons}>
             <TouchableOpacity style={styles.icon}>
               <Text>👤</Text>
@@ -73,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     padding: 10,
-    backgroundColor: '#000080',
+    backgroundColor: '#283673',
     marginBottom: 20,
   },
   profilePic: {
@@ -81,15 +78,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#fff',
     borderRadius: 25,
-    justifyContent: 'center',
     alignItems: 'center',
-  },
-  profileText: {
-    color: '#000',
-  },
-  topBarText: {
-    color: '#fff',
-    fontSize: 16,
   },
   icons: {
     flexDirection: 'row',

@@ -68,7 +68,6 @@ export default function HomeProfessor({navigation}) {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'flex-start',
       paddingTop: 50,
     },
     topBar: {
@@ -77,7 +76,7 @@ export default function HomeProfessor({navigation}) {
       alignItems: 'center',
       width: '100%',
       padding: 10,
-      backgroundColor: '#000080',
+      backgroundColor: '#283673',
     },
     profilePic: {
       width: 50,

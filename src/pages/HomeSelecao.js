@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 export default function HomeSelecao({ route, navigation }) {
-  const { data } = route.params; // pega os dados do login
+  const { data } = route.params; 
   const [botao, setBotao] = useState([]);
 
   useEffect(() => {
