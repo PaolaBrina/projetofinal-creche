@@ -1,64 +1,153 @@
-import { StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, FlatList, View,TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
 export default function MeudiaResponsavel({navigation}) {
+  const [manhaItems, setManhaItems] = useState([]);
+  const [tardeItems, setTardeItems] = useState([]);
+
+   const Meudiamanha = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/meudiamanha');
+      const data = response.data;
+      setManhaItems(data); // Armazena os dados da manhã no estado
+    } catch (error) {
+      console.error('Error fetching data from meudiamanha:', error);
+    }
+  };
+
 
     const Meudiatarde = async () => {
         try{
         const response = await axios.get('http://localhost:3000/meudiatarde');
         const data = response.data; 
-        console.log(data); 
+        setTardeItems(data); 
     } catch (error) {
         console.error('Error fetching data:', error);
     } 
     }
       
+    useEffect(() => {
+      Meudiamanha();
+      Meudiatarde();
+    }, []);
+
 
     return (
-      <View style={styles.container}>
-      <View style={styles.topo}>
-        </View> 
-            <View>
-            {/* <TouchableOpacity style={styles.containermeudia}  onPress={Meudiamanha}>
-              <Text>Visualizar Manha</Text>
-              </TouchableOpacity> */}
-            <TouchableOpacity style={styles.containermeudia}  onPress={Meudiatarde}>
-              <Text>Visualizar Tarde</Text>
-              </TouchableOpacity>
+      <View style={styles.container}> 
+        <View style={styles.topBar}>
+          <TouchableOpacity style={styles.profilePic}>
+            <Text style={styles.profileText}>Foto Filho</Text>
+          </TouchableOpacity>
+          <Text style={styles.topBarText}>Dados cadastrais</Text>
+          <View style={styles.icons}>
+            <TouchableOpacity style={styles.icon}>
+              <Text>👤</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.icon}>
+              <Text>🔔</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        
+        <Text style={styles.sectionTitle}>Meu Dia - Manhã</Text>
+        <FlatList
+          data={manhaItems}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemText}>codaluno: {item.codaluno}</Text>
+              <Text style={styles.itemText}>codturma: {item.codturma}</Text>
+              <Text style={styles.itemText}>codprofessor: {item.codprofessor}</Text>
+              <Text style={styles.itemText}>datahora: {item.datahora}</Text>
+              <Text style={styles.itemText}>recado: {item.recado}</Text>
+              <Text style={styles.itemText}>xixi: {item.xixi}</Text>
+              <Text style={styles.itemText}>Coco: {item.coco}</Text>
+              <Text style={styles.itemText}>sono: {item.sono}</Text>
+              <Text style={styles.itemText}>saude: {item.saude}</Text>
+              <Text style={styles.itemText}>medicacao: {item.medicacao}</Text>
+              <Text style={styles.itemText}>cafetarde: {item.cafetarde}</Text>
+              <Text style={styles.itemText}>janta: {item.janta}</Text>
             </View>
-       </View>
+          )}
+        />
+  
+        <Text style={styles.sectionTitle}>Meu Dia - Tarde</Text>
+        <FlatList
+          data={tardeItems}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemText}>codaluno: {item.codaluno}</Text>
+              <Text style={styles.itemText}>codturma: {item.codturma}</Text>
+              <Text style={styles.itemText}>codprofessor: {item.codprofessor}</Text>
+              <Text style={styles.itemText}>datahora: {item.datahora}</Text>
+              <Text style={styles.itemText}>recado: {item.recado}</Text>
+              <Text style={styles.itemText}>xixi: {item.xixi}</Text>
+              <Text style={styles.itemText}>Coco: {item.coco}</Text>
+              <Text style={styles.itemText}>sono: {item.sono}</Text>
+              <Text style={styles.itemText}>saude: {item.saude}</Text>
+              <Text style={styles.itemText}>medicacao: {item.medicacao}</Text>
+              <Text style={styles.itemText}>cafetarde: {item.cafetarde}</Text>
+              <Text style={styles.itemText}>janta: {item.janta}</Text>
+            </View>
+          )}
+        />
+      </View>
     );
   }
- 
+  
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#c3c3c3',
+      backgroundColor: '#f2f2f2',
+    },
+    topBar: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      padding: 10,
+      backgroundColor: '#000080',
+      marginBottom: 30,
+    },
+    profilePic: {
+      width: 50,
+      height: 50,
+      backgroundColor: '#fff',
+      borderRadius: 25,
+      justifyContent: 'center',
       alignItems: 'center',
     },
-    topo: {
-      backgroundColor: "#212240",
-      height: 80,
-      width: "100%",
-      alignItems: 'flex-start'
+    profileText: {
+      color: '#000',
     },
-    containermeudia:{
-      backgroundColor: "#52796F",
-      width: 300,
-      height: 200,
-      borderRadius: 20,
-      alignItems: 'center'
+    topBarText: {
+      color: '#fff',
+      fontSize: 16,
     },
-    btnLogin:{
-        backgroundColor: "#354F52",
-        width: 80,
-        height: 50,
-        top: 80,
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center'
+    icons: {
+      flexDirection: 'row',
     },
-    btnTxt:{
-        color: "#fff"
-    }
+    icon: {
+      marginHorizontal: 10,
+    },
+    sectionTitle: {
+      fontSize: 22,
+      fontWeight: 'bold',
+      marginVertical: 10,
+    },
+    itemContainer: {
+      padding: 10,
+      backgroundColor: '#fff',
+      marginBottom: 10,
+      borderRadius: 8,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowOffset: { width: 0, height: 2 },
+    },
+    itemText: {
+      fontSize: 16,
+    },
   });
