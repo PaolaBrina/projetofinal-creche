@@ -9,10 +9,7 @@ export default function HomeProfessor({navigation}) {
   return(
   <View style={styles.container}>
   <View style={styles.topBar}>
-    <TouchableOpacity style={styles.profilePic}>
-      <Text style={styles.profileText}>Foto Filho</Text>
-    </TouchableOpacity>
-    <Text style={styles.topBarText}>Dados cadastrais</Text>
+    <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
     <View style={styles.icons}>
       <TouchableOpacity style={styles.icon}>
         <Text>👤</Text>
@@ -21,14 +18,6 @@ export default function HomeProfessor({navigation}) {
         <Text>🔔</Text>
       </TouchableOpacity>
     </View>
-  </View>
-
-  
-  <View style={styles.centerImageContainer}>
-    <Image 
-      source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Logo_distrito_Federal_Brasil.png/800px-Logo_distrito_Federal_Brasil.png'}} 
-      style={styles.centerImage}
-    />
   </View>
 
 
@@ -68,7 +57,6 @@ export default function HomeProfessor({navigation}) {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      paddingTop: 50,
     },
     topBar: {
       flexDirection: 'row',
@@ -98,14 +86,6 @@ export default function HomeProfessor({navigation}) {
     },
     icon: {
       marginHorizontal: 10,
-    },
-    centerImageContainer: {
-      marginVertical: 20,
-    },
-    centerImage: {
-      width: 100,
-      height: 100,
-      resizeMode: 'contain',
     },
     buttonsContainer: {
       width: '90%',

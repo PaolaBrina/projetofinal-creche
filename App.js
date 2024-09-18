@@ -3,11 +3,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
+/* Colaborador */
 import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
+import AlunoCadastro from './src/pages/Colaborador/AlunoCadastro';
+import ProfessorCadastro from './src/pages/Colaborador/ProfessorCadastro';
+import ResponsavelCadastro from './src/pages/Colaborador/ResponsavelCadastro';
+/* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
+import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
+/* Responsável */
 import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
-import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
   
 export default function App(){
 
@@ -17,12 +23,15 @@ export default function App(){
     <NavigationContainer> 
         <Stack.Navigator>
           <Stack.Screen options={{headerShown:false}} name='Login' component={Login}/>
-          <Stack.Screen name='HomeSelecao' component={HomeSelecao}/> 
+          <Stack.Screen options={{headerShown:false}} name='HomeSelecao' component={HomeSelecao}/> 
           <Stack.Screen name='HomeColaborador' component={HomeColaborador}/> 
+          <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='ProfessorCadastro' component={ProfessorCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='ResponsavelCadastro' component={ResponsavelCadastro}/>
           <Stack.Screen name='HomeProfessor' component={HomeProfessor}/>
+          <Stack.Screen name='MeudiaProfessor' component={MeudiaProfessor}/>
           <Stack.Screen name='HomeResponsavel' component={HomeResponsavel}/>
           <Stack.Screen name='MeudiaResponsavel' component={MeudiaResponsavel}/>
-          <Stack.Screen name='MeudiaProfessor' component={MeudiaProfessor}/>
         </Stack.Navigator>
     </NavigationContainer>
   );

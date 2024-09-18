@@ -14,20 +14,14 @@ export default function MeudiaResponsavel({navigation}) {
     }
       
 
-
-
     return (
       <View style={styles.container}>
       <View style={styles.topo}>
-      <Text style={styles.topotext}> dados cadastrais</Text>
-        <View> <Text >  foto filho</Text></View>
-        <View> <Text >  suporte</Text></View>
-        <View> <Text >  notificaçoes</Text></View>
         </View> 
             <View>
-            <TouchableOpacity style={styles.containermeudia}  onPress={Meudiamanha}>
+            {/* <TouchableOpacity style={styles.containermeudia}  onPress={Meudiamanha}>
               <Text>Visualizar Manha</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             <TouchableOpacity style={styles.containermeudia}  onPress={Meudiatarde}>
               <Text>Visualizar Tarde</Text>
               </TouchableOpacity>
@@ -41,7 +35,6 @@ export default function MeudiaResponsavel({navigation}) {
       flex: 1,
       backgroundColor: '#c3c3c3',
       alignItems: 'center',
-      justifyContent: 'center',
     },
     topo: {
       backgroundColor: "#212240",

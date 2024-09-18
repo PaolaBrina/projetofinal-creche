@@ -60,7 +60,6 @@ export default function MeudiaProfessor({navigation}) {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={styles.container}>
       <View style={styles.topo}>
-      <Text style={styles.topotext}> dados cadastrais</Text>
         </View> 
             <View>
             <Text>Meu dia manha</Text>

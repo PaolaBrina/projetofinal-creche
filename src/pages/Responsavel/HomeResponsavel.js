@@ -2,10 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 
 export default function HomeResponsavel({navigation}) {
-
-  const handleMeudia = () => {
-    navigation.navigate('MeudiaResponsavel');
-  }
+  
   return(
       <View style={styles.container}> 
         <View style={styles.topBar}>
@@ -22,7 +19,7 @@ export default function HomeResponsavel({navigation}) {
   
 
         <View style={styles.column}>
-        <TouchableOpacity style={[styles.singleBlock, { backgroundColor: '#FEE234' }]}onPress={handleMeudia}>
+        <TouchableOpacity style={[styles.singleBlock, { backgroundColor: '#FEE234' }]} onPress={() => navigation.navigate('MeudiaResponsavel')}>
           <Text style={styles.itemText}>Meu dia na creche</Text>
         </TouchableOpacity>
 
@@ -62,7 +59,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ADD8E6',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   topBar: {
     flexDirection: 'row',

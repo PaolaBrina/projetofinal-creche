@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 export default function HomeSelecao({ route, navigation }) {
   const { data } = route.params; 
   const [botao, setBotao] = useState([]);
@@ -36,8 +38,10 @@ export default function HomeSelecao({ route, navigation }) {
     
     <View style={styles.container}>
       <View style={styles.topo}>
-          <Text style={styles.topoTxt}></Text>
-    </View>
+        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('Login')}>
+          <AntDesign name="caretleft" size={30} color="white"/>
+        </TouchableOpacity>  
+      </View>
 
     <View style={styles.viewTxt}>
           <Text style={styles.txt}>Selecione seu login:</Text>
@@ -67,10 +71,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   topo: {
-    backgroundColor: "#283673",
-    height: 80,
-    width: "100%",
-    alignContent: 'center'
+    alignItems: 'flex-start',
+    width: '100%',
+    padding: 10,
+    paddingLeft: 30,
+    backgroundColor: '#283673'
   },
   viewImg: {
     paddingTop: 50
