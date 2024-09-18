@@ -68,7 +68,6 @@ export default function HomeProfessor({navigation}) {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      paddingTop: 50,
     },
     topBar: {
       flexDirection: 'row',
