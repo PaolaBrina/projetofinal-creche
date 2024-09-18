@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image,ScrollView} from 'react-native';
 
 export default function HomeResponsavel({navigation}) {
 
@@ -7,7 +7,7 @@ export default function HomeResponsavel({navigation}) {
     navigation.navigate('MeudiaResponsavel');
   }
   return(
-      <View style={styles.container}> {/* Top Bar */}
+      <View style={styles.container}> 
         <View style={styles.topBar}>
           <TouchableOpacity style={styles.profilePic}>
             <Text style={styles.profileText}>Foto Filho</Text>
@@ -22,39 +22,33 @@ export default function HomeResponsavel({navigation}) {
             </TouchableOpacity>
           </View>
         </View>
+
+        <ScrollView>
+        <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#fdd835' }]}  onPress={handleMeudia}>
+          <Text style={styles.buttonText}>Meu dia na creche</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#29b6f6' }]}>
+          <Text style={styles.buttonText}>Atividades</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#ef5350' }]}>
+          <Text style={styles.buttonText}>Calendário</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#66bb6a' }]}>
+          <Text style={styles.buttonText}>Chamadas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#ab47bc' }]}>
+          <Text style={styles.buttonText}>Fotos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#ffa726' }]}>
+          <Text style={styles.buttonText}>Horários</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: '#ba68c8' }]}>
+          <Text style={styles.buttonText}>Lista de Materiais</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   
-
-        <View style={styles.column}>
-        <TouchableOpacity style={[styles.singleBlock, { backgroundColor: '#FEE234' }]}onPress={handleMeudia}>
-          <Text style={styles.itemText}>Meu dia na creche</Text>
-        </TouchableOpacity>
-
-        <View style={styles.row}>
-          <TouchableOpacity style={[styles.smallBlock, { backgroundColor: '#FF7F50' }]}>
-            <Text style={styles.itemText}>Calendário</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallBlock, { backgroundColor: '#00BFFF' }]}>
-            <Text style={styles.itemText}>Atividades</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={[styles.singleBlock, { backgroundColor: '#7FFF00' }]}>
-          <Text style={styles.itemText}>Chamadas</Text>
-        </TouchableOpacity>
-
-        <View style={styles.row}>
-          <TouchableOpacity style={[styles.smallBlock, { backgroundColor: '#8A2BE2' }]}>
-            <Text style={styles.itemText}>Fotos</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.smallBlock, { backgroundColor: '#FFA500' }]}>
-            <Text style={styles.itemText}>Horários</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={[styles.singleBlock, { backgroundColor: '#DA70D6' }]}>
-          <Text style={styles.itemText}>Lista de Materiais</Text>
-        </TouchableOpacity>
-        </View>
       </View>
     );
   };
@@ -98,33 +92,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   buttonsContainer: {
-    width: '90%',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    width: '100%',
+    padding: 10,
   },
   button: {
-    width: '45%',
-    height: 100,
-    margin: 10,
-    borderRadius: 15,
-    justifyContent: 'center',
+    marginVertical: 10,
+    padding: 20,
+    borderRadius: 20,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
+    color: 'black',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
-
-
-/* 
-btn
-width: '48%',
-height: 100,
-backgroundColor: '#d3d3d3',
-marginVertical: 10,
-borderRadius: 10,
-justifyContent: 'center',
-alignItems: 'center', */
