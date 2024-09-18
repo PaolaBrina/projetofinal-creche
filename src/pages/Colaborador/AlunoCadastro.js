@@ -10,7 +10,7 @@ export default function AlunoCadastro({navigation}) {
     const [newdatanascimento, setNewdatanascimento] = useState('');
     const [newsexo, setNewsexo] = useState('');
     const [newendereco, setNewendereco] = useState('');
-    const [newfoto, setNewfoto] = useState(null); // Alterado para ser um objeto de imagem
+    const [newfoto, setNewfoto] = useState(''); // Alterado para ser um objeto de imagem
 
     const handleSeta = () => {
         navigation.navigate('HomeColaborador');

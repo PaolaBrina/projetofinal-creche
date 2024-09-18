@@ -8,6 +8,7 @@ import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
 import AlunoCadastro from './src/pages/Colaborador/AlunoCadastro';
 import ProfessorCadastro from './src/pages/Colaborador/ProfessorCadastro';
 import ResponsavelCadastro from './src/pages/Colaborador/ResponsavelCadastro';
+import TurmaCadastro from './src/pages/Colaborador/TurmaCadastro';
 /* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
 import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
@@ -28,6 +29,7 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='ProfessorCadastro' component={ProfessorCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='ResponsavelCadastro' component={ResponsavelCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='TurmaCadastro' component={TurmaCadastro}/>
           <Stack.Screen name='HomeProfessor' component={HomeProfessor}/>
           <Stack.Screen name='MeudiaProfessor' component={MeudiaProfessor}/>
           <Stack.Screen name='HomeResponsavel' component={HomeResponsavel}/>
