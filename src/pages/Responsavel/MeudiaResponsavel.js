@@ -36,21 +36,10 @@ export default function MeudiaResponsavel({navigation}) {
     return (
       <View style={styles.container}> 
         <View style={styles.topBar}>
-          <TouchableOpacity style={styles.profilePic}>
-            <Text style={styles.profileText}>Foto Filho</Text>
-          </TouchableOpacity>
-          <Text style={styles.topBarText}>Dados cadastrais</Text>
-          <View style={styles.icons}>
-            <TouchableOpacity style={styles.icon}>
-              <Text>👤</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <Text>🔔</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
         </View>
 
-        
+      
         <Text style={styles.sectionTitle}>Meu Dia - Manhã</Text>
         <FlatList
           data={manhaItems}
@@ -109,7 +98,7 @@ export default function MeudiaResponsavel({navigation}) {
       alignItems: 'center',
       width: '100%',
       padding: 10,
-      backgroundColor: '#000080',
+      backgroundColor: '#283673',
       marginBottom: 30,
     },
     profilePic: {

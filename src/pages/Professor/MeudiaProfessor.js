@@ -91,9 +91,7 @@ export default function MeudiaProfessor({navigation}) {
         keyboardShouldPersistTaps='handled'
       >
         <View style={styles.container}>
-          <View style={styles.topo}>
-            <Text style={styles.topotext}>Dados Cadastrais</Text>
-          </View>
+          <View style={styles.topo}></View>
   
           <View>
             <Text>Meu Dia Manhã</Text>
@@ -319,10 +317,9 @@ export default function MeudiaProfessor({navigation}) {
       backgroundColor: '#F5F5F5', 
       alignItems: 'center',
       justifyContent: 'flex-start', 
-      paddingVertical: 20, 
     },
     topo: {
-      backgroundColor: "#212240",
+      backgroundColor: "#283673",
       height: 80,
       width: "100%",
       justifyContent: 'center', 
