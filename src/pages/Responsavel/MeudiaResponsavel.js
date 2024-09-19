@@ -9,7 +9,8 @@ export default function MeudiaResponsavel({navigation}) {
    const Meudiamanha = async () => {
     try {
       const response = await axios.get('http://localhost:3000/meudiamanha');
-      const data = response.data;
+      const data = response.data.meudiamanha;
+      console.log(data)
       setManhaItems(data); // Armazena os dados da manhã no estado
     } catch (error) {
       console.error('Error fetching data from meudiamanha:', error);
@@ -20,7 +21,8 @@ export default function MeudiaResponsavel({navigation}) {
     const Meudiatarde = async () => {
         try{
         const response = await axios.get('http://localhost:3000/meudiatarde');
-        const data = response.data; 
+        const data = response.data.meudiatarde;
+        console.log(data)
         setTardeItems(data); 
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -43,7 +45,7 @@ export default function MeudiaResponsavel({navigation}) {
         <Text style={styles.sectionTitle}>Meu Dia - Manhã</Text>
         <FlatList
           data={manhaItems}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.codigo.toString()}
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
               <Text style={styles.itemText}>codaluno: {item.codaluno}</Text>
@@ -56,8 +58,8 @@ export default function MeudiaResponsavel({navigation}) {
               <Text style={styles.itemText}>sono: {item.sono}</Text>
               <Text style={styles.itemText}>saude: {item.saude}</Text>
               <Text style={styles.itemText}>medicacao: {item.medicacao}</Text>
-              <Text style={styles.itemText}>cafetarde: {item.cafetarde}</Text>
-              <Text style={styles.itemText}>janta: {item.janta}</Text>
+              <Text style={styles.itemText}>cafemanha: {item.cafemanha}</Text>
+              <Text style={styles.itemText}>almoco: {item.almoco}</Text>
             </View>
           )}
         />
@@ -65,7 +67,7 @@ export default function MeudiaResponsavel({navigation}) {
         <Text style={styles.sectionTitle}>Meu Dia - Tarde</Text>
         <FlatList
           data={tardeItems}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.codigo.toString()}
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
               <Text style={styles.itemText}>codaluno: {item.codaluno}</Text>
