@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, FlatList, View,TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import { api } from '../../api/api';
 
 export default function MeudiaResponsavel({navigation}) {
   const [manhaItems, setManhaItems] = useState([]);
@@ -8,7 +8,7 @@ export default function MeudiaResponsavel({navigation}) {
 
    const Meudiamanha = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/meudiamanha');
+      const response = await api.get('/meudiamanha');
       const data = response.data.meudiamanha;
       console.log(data)
       setManhaItems(data); // Armazena os dados da manhã no estado
@@ -20,7 +20,7 @@ export default function MeudiaResponsavel({navigation}) {
 
     const Meudiatarde = async () => {
         try{
-        const response = await axios.get('http://localhost:3000/meudiatarde');
+          const response = await api.get('/meudiatarde');
         const data = response.data.meudiatarde;
         console.log(data)
         setTardeItems(data); 
