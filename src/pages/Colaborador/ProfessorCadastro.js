@@ -1,45 +1,50 @@
-
-
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
-import axios from 'axios'; 
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+import ProfessorAdicionar from './ProfessorAdicionar';
+import axios from 'axios';
+
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function ProfessorCadastro({navigation}) {
-    
-    const [newnome, setNewnome] =  useState('');
-    const [newcpf, setNewcpf] =  useState('');
-    const [newdatanascimento, setNewdatanascimento] =  useState('');
-    const [newsexo, setNewsexo] =  useState('');
-    const [newemail, setNewemail] =  useState('');
-    const [newendereco, setNewendereco] =  useState('');
-    const [newtelefone, setNewtelefone] =  useState('');
+export default function ProfessorCadastro() {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [professores, setProfessores] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const openModal = () => {
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
 
     const handleSeta = () => {
         navigation.navigate('HomeColaborador');
     }
 
-    const CadProfessor = async () => {
+    const fetchProfessores = async () => {
+        setLoading(true); // Inicia o carregamento
         try {
-            const newItem = {
-                nome: newnome,
-                cpf: newcpf,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                email: newemail,
-                endereco: newendereco,
-                telefone: newtelefone,
-                login: 'a',
-                senha: 'a',
-                status: 1,
-            };
-            const response = await axios.post('http://localhost:3000/professor', newItem);
-            const data = response.data; 
-            console.log(data); 
+            const response = await axios.get('http://localhost:3000/professor'); // Usando localhost
+            console.log('Resposta completa:', response); // Log da resposta completa
+            
+            // Verifique se a estrutura da resposta é a esperada
+            if (Array.isArray(response.data)) {
+                setProfessores(response.data); // Armazena os dados recebidos
+            } else if (response.data && response.data.professores) {
+                // Se os dados estiverem dentro de um objeto
+                setProfessores(response.data.professores); // Ajuste conforme a estrutura
+            } else {
+                console.error('Formato inesperado dos dados:', response.data);
+                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
+            }
         } catch (error) {
-            console.error('Error fetching data:', error);
-        } 
-    }
+            console.error('Erro ao buscar professores:', error);
+            Alert.alert('Erro', 'Erro ao buscar professores, veja o console para mais detalhes.');
+        } finally {
+            setLoading(false); // Finaliza o carregamento
+        }
+    };
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -50,88 +55,65 @@ export default function ProfessorCadastro({navigation}) {
                         </TouchableOpacity>
                         <Text style={styles.topBarTxt}>Cadastro Professor</Text>
                     </View>
-                    <View style={styles.form}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Nome:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o nome'
-                                value={newnome}
-                                onChangeText={setNewnome}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Cpf:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o cpf'
-                                value={newcpf}
-                                onChangeText={setNewcpf}
-                                keyboardType='numeric' 
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Data de Nascimento:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite a data nascimento'
-                                value={newdatanascimento}
-                                onChangeText={setNewdatanascimento}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Sexo:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o sexo'
-                                value={newsexo}
-                                onChangeText={setNewsexo}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o email'
-                                value={newemail}
-                                onChangeText={setNewemail}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Endereco:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o endereco'
-                                value={newendereco}
-                                onChangeText={setNewendereco}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Telefone:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o telefone'
-                                value={newtelefone}
-                                onChangeText={setNewtelefone}
-                                keyboardType='numeric' 
-                            />
-                        </View>
-                        <TouchableOpacity style={styles.btnLogin} onPress={CadProfessor}>
-                            <Text style={styles.btnTxt}>Cadastrar</Text>
+
+            <TouchableOpacity style={styles.button} onPress={fetchProfessores}>
+                <Text style={styles.buttonText}>Buscar Professores</Text>
+            </TouchableOpacity>
+
+            {loading ? (
+                <Text>Carregando...</Text>
+            ) : (
+                professores.length > 0 ? (
+                    <FlatList
+                        data={professores}
+                        keyExtractor={(item) => item.id.toString()} // Supondo que o ID do professor está na chave 'id'
+                        renderItem={({ item }) => (
+                            <View style={styles.professorItem}>
+                                <Text style={styles.professorText}>Nome: {item.nome}</Text>
+                                <Text style={styles.professorText}>CPF: {item.cpf}</Text>
+                                <Text style={styles.professorText}>Data de Nascimento: {item.datanascimento}</Text>
+                                <Text style={styles.professorText}>Sexo: {item.sexo}</Text>
+                                <Text style={styles.professorText}>Email: {item.email}</Text>
+                                <Text style={styles.professorText}>Endereço: {item.endereco}</Text>
+                                <Text style={styles.professorText}>Telefone: {item.telefone}</Text>
+                                <Text style={styles.professorText}>Login: {item.login}</Text>
+                                <Text style={styles.professorText}>Senha: {item.senha}</Text>
+                                <Text style={styles.professorText}>Status: {item.status}</Text>
+                            </View>
+                        )}
+                    />
+                ) : (
+                    <Text>Nenhum professor encontrado.</Text>
+                )
+            )}
+
+            <TouchableOpacity style={styles.button} onPress={openModal}>
+                <Text style={styles.buttonText}>Adicionar Professor</Text>
+            </TouchableOpacity>
+
+            <Modal
+                visible={modalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
+                        <ProfessorAdicionar closeModal={closeModal} />
                     </View>
+                </View>
+            </Modal>
             </ScrollView>
         </KeyboardAvoidingView>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f5f5f5',
-    },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: 'center',
     },
     topBar: {
         flexDirection: 'row',
@@ -153,257 +135,44 @@ const styles = StyleSheet.create({
         height: 30,
         justifyContent: 'center',
     },
-    form: {
-        backgroundColor: '#fff',
+    button: {
+        backgroundColor: '#FFEF95',
+        padding: 15,
         borderRadius: 10,
-        padding: 20,
-    },
-    inputGroup: {
-        marginBottom: 15,
-    },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    btnLogin: {
-        backgroundColor: "#FFEF95",
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
         marginTop: 20,
     },
-    btnTxt: {
-        color: "#000",
+    buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
     },
-});
-
-
-
-/* 
-
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
-import axios from 'axios'; 
-import AntDesign from '@expo/vector-icons/AntDesign';
-
-export default function ProfessorCadastro({navigation}) {
-    
-    const [newnome, setNewnome] =  useState('');
-    const [newcpf, setNewcpf] =  useState('');
-    const [newdatanascimento, setNewdatanascimento] =  useState('');
-    const [newsexo, setNewsexo] =  useState('');
-    const [newemail, setNewemail] =  useState('');
-    const [newendereco, setNewendereco] =  useState('');
-    const [newtelefone, setNewtelefone] =  useState('');
-    const [newlogin, setNewlogin] =  useState('');
-    const [newsenha, setNewsenha] =  useState('');
-
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
-    }
-
-    const CadProfessor = async () => {
-        try {
-            const newItem = {
-                nome: newnome,
-                cpf: newcpf,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                email: newemail,
-                endereco: newendereco,
-                telefone: newtelefone,
-                login: newlogin,
-                senha: newsenha,
-                status: 1,
-            };
-            const response = await axios.post('http://localhost:3000/professor', newItem);
-            const data = response.data; 
-            console.log(data); 
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        } 
-    }
-
-    return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                    <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
-                            <AntDesign name="caretleft" size={30} color="white"/>
-                        </TouchableOpacity>
-                        <Text style={styles.topBarTxt}>Cadastro Professor</Text>
-                    </View>
-                    <View style={styles.form}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Nome:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o nome'
-                                value={newnome}
-                                onChangeText={setNewnome}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Cpf:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o cpf'
-                                value={newcpf}
-                                onChangeText={setNewcpf}
-                                keyboardType='numeric' 
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Data de Nascimento:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite a data nascimento'
-                                value={newdatanascimento}
-                                onChangeText={setNewdatanascimento}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Sexo:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o sexo'
-                                value={newsexo}
-                                onChangeText={setNewsexo}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Email:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o email'
-                                value={newemail}
-                                onChangeText={setNewemail}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Endereco:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o endereco'
-                                value={newendereco}
-                                onChangeText={setNewendereco}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Telefone:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o telefone'
-                                value={newtelefone}
-                                onChangeText={setNewtelefone}
-                                keyboardType='numeric' 
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Login:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite o login'
-                                value={newlogin}
-                                onChangeText={setNewlogin}
-                            />
-                        </View>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Senha:</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder='Digite a senha'
-                                value={newsenha}
-                                onChangeText={setNewsenha}
-                            />
-                        </View>
-                        <TouchableOpacity style={styles.btnLogin} onPress={CadProfessor}>
-                            <Text style={styles.btnTxt}>Cadastrar</Text>
-                        </TouchableOpacity>
-                    </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
-};
-
-const styles = StyleSheet.create({
-    container: {
+    professorItem: {
+        padding: 15,
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        width: '100%',
+    },
+    professorText: {
+        fontSize: 16,
+    },
+    modalBackground: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    scrollView: {
-        flexGrow: 1,
         justifyContent: 'center',
-    },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%',
-        padding: 10,
-        paddingLeft: 30,
-        paddingRight: 20,
-        backgroundColor: '#283673',
-      },
-    topBarTxt: {
-        color: '#fff',
-        fontSize: 18,         
-        fontWeight: 'bold'
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    btnseta: {
-        width: 30,
-        height: 30,
-        justifyContent: 'center',
-    },
-    form: {
+    modalContainer: {
+        width: '90%',
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 20,
     },
-    inputGroup: {
-        marginBottom: 15,
+    closeButton: {
+        alignSelf: 'flex-end',
+        padding: 5,
     },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    btnLogin: {
-        backgroundColor: "#FFEF95",
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    btnTxt: {
-        color: "#000",
-        fontSize: 16,
-        fontWeight: 'bold',
+    closeButtonText: {
+        fontSize: 18,
+        color: 'red',
     },
 });
- */
