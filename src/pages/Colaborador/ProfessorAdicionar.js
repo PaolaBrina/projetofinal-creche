@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView } from 'react-native';
-import axios from 'axios'; 
+import { api } from '../../api/api';
 
 export default function ProfessorAdicionar({ closeModal }) {
     const [newnome, setNewnome] = useState('');
@@ -38,7 +38,7 @@ export default function ProfessorAdicionar({ closeModal }) {
                 senha: 'a',
                 status: 1,
             };
-            const response = await axios.post('http://localhost:3000/professor', newItem);
+            const response = await api.post('/responsavel', newItem);
             const data = response.data;
 
             // Fecha o modal e envia a mensagem de sucesso para a página Home

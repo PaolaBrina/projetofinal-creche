@@ -26,7 +26,7 @@ export default function ProfessorCadastro() {
     const fetchProfessores = async () => {
         setLoading(true); // Inicia o carregamento
         try {
-            const response = await axios.get('http://localhost:3000/professor'); // Usando localhost
+            const response = await api.get('/responsavel'); // Usando localhost
             console.log('Resposta completa:', response); // Log da resposta completa
             
             // Verifique se a estrutura da resposta é a esperada
