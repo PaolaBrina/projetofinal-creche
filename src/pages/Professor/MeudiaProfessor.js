@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView,Platform  } from 'react-native';
-import axios from 'axios';
+import { api } from '../../api/api';
 
 export default function MeudiaProfessor({navigation}) {
   const [newcodaluno, setNewcodaluno] =  useState('');
@@ -46,7 +46,7 @@ export default function MeudiaProfessor({navigation}) {
         cafemanha: newcafemanha,
         almoco: newalmoco,
       }
-      const response = await axios.post('http://localhost:3000/meudiamanha', newItem);
+      const response = await api.post('/meudiamanha', newItem);
       console.log(response.data); 
       Alert.alert("Cadastro realizado", "Meu dia Manhã cadastrado com sucesso!");
     } catch (error) {
@@ -71,7 +71,7 @@ export default function MeudiaProfessor({navigation}) {
         cafetarde: newcafetarde,
         janta: newjanta,
       }
-      const response = await axios.post('http://localhost:3000/meudiatarde', newItem);
+      const response = await api.post('/meudiatarde', newItem);
       console.log(response.data); 
       Alert.alert("Cadastro realizado", "Meu dia Tarde cadastrado com sucesso!");
     } catch (error) {

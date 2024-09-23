@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
-import axios from 'axios'; 
+import { api } from '../../api/api';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -47,7 +47,7 @@ export default function AlunoCadastro({navigation}) {
                 foto: newfoto, 
                 status: 1
             };
-            const response = await axios.post('http://localhost:3000/aluno', newItem);
+            const response = await api.post('/aluno', newItem);
             const data = response.data; 
             console.log(data); 
         } catch (error) {

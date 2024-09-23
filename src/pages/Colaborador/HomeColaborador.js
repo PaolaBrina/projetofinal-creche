@@ -25,7 +25,7 @@ export default function HomeColaborador({navigation}) {
     </View>
 
     <View style={styles.row}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TurmaCadastro')}>
         <Text style={styles.buttonText}>Cadastro Turmas</Text>
       </TouchableOpacity>
 

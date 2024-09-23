@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image, Alert } from 'react-native';
-import axios from 'axios';
-
+import { api } from '../api/api';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
@@ -9,10 +8,12 @@ export default function Login({ navigation }) {
   const [telefone, setTelefone] = useState('');
 
   const handleLogin = async () => {
+    console.log(1)
     try {
-      const response = await axios.post('http://localhost:3000/login', { telefone });
+      const response = await api.post('/login', {telefone})
+      console.log(response.data)
+      console.log(3)
       const { status, data } = response.data;
-
       switch (status) {
         case 'multi':
           navigation.navigate('HomeSelecao', { data });
@@ -33,7 +34,7 @@ export default function Login({ navigation }) {
       }
     } catch (error) {
       console.log(error);
-      Alert.alert('Erro', 'Erro ao verificar telefone.');
+      //Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };
 
