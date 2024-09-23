@@ -5,6 +5,7 @@ from models.colaborador import colaborador
 
 def loginController():
     data = request.get_json()
+    print(data)
     telefone = data.get('telefone')
 
     responsavel_existe = responsavel.query.filter_by(telefone=telefone).first()
