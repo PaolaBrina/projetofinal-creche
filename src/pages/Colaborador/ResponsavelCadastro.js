@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
-import axios from 'axios'; 
+import { api } from '../../api/api';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function ResponsavelCadastro({navigation}) {
@@ -39,7 +39,7 @@ export default function ResponsavelCadastro({navigation}) {
                 telefoneautorizado2: newtelefoneautorizado2,
                 status: 1,
             };
-            const response = await axios.post('http://localhost:3000/responsavel', newItem);
+            const response = await api.post('/responsavel', newItem);
             const data = response.data; 
             console.log(data); 
         } catch (error) {

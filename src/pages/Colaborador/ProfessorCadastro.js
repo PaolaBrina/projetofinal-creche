@@ -1,8 +1,6 @@
-
-
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
-import axios from 'axios'; 
+import { api } from '../../api/api';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function ProfessorCadastro({navigation}) {
@@ -33,7 +31,7 @@ export default function ProfessorCadastro({navigation}) {
                 senha: 'a',
                 status: 1,
             };
-            const response = await axios.post('http://localhost:3000/professor', newItem);
+            const response = await api.post('/professor', newItem);
             const data = response.data; 
             console.log(data); 
         } catch (error) {

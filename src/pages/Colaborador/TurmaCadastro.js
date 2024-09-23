@@ -13,7 +13,7 @@ export default function TurmaCadastro({navigation}) {
                 nome: newnome,
                 sala: newsala,
             };
-            const response = await axios.post('http://localhost:3000/turma', newItem);
+            const response = await api.post('/turma', newItem);
             const data = response.data; 
             console.log(data); 
         } catch (error) {
