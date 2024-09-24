@@ -38,7 +38,7 @@ export default function ProfessorAdicionar({ closeModal }) {
                 senha: 'a',
                 status: 1,
             };
-            const response = await api.post('/professor', newItem);
+            const response = await api.post('/responsavel', newItem);
             const data = response.data;
 
             // Fecha o modal e envia a mensagem de sucesso para a página Home

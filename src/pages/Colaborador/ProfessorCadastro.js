@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ProfessorAdicionar from './ProfessorAdicionar';
-import axios from 'axios';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function ProfessorCadastro() {
+export default function ProfessorCadastro({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [professores, setProfessores] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -26,7 +25,7 @@ export default function ProfessorCadastro() {
     const fetchProfessores = async () => {
         setLoading(true); // Inicia o carregamento
         try {
-            const response = await api.get('/responsavel'); // Usando localhost
+            const response = await api.get('/professor'); // Usando localhost
             console.log('Resposta completa:', response); // Log da resposta completa
             
             // Verifique se a estrutura da resposta é a esperada
