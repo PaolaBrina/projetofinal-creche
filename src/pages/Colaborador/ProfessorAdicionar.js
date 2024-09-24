@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView,Alert } from 'react-native';
 import { api } from '../../api/api';
 
 export default function ProfessorAdicionar({ closeModal }) {
@@ -38,13 +38,21 @@ export default function ProfessorAdicionar({ closeModal }) {
                 senha: 'a',
                 status: 1,
             };
-            const response = await api.post('/responsavel', newItem);
+            const response = await api.post('/professor', newItem);
             const data = response.data;
 
-            // Fecha o modal e envia a mensagem de sucesso para a página Home
-            closeModal('Professor adicionado com sucesso!');
+            Alert.alert('Cadastro Professor', 'Professor adicionado com sucesso!', [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => closeModal('Professor adicionado com sucesso!')
+            },
+                ]);
         } catch (error) {
             console.error('Erro ao adicionar professor:', error);
+            
             setFeedbackMessage('Erro ao adicionar o professor. Tente novamente.');
         }
     };

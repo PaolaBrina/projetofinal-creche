@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ProfessorAdicionar from './ProfessorAdicionar';
-import axios from 'axios';
+
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -26,15 +26,15 @@ export default function ProfessorCadastro() {
     const fetchProfessores = async () => {
         setLoading(true); // Inicia o carregamento
         try {
-            const response = await api.get('/responsavel'); // Usando localhost
+            const response = await api.get('/professor'); 
             console.log('Resposta completa:', response); // Log da resposta completa
             
             // Verifique se a estrutura da resposta é a esperada
             if (Array.isArray(response.data)) {
-                setProfessores(response.data); // Armazena os dados recebidos
-            } else if (response.data && response.data.professores) {
+                setProfessores(response.data.professor); // Armazena os dados recebidos
+            } else if (response.data && response.data.professor) {
                 // Se os dados estiverem dentro de um objeto
-                setProfessores(response.data.professores); // Ajuste conforme a estrutura
+                setProfessores(response.data.professor); // Ajuste conforme a estrutura
             } else {
                 console.error('Formato inesperado dos dados:', response.data);
                 Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
@@ -67,7 +67,7 @@ export default function ProfessorCadastro() {
                 professores.length > 0 ? (
                     <FlatList
                         data={professores}
-                        keyExtractor={(item) => item.id.toString()} // Supondo que o ID do professor está na chave 'id'
+                        keyExtractor={(item) => item.codigo.toString()} 
                         renderItem={({ item }) => (
                             <View style={styles.professorItem}>
                                 <Text style={styles.professorText}>Nome: {item.nome}</Text>
@@ -84,7 +84,7 @@ export default function ProfessorCadastro() {
                         )}
                     />
                 ) : (
-                    <Text>Nenhum professor encontrado.</Text>
+                   <Text></Text>
                 )
             )}
 
