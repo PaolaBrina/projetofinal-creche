@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView } from 'react-native';
 import { api } from '../../api/api';
 
-export default function ProfessorAdicionar({ closeModal }) {
+export default function ResponsavelAdicionar({ closeModal }) {
     const [newnome, setNewnome] = useState('');
     const [newcpf, setNewcpf] = useState('');
     const [newdatanascimento, setNewdatanascimento] = useState('');
@@ -10,16 +10,20 @@ export default function ProfessorAdicionar({ closeModal }) {
     const [newemail, setNewemail] = useState('');
     const [newendereco, setNewendereco] = useState('');
     const [newtelefone, setNewtelefone] = useState('');
+    const [newnomeautorizado1, setNewnomeautorizado1] = useState('');
+    const [newtelefoneautorizado1, setNewtelefoneautorizado1] = useState('');
+    const [newnomeautorizado2, setNewnomeautorizado2] = useState('');
+    const [newtelefoneautorizado2, setNewtelefoneautorizado2] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
 
     const validateFields = () => {
-        if (!newnome || !newcpf || !newdatanascimento || !newsexo || !newemail || !newendereco || !newtelefone) {
+        if (!newnome || !newcpf || !newdatanascimento || !newsexo || !newemail || !newendereco || !newtelefone || !newnomeautorizado1 || !newtelefoneautorizado1 || !newnomeautorizado2 || !newtelefoneautorizado2) {
             return false;
         }
         return true;
     };
 
-    const CadProfessor = async () => {
+    const CadResponsavel = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
             return;
@@ -36,6 +40,10 @@ export default function ProfessorAdicionar({ closeModal }) {
                 telefone: newtelefone,
                 login: 'a',
                 senha: 'a',
+                nomemeautorizado1: newnomeautorizado1,
+                telefoneautorizado1: newtelefoneautorizado1,
+                nomemeautorizado2: newnomeautorizado1,
+                telefoneautorizado2: newtelefoneautorizado2,
                 status: 1,
             };
             const response = await api.post('/responsavel', newItem);
@@ -120,7 +128,45 @@ export default function ProfessorAdicionar({ closeModal }) {
                         keyboardType="numeric"
                     />
                 </View>
-                <TouchableOpacity style={styles.btnLogin} onPress={CadProfessor}>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Nome Autorizado 1:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite o nome do autorizado 1"
+                        value={newnomeautorizado1}
+                        onChangeText={setNewnomeautorizado1}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Telefone Autorizado 1:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite o telefone do autorizado 1"
+                        value={newtelefoneautorizado1}
+                        onChangeText={setNewtelefoneautorizado1}
+                        keyboardType="numeric"
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Nome Autorizado 2:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite o nome do autorizado 2"
+                        value={newnomeautorizado2}
+                        onChangeText={setNewnomeautorizado2}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Telefone Autorizado 2:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite o telefone do autorizado 2"
+                        value={newtelefoneautorizado2}
+                        onChangeText={setNewtelefoneautorizado2}
+                        keyboardType="numeric"
+                    />
+                </View>
+                <TouchableOpacity style={styles.btnLogin} onPress={CadResponsavel}>
                     <Text style={styles.btnTxt}>Cadastrar</Text>
                 </TouchableOpacity>
             </View>
