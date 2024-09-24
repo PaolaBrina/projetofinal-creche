@@ -49,11 +49,10 @@ export default function ResponsavelAdicionar({ closeModal }) {
             const response = await api.post('/responsavel', newItem);
             const data = response.data;
 
-            // Fecha o modal e envia a mensagem de sucesso para a página Home
-            closeModal('Professor adicionado com sucesso!');
+            closeModal('Responsavel adicionado com sucesso!');
         } catch (error) {
-            console.error('Erro ao adicionar professor:', error);
-            setFeedbackMessage('Erro ao adicionar o professor. Tente novamente.');
+            console.error('Erro ao adicionar responsavel:', error);
+            setFeedbackMessage('Erro ao adicionar o responsavel. Tente novamente.');
         }
     };
 

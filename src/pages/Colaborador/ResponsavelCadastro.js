@@ -22,7 +22,7 @@ export default function ResponsavelCadastro({navigation}) {
         navigation.navigate('HomeColaborador');
     }
 
-    const fetchProfessores = async () => {
+    const fetchResponsaveis = async () => {
         setLoading(true);
         try {
             const response = await api.get('/responsavel');
@@ -30,8 +30,8 @@ export default function ResponsavelCadastro({navigation}) {
             
             if (Array.isArray(response.data)) {
                 setResponsavel(response.data);
-            } else if (response.data && response.data.responsaveis) {
-                setResponsavel(response.data.responsaveis); 
+            } else if (response.data && response.data.responsavel) {
+                setResponsavel(response.data.responsavel); 
             } else {
                 console.error('Formato inesperado dos dados:', response.data);
                 Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
@@ -51,11 +51,11 @@ export default function ResponsavelCadastro({navigation}) {
                         <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
-                        <Text style={styles.topBarTxt}>Cadastro Professor</Text>
+                        <Text style={styles.topBarTxt}>Cadastro Responsavel</Text>
                     </View>
 
-            <TouchableOpacity style={styles.button} onPress={fetchProfessores}>
-                <Text style={styles.buttonText}>Buscar Professores</Text>
+            <TouchableOpacity style={styles.button} onPress={fetchResponsaveis}>
+                <Text style={styles.buttonText}>Buscar Responsavel</Text>
             </TouchableOpacity>
 
             {loading ? (
@@ -64,24 +64,28 @@ export default function ResponsavelCadastro({navigation}) {
                 responsaveis.length > 0 ? (
                     <FlatList
                         data={responsaveis}
-                        keyExtractor={(item) => item.id.toString()}
+                        keyExtractor={(item) => item.codigo.toString()}
                         renderItem={({ item }) => (
-                            <View style={styles.professorItem}>
-                                <Text style={styles.professorText}>Nome: {item.nome}</Text>
-                                <Text style={styles.professorText}>CPF: {item.cpf}</Text>
-                                <Text style={styles.professorText}>Data de Nascimento: {item.datanascimento}</Text>
-                                <Text style={styles.professorText}>Sexo: {item.sexo}</Text>
-                                <Text style={styles.professorText}>Email: {item.email}</Text>
-                                <Text style={styles.professorText}>Endereço: {item.endereco}</Text>
-                                <Text style={styles.professorText}>Telefone: {item.telefone}</Text>
-                                <Text style={styles.professorText}>Login: {item.login}</Text>
-                                <Text style={styles.professorText}>Senha: {item.senha}</Text>
-                                <Text style={styles.professorText}>Status: {item.status}</Text>
+                            <View style={styles.responsavelItem}>
+                                <Text style={styles.responsavelText}>Nome: {item.nome}</Text>
+                                <Text style={styles.responsavelText}>CPF: {item.cpf}</Text>
+                                <Text style={styles.responsavelText}>Data de Nascimento: {item.datanascimento}</Text>
+                                <Text style={styles.responsavelText}>Sexo: {item.sexo}</Text>
+                                <Text style={styles.responsavelText}>Email: {item.email}</Text>
+                                <Text style={styles.responsavelText}>Endereço: {item.endereco}</Text>
+                                <Text style={styles.responsavelText}>Telefone: {item.telefone}</Text>
+                                <Text style={styles.responsavelText}>Login: {item.login}</Text>
+                                <Text style={styles.responsavelText}>Senha: {item.senha}</Text>
+                                <Text style={styles.responsavelText}>Nome Autorizado 1: {item.nomeautorizado1}</Text>
+                                <Text style={styles.responsavelText}>Telefone Autorizado 1: {item.telefoneautorizado1}</Text>
+                                <Text style={styles.responsavelText}>Nome Autorizado 2: {item.nomeautorizado2}</Text>
+                                <Text style={styles.responsavelText}>Telefone Autorizado 1: {item.telefoneautorizado2}</Text>
+                                <Text style={styles.responsavelText}>Status: {item.status}</Text>
                             </View>
                         )}
                     />
                 ) : (
-                    <Text>Nenhum professor encontrado.</Text>
+                    <Text>Nenhum responsavel encontrado.</Text>
                 )
             )}
 
@@ -143,14 +147,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    professorItem: {
+    responsavelItem: {
         padding: 15,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
         width: '100%',
     },
-    professorText: {
+    responsavelText: {
         fontSize: 16,
     },
     modalBackground: {
