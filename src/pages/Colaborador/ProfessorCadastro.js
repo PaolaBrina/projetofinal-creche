@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
 import ProfessorAdicionar from './ProfessorAdicionar';
-<<<<<<< HEAD
 
-=======
->>>>>>> a54adf2b25b7cdc7c4925ec6f42d155ad1cb5c11
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -22,18 +19,10 @@ export default function ProfessorCadastro({navigation}) {
         setModalVisible(false);
     };
 
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
-    }
-
     const fetchProfessores = async () => {
         setLoading(true); // Inicia o carregamento
         try {
-<<<<<<< HEAD
             const response = await api.get('/professor'); 
-=======
-            const response = await api.get('/professor'); // Usando localhost
->>>>>>> a54adf2b25b7cdc7c4925ec6f42d155ad1cb5c11
             console.log('Resposta completa:', response); // Log da resposta completa
             
             // Verifique se a estrutura da resposta é a esperada
@@ -58,7 +47,7 @@ export default function ProfessorCadastro({navigation}) {
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador')}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
                         <Text style={styles.topBarTxt}>Cadastro Professor</Text>

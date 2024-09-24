@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
-import axios from 'axios'; 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function TurmaCadastro({navigation}) {

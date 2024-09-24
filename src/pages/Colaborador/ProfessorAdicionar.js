@@ -52,7 +52,6 @@ export default function ProfessorAdicionar({ closeModal }) {
                 ]);
         } catch (error) {
             console.error('Erro ao adicionar professor:', error);
-            
             setFeedbackMessage('Erro ao adicionar o professor. Tente novamente.');
         }
     };
