@@ -1,126 +1,99 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
 import { api } from '../../api/api';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+import AlunoAdicionar from './AlunoAdicionar';
+
 import AntDesign from '@expo/vector-icons/AntDesign';
-import * as ImagePicker from 'expo-image-picker';
 
 export default function AlunoCadastro({navigation}) {
-    const [newcodresponsavel, setNewcodresponsavel] = useState('');
-    const [newnome, setNewnome] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState('');
-    const [newsexo, setNewsexo] = useState('');
-    const [newendereco, setNewendereco] = useState('');
-    const [newfoto, setNewfoto] = useState(''); // Alterado para ser um objeto de imagem
+    const [modalVisible, setModalVisible] = useState(false);
+    const [alunos, setAlunos] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
+    const openModal = () => {
+        setModalVisible(true);
     };
 
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setNewfoto(result.assets[0].uri); // Armazena a URI da imagem selecionada
-        }
+    const closeModal = () => {
+        setModalVisible(false);
     };
 
-    const CadProfessor = async () => {
+    const fetchAlunos = async () => {
+        setLoading(true); 
         try {
-            const newItem = {
-                codresponsavel: newcodresponsavel,
-                nome: newnome,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                endereco: newendereco,
-                foto: newfoto, 
-                status: 1
-            };
-            const response = await api.post('/aluno', newItem);
-            const data = response.data; 
-            console.log(data); 
+            const response = await api.get('/aluno'); 
+            console.log('Resposta completa:', response);
+            if (Array.isArray(response.data)) {
+                setAlunos(response.data.aluno); 
+            } else if (response.data && response.data.aluno) {
+                setAlunos(response.data.aluno); 
+            } else {
+                console.error('Formato inesperado dos dados:', response.data);
+                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
+            }
         } catch (error) {
-            console.error('Error fetching data:', error);
-        } 
+            console.error('Erro ao buscar alunos:', error);
+            Alert.alert('Erro', 'Erro ao buscar alunos, veja o console para mais detalhes.');
+        } finally {
+            setLoading(false); 
+        }
     };
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.topBar}>
-                    <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
-                        <AntDesign name="caretleft" size={30} color="white" />
-                    </TouchableOpacity>
-                    <Text style={styles.topBarTxt}>Cadastro Aluno</Text>
-                </View>
-                <View style={styles.form}>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Codigo Responsavel:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o codigo'
-                            value={newcodresponsavel}
-                            onChangeText={setNewcodresponsavel}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Nome:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o nome'
-                            value={newnome}
-                            onChangeText={setNewnome}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data de Nascimento:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite a data nascimento'
-                            value={newdatanascimento}
-                            onChangeText={setNewdatanascimento}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sexo:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o sexo'
-                            value={newsexo}
-                            onChangeText={setNewsexo}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Endereco:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o endereco'
-                            value={newendereco}
-                            onChangeText={setNewendereco}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Foto:</Text>
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                            <Text style={styles.imagePickerText}>Escolher Foto</Text>
+                    <View style={styles.topBar}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador')}>
+                            <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
-                        {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
+                        <Text style={styles.topBarTxt}>Cadastro Aluno</Text>
                     </View>
-                    <TouchableOpacity style={styles.btnLogin} onPress={CadProfessor}>
-                        <Text style={styles.btnTxt}>Cadastrar</Text>
-                    </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={fetchAlunos}>
+                <Text style={styles.buttonText}>Buscar Alunos</Text>
+            </TouchableOpacity>
+
+            {loading ? (
+                <Text>Carregando...</Text>
+            ) : (
+                alunos.length > 0 ? (
+                    <FlatList
+                        data={alunos}
+                        keyExtractor={(item) => item.codigo.toString()} 
+                        renderItem={({ item }) => (
+                            <View style={styles.alunoItem}>
+                                <Text style={styles.alunoText}>Nome: {item.nome}</Text>
+                                <Text style={styles.alunoText}>Data de Nascimento: {item.datanascimento}</Text>
+                                <Text style={styles.alunoText}>Sexo: {item.sexo}</Text>
+                                <Text style={styles.alunoText}>Endereço: {item.endereco}</Text>
+                                <Text style={styles.alunoText}>Status: {item.status}</Text>
+                            </View>
+                        )}
+                    />
+                ) : (
+                   <Text></Text>
+                )
+            )}
+
+            <TouchableOpacity style={styles.button} onPress={openModal}>
+                <Text style={styles.buttonText}>Adicionar Aluno</Text>
+            </TouchableOpacity>
+
+            <Modal
+                visible={modalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        <AlunoAdicionar closeModal={closeModal} />
+                    </View>
                 </View>
+            </Modal>
             </ScrollView>
         </KeyboardAvoidingView>
     );
@@ -129,10 +102,6 @@ export default function AlunoCadastro({navigation}) {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f5f5f5',
-    },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: 'center',
     },
     topBar: {
         flexDirection: 'row',
@@ -143,65 +112,55 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         paddingRight: 20,
         backgroundColor: '#283673',
-    },
+      },
     topBarTxt: {
         color: '#fff',
         fontSize: 18,         
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     btnseta: {
         width: 30,
         height: 30,
         justifyContent: 'center',
     },
-    form: {
+    button: {
+        backgroundColor: '#FFEF95',
+        padding: 15,
+        borderRadius: 10,
+        marginTop: 20,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    alunoItem: {
+        padding: 15,
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        width: '100%',
+    },
+    alunoText: {
+        fontSize: 16,
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '90%',
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 20,
     },
-    inputGroup: {
-        marginBottom: 15,
+    closeButton: {
+        alignSelf: 'flex-end',
+        padding: 5,
     },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    imagePicker: {
-        padding: 10,
-        backgroundColor: '#FFEF95',
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    imagePickerText: {
-        color: '#333',
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginTop: 10,
-    },
-    btnLogin: {
-        backgroundColor: "#FFEF95",
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    btnTxt: {
-        color: "#000",
-        fontSize: 16,
-        fontWeight: 'bold',
+    closeButtonText: {
+        fontSize: 18,
+        color: 'red',
     },
 });
