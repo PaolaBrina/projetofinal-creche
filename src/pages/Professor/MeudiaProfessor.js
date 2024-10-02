@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView,Platform  } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView,Platform,Alert  } from 'react-native';
 import { api } from '../../api/api';
 
 export default function MeudiaProfessor({navigation}) {
@@ -9,6 +9,7 @@ export default function MeudiaProfessor({navigation}) {
   const [newcodprofessor, setNewcodprofessor] =  useState('');
   const [newdatahora, setNewdatahora] =  useState(new Date());
   const [show, setShow] = useState(false);
+  const [mode, setMode] = useState('date'); // Define o modo atual (data ou hora)
   const [newrecado, setNewrecado] =  useState('');
   const [newxixi, setNewxixi] =  useState('');
   const [newcoco, setNewcoco] =  useState('');
@@ -22,11 +23,26 @@ export default function MeudiaProfessor({navigation}) {
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || new Date();
-    setShow(Platform.OS === 'ios');
-    setNewdatahora(currentDate);
+    setShow(false);
+
+    if (mode === 'date') {
+      // Se o modo é data, apenas atualiza a data
+      const tempDate = new Date(newdatahora);
+      tempDate.setFullYear(currentDate.getFullYear());
+      tempDate.setMonth(currentDate.getMonth());
+      tempDate.setDate(currentDate.getDate());
+      setNewdatahora(tempDate);
+    } else {
+      // Se o modo é hora, atualiza a hora
+      const tempDate = new Date(newdatahora);
+      tempDate.setHours(currentDate.getHours());
+      tempDate.setMinutes(currentDate.getMinutes());
+      setNewdatahora(tempDate);
+    }
   };
 
   const showMode = (currentMode) => {
+    setMode(currentMode);
     setShow(true);
   };
 
@@ -36,7 +52,7 @@ export default function MeudiaProfessor({navigation}) {
         codaluno: newcodaluno,
         codturma: newcodturma,
         codprofessor: newcodprofessor,
-        datahora: newdatahora,
+        datahora: newdatahora.toISOString().slice(0, 19).replace('T', ' '), // Formato para o banco de dados
         recado: newrecado,
         xixi: newxixi,
         coco: newcoco,
@@ -61,7 +77,7 @@ export default function MeudiaProfessor({navigation}) {
         codaluno: newcodaluno,
         codturma: newcodturma,
         codprofessor: newcodprofessor,
-        datahora: newdatahora,
+        datahora: newdatahora.toISOString().slice(0, 19).replace('T', ' '), // Formato para o banco de dados
         recado: newrecado,
         xixi: newxixi,
         coco: newcoco,
@@ -118,20 +134,28 @@ export default function MeudiaProfessor({navigation}) {
               value={newcodprofessor}
               onChangeText={setNewcodprofessor}
             />
-            <Text style={styles.inputext}>Data e Hora:</Text>
+             <Text style={styles.inputext}>Data e Hora:</Text>
             <TouchableOpacity onPress={() => showMode('date')}>
               <TextInput
                 style={styles.input}
-                placeholder='Escolha a data e hora'
-                value={newdatahora.toLocaleString()}
+                placeholder='Escolha a data'
+                value={newdatahora.toLocaleDateString()}
+                editable={false}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => showMode('time')}>
+              <TextInput
+                style={styles.input}
+                placeholder='Escolha a hora'
+                value={newdatahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 editable={false}
               />
             </TouchableOpacity>
             {show && (
               <DateTimePicker
-                testID="dateTimePicker"
+                testID="date-picker"
                 value={newdatahora}
-                mode={'datetime'}
+                mode={mode}
                 is24Hour={true}
                 display="default"
                 onChange={onChange}
