@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { api } from '../../api/api';
 
 export default function ResponsavelAdicionar({ closeModal }) {
@@ -49,7 +49,15 @@ export default function ResponsavelAdicionar({ closeModal }) {
             const response = await api.post('/responsavel', newItem);
             const data = response.data;
 
-            closeModal('Responsavel adicionado com sucesso!');
+            Alert.alert('Cadastro Responsavel', 'Responsavel adicionada com sucesso!', [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => closeModal('Responsavel adicionada com sucesso!')
+            },
+                ]);
         } catch (error) {
             console.error('Erro ao adicionar responsavel:', error);
             setFeedbackMessage('Erro ao adicionar o responsavel. Tente novamente.');
