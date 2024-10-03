@@ -3,6 +3,7 @@ import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image,
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { api } from '../../api/api';
 
+
 import * as ImagePicker from 'expo-image-picker';
 
 export default function AlunoAdicionar({ closeModal }) {
@@ -52,7 +53,7 @@ export default function AlunoAdicionar({ closeModal }) {
 
         if (selectedDate) {
             setDate(selectedDate);
-            setNewdatanascimento(moment(selectedDate).format('DD/MM/YYYY'));  // Formatando a data com moment
+            setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
             // Alternativamente, sem moment:
             // setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
         }
