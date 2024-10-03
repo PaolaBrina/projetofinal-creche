@@ -135,22 +135,22 @@ export default function MeudiaProfessor({navigation}) {
               onChangeText={setNewcodprofessor}
             />
              <Text style={styles.inputext}>Data e Hora:</Text>
-            <TouchableOpacity onPress={() => showMode('date')}>
+            
               <TextInput
                 style={styles.input}
                 placeholder='Escolha a data'
                 value={newdatahora.toLocaleDateString()}
                 editable={false}
               />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => showMode('time')}>
+            
+      
               <TextInput
                 style={styles.input}
                 placeholder='Escolha a hora'
                 value={newdatahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 editable={false}
               />
-            </TouchableOpacity>
+            
             {show && (
               <DateTimePicker
                 testID="date-picker"

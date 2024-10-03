@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert,Platform  } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { api } from '../../api/api';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -12,6 +13,9 @@ export default function AlunoAdicionar({ closeModal }) {
     const [newendereco, setNewendereco] = useState('');
     const [newfoto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [show, setShow] = useState(false);
+    const [date, setDate] = useState(new Date());
+
 
     const validateFields = () => {
         if (!newcodresponsavel || !newnome || !newdatanascimento || !newsexo || !newendereco || !newfoto) {
@@ -40,6 +44,24 @@ export default function AlunoAdicionar({ closeModal }) {
         }
     };
 
+
+    const onChange = (event, selectedDate) => {
+        if (Platform.OS === 'android') {
+            setShow(false); // Para Android, esconder o picker após a seleção
+        }
+
+        if (selectedDate) {
+            setDate(selectedDate);
+            setNewdatanascimento(moment(selectedDate).format('DD/MM/YYYY'));  // Formatando a data com moment
+            // Alternativamente, sem moment:
+            // setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
+        }
+    };
+
+    const showDatePicker = () => {
+        setShow(true);
+    };
+    
     const CadAluno = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
@@ -100,13 +122,25 @@ export default function AlunoAdicionar({ closeModal }) {
                     </View>
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Data de Nascimento:</Text>
+                        <TouchableOpacity onPress={showDatePicker}>
                         <TextInput
                             style={styles.input}
-                            placeholder='Digite a data nascimento'
+                            placeholder='Escolha a data'
                             value={newdatanascimento}
                             onChangeText={setNewdatanascimento}
+                            editable={false} // Desativar a edição manual
                         />
-                    </View>
+                        </TouchableOpacity>
+                        {show && (
+                        <DateTimePicker
+                            value={date}
+                            mode="date"
+                            display="default"
+                            onChange={onChange}
+                            maximumDate={new Date()}  // Impede a seleção de uma data futura
+                        />
+                    )}
+                    </View>                    
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Sexo:</Text>
                         <TextInput
