@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { api } from '../../api/api';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function ResponsavelAdicionar({ closeModal }) {
     const [newnome, setNewnome] = useState('');
@@ -15,12 +16,29 @@ export default function ResponsavelAdicionar({ closeModal }) {
     const [newnomeautorizado2, setNewnomeautorizado2] = useState('');
     const [newtelefoneautorizado2, setNewtelefoneautorizado2] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [show, setShow] = useState(false);
+    const [date, setDate] = useState(new Date());
 
     const validateFields = () => {
         if (!newnome || !newcpf || !newdatanascimento || !newsexo || !newemail || !newendereco || !newtelefone || !newnomeautorizado1 || !newtelefoneautorizado1 || !newnomeautorizado2 || !newtelefoneautorizado2) {
             return false;
         }
         return true;
+    };
+
+    const onChange = (event, selectedDate) => {
+        if (Platform.OS === 'android') {
+            setShow(false); // Para Android, esconder o picker após a seleção
+        }
+
+        if (selectedDate) {
+            setDate(selectedDate);
+            setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
+        }
+    };
+
+    const showDatePicker = () => {
+        setShow(true);
     };
 
     const CadResponsavel = async () => {
@@ -90,14 +108,26 @@ export default function ResponsavelAdicionar({ closeModal }) {
                     />
                 </View>
                 <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Data de Nascimento:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite a data de nascimento"
-                        value={newdatanascimento}
-                        onChangeText={setNewdatanascimento}
-                    />
-                </View>
+                        <Text style={styles.label}>Data de Nascimento:</Text>
+                        <TouchableOpacity onPress={showDatePicker}>
+                        <TextInput
+                            style={styles.input}
+                            placeholder='Escolha a data'
+                            value={newdatanascimento}
+                            onChangeText={setNewdatanascimento}
+                            editable={false} // Desativar a edição manual
+                        />
+                        </TouchableOpacity>
+                        {show && (
+                        <DateTimePicker
+                            value={date}
+                            mode="date"
+                            display="default"
+                            onChange={onChange}
+                            maximumDate={new Date()}  // Impede a seleção de uma data futura
+                        />
+                    )}
+                    </View> 
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
                     <TextInput

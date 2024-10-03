@@ -54,8 +54,6 @@ export default function AlunoAdicionar({ closeModal }) {
         if (selectedDate) {
             setDate(selectedDate);
             setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
-            // Alternativamente, sem moment:
-            // setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
         }
     };
 
