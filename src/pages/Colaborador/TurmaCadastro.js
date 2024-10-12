@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView,viewbutton } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView ,viewbutton } from 'react-native';
 import TurmaAdicionar from './TurmaAdicionar';
-
+import ProfTurmaCadastro from './ProfTurmaCadastro';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -10,14 +10,24 @@ export default function ProfessorCadastro({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [turmas, setTurmas] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [modalContent, setModalContent] = useState(null); // 'turma' ou 'profTurma'
 
-    const openModal = () => {
-        setModalVisible(true);
-    };
 
     const closeModal = () => {
         setModalVisible(false);
+        setModalContent(null);
     };
+
+    const openTurmaModal = () => {
+        setModalContent('turma');
+        setModalVisible(true);
+    };
+    
+    const openProfTurmaModal = () => {
+        setModalContent('profTurma');
+        setModalVisible(true);
+    };
+    
 
     const fetchTurmas = async () => {
         setLoading(true);
@@ -49,15 +59,20 @@ export default function ProfessorCadastro({navigation}) {
                         <Text style={styles.topBarTxt}>Cadastro Turma</Text>
                     </View>
 
-            <View style={viewbutton}>
-                <TouchableOpacity style={styles.button} onPress={fetchTurmas}>
-                    <Text style={styles.buttonText}>Buscar Turmas</Text>
-                </TouchableOpacity>
+                    <View style={styles.viewbutton}>
+                    <TouchableOpacity style={styles.button} onPress={fetchTurmas}>
+                        <Text style={styles.buttonText}>Buscar Turmas</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={openModal}>
-                    <Text style={styles.buttonText}>Adicionar Turma</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={styles.button} onPress={openTurmaModal}>
+                        <Text style={styles.buttonText}>Adicionar Turma</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={openProfTurmaModal}>
+                        <Text style={styles.buttonText}>Adicionar Professor Turma</Text>
+                    </TouchableOpacity>
+                </View>
+
 
             {loading ? (
                 <Text>Carregando...</Text>
@@ -92,10 +107,12 @@ export default function ProfessorCadastro({navigation}) {
                         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
-                        <TurmaAdicionar closeModal={closeModal} />
+                        {modalContent === 'turma' && <TurmaAdicionar closeModal={closeModal} />}
+                        {modalContent === 'profTurma' && <ProfTurmaCadastro closeModal={closeModal} />}
                     </View>
                 </View>
             </Modal>
+
         </KeyboardAvoidingView>
     );
 }
@@ -125,7 +142,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     viewbutton: {
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        marginTop: 20,
+        paddingHorizontal: 20,
     },
     button: {
         backgroundColor: '#FFEF95',
