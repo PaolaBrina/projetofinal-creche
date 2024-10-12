@@ -11,6 +11,7 @@ from routes.chamadaRoutes import chamada
 from routes.informacoesadicionaisRoutes import informacoesadicionais
 from routes.colaboradorRoutes import colaborador
 from routes.professorRoutes import professor
+from routes.professorturmaRoutes import professorturma
 from routes.meudiamanhaRoutes import meudiamanha
 from routes.meudiatardeRoutes import meudiatarde
 from routes.loginRoutes import login
@@ -30,6 +31,7 @@ def default_routes(app):
     informacoesadicionais(app)
     colaborador(app)
     professor(app)
+    professorturma(app)
     meudiamanha(app)
     meudiatarde(app)
     login(app)
