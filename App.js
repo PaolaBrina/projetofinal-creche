@@ -23,6 +23,8 @@ import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
   
 export default function App(){
 
+ 
+
   const Stack = createStackNavigator();
 
   return(

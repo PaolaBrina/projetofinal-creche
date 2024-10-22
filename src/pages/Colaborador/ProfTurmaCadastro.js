@@ -1,12 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { api } from '../../api/api';
+import { Dropdown } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 
 export default function ProfTurmaCadastro({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
     const [newcodprofessor, setNewcodprofessor] = useState('');
     const [newcodauxiliar, setNewcodauxiliar] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+    const [data, setData] = useState([{
+        label: "",
+        value: ""
+    }])
+
+    async function fetchTurma(){
+        try {
+            const response = await api.get('/turma')
+            const formattedData = response.data.map(item => ({
+                label: item.nome,  
+                value: item.codigo.toString() 
+            }));
+            setData(formattedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchTurma()
+    },[])
 
     const validateFields = () => {
         if (!newcodturma || !newcodprofessor || !newcodauxiliar) {
@@ -28,7 +54,7 @@ export default function ProfTurmaCadastro({ closeModal }) {
                 codauxiliar: newcodauxiliar,
             };
             const response = await api.post('/professorturma', newItem);
-            const data = response.data;
+            //const data = response.data;
 
             Alert.alert('Cadastro ProfTurma', 'ProfTurma adicionada com sucesso!', [
                 {
@@ -45,7 +71,16 @@ export default function ProfTurmaCadastro({ closeModal }) {
         }
     };
 
-
+    const renderLabel = () => {
+        if (value || isFocus) {
+          return (
+            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+              Dropdown label
+            </Text>
+          );
+        }
+        return null;
+      };
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.form}>
@@ -54,6 +89,38 @@ export default function ProfTurmaCadastro({ closeModal }) {
                         <Text style={styles.feedbackText}>{feedbackMessage}</Text>
                     )}
                     <Text style={styles.label}>Codigo da turma:</Text>
+                  <View style={styles.container}>
+        {renderLabel()}
+        <Dropdown
+          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={data}
+          search
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder={!isFocus ? 'Select item' : '...'}
+          searchPlaceholder="Search..."
+          value={value}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+          onChange={item => {
+            setValue(item.value);
+            setIsFocus(false);
+          }}
+          renderLeftIcon={() => (
+            <AntDesign
+              style={styles.icon}
+              color={isFocus ? 'blue' : 'black'}
+              name="Safety"
+              size={20}
+            />
+          )}
+        />
+      </View> 
                     <TextInput
                         style={styles.input}
                         placeholder="Digite o codigo da turma"
@@ -134,4 +201,18 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 16,
     },
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+      },
+      dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+      },
+      icon: {
+        marginRight: 5,
+      },
 });

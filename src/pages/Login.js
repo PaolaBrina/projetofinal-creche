@@ -34,7 +34,7 @@ export default function Login({ navigation }) {
       }
     } catch (error) {
       console.log(error);
-      //Alert.alert('Erro', 'Erro ao verificar telefone.');
+      Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };
 

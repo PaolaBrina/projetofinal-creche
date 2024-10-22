@@ -1,35 +1,26 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert,Platform  } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { api } from '../../api/api';
-
-
-
 import * as ImagePicker from 'expo-image-picker';
 
 export default function AlunoAdicionar({ closeModal }) {
     const [newcodresponsavel, setNewcodresponsavel] = useState('');
     const [newnome, setNewnome] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState('');
+    const [newdatanascimento, setNewdatanascimento] = useState(new Date());
     const [newsexo, setNewsexo] = useState('');
     const [newendereco, setNewendereco] = useState('');
     const [newfoto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const [show, setShow] = useState(false);
-    const [date, setDate] = useState(new Date());
-
 
     const validateFields = () => {
-        if (!newcodresponsavel || !newnome || !newdatanascimento || !newsexo || !newendereco || !newfoto) {
-            return false;
-        }
-        return true;
+        return newcodresponsavel && newnome && newdatanascimento && newsexo && newendereco && newfoto;
     };
 
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
+        if (!permissionResult.granted) {
             alert('Permission to access camera roll is required!');
             return;
         }
@@ -46,22 +37,16 @@ export default function AlunoAdicionar({ closeModal }) {
         }
     };
 
-
-    const onChange = (event, selectedDate) => {
-        if (Platform.OS === 'android') {
-            setShow(false); // Para Android, esconder o picker após a seleção
-        }
-
-        if (selectedDate) {
-            setDate(selectedDate);
-            setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
+    const onChangeDate = (event, selectedDate) => {
+        if (event.type === 'set' && selectedDate) {
+            setNewdatanascimento(selectedDate);
         }
     };
 
     const showDatePicker = () => {
         setShow(true);
     };
-    
+
     const CadAluno = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
@@ -71,105 +56,105 @@ export default function AlunoAdicionar({ closeModal }) {
             const newItem = {
                 codresponsavel: newcodresponsavel,
                 nome: newnome,
-                datanascimento: newdatanascimento,
+                datanascimento: newdatanascimento.toLocaleDateString('pt-BR'),
                 sexo: newsexo,
                 endereco: newendereco,
-                foto: newfoto, 
+                foto: newfoto,
                 status: 1
             };
-            const response = await api.post('/aluno', newItem);
-            const data = response.data;
-
+            await api.post('/aluno', newItem);
             Alert.alert('Cadastro Aluno', 'Aluno adicionado com sucesso!', [
                 {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
-                {text: 'OK', onPress: () => closeModal('Aluno adicionado com sucesso!')
-            },
-                ]);
+                {
+                    text: 'OK',
+                    onPress: () => closeModal('Aluno adicionado com sucesso!')
+                },
+            ]);
         } catch (error) {
             console.error('Erro ao adicionar aluno:', error);
             setFeedbackMessage('Erro ao adicionar o aluno. Tente novamente.');
         }
     };
-    
 
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.form}>
+                {feedbackMessage !== '' && (
+                    <Text style={styles.feedbackText}>{feedbackMessage}</Text>
+                )}
                 <View style={styles.inputGroup}>
-                    {feedbackMessage !== '' && (
-                        <Text style={styles.feedbackText}>{feedbackMessage}</Text>
-                    )}
-                        <Text style={styles.label}>Codigo Responsavel:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o codigo do responsavel'
-                            value={newcodresponsavel}
-                            onChangeText={setNewcodresponsavel}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Nome:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o nome'
-                            value={newnome}
-                            onChangeText={setNewnome}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data de Nascimento:</Text>
-                        <TouchableOpacity onPress={showDatePicker}>
+                    <Text style={styles.label}>Codigo Responsavel:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Digite o codigo do responsavel'
+                        value={newcodresponsavel}
+                        onChangeText={setNewcodresponsavel}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Nome:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Digite o nome'
+                        value={newnome}
+                        onChangeText={setNewnome}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Data de Nascimento:</Text>
+                 {/*    <TouchableOpacity onPress={showDatePicker}>
                         <TextInput
                             style={styles.input}
                             placeholder='Escolha a data'
-                            value={newdatanascimento}
-                            onChangeText={setNewdatanascimento}
+                            value={newdatanascimento.toLocaleDateString('pt-BR')}
                             editable={false} // Desativar a edição manual
                         />
-                        </TouchableOpacity>
-                        {show && (
-                        <DateTimePicker
-                            value={date}
-                            mode="date"
-                            display="default"
-                            onChange={onChange}
-                            maximumDate={new Date()}  // Impede a seleção de uma data futura
-                        />
-                    )}
-                    </View>                    
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sexo:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o sexo'
-                            value={newsexo}
-                            onChangeText={setNewsexo}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Endereco:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o endereco'
-                            value={newendereco}
-                            onChangeText={setNewendereco}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Foto:</Text>
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                            <Text style={styles.imagePickerText}>Escolher Foto</Text>
-                        </TouchableOpacity>
-                        {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
-                    </View>
-                    <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
-                        <Text style={styles.btnTxt}>Cadastrar</Text>
                     </TouchableOpacity>
+                    {show && ( */}
+                        <DateTimePicker
+                            style={styles.aaa}
+                            value={newdatanascimento}
+                            mode="date"
+                            is24Hour={true}
+                            display="calendar"
+                            onChange={onChangeDate}
+                            maximumDate={new Date()} // Impede a seleção de uma data futura
+                        />
+                    {/* )} */}
                 </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Sexo:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Digite o sexo'
+                        value={newsexo}
+                        onChangeText={setNewsexo}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Endereco:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Digite o endereco'
+                        value={newendereco}
+                        onChangeText={setNewendereco}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Foto:</Text>
+                    <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                        <Text style={styles.imagePickerText}>Escolher Foto</Text>
+                    </TouchableOpacity>
+                    {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
+                </View>
+                <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
+                    <Text style={styles.btnTxt}>Cadastrar</Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     );
 }
@@ -221,6 +206,14 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 16,
     },
+    aaa: {
+        width: 270,
+        height: 40,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10
+    }
 });
 
 /* 
