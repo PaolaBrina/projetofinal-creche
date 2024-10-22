@@ -37,7 +37,7 @@ export default function HorarioCadastro({navigation}) {
             console.error('Erro ao buscar horarios:', error);
             Alert.alert('Erro', 'Erro ao buscar horarios, veja o console para mais detalhes.');
         } finally {
-            setLoading(false); // Finaliza o carregamento
+            setLoading(false); 
         }
     };
 
@@ -69,11 +69,15 @@ export default function HorarioCadastro({navigation}) {
                         <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador')}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
-                        <Text style={styles.topBarTxt}>Cadastro Professor</Text>
+                        <Text style={styles.topBarTxt}>Cadastro Horário</Text>
                     </View>
-
+            
             <TouchableOpacity style={styles.button} onPress={fetchHorarios}>
-                <Text style={styles.buttonText}>Buscar horarios</Text>
+                <Text style={styles.buttonText}>Buscar Horários</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={openModal}>
+                <Text style={styles.buttonText}>Adicionar Horário</Text>
             </TouchableOpacity>
 
             {loading ? (
@@ -103,9 +107,6 @@ export default function HorarioCadastro({navigation}) {
                 )
             )}
 
-            <TouchableOpacity style={styles.button} onPress={openModal}>
-                <Text style={styles.buttonText}>Adicionar Professor</Text>
-            </TouchableOpacity>
 
             <Modal
                 visible={modalVisible}
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         padding: 10,
-        paddingTop: 50,
+        paddingTop: 60,
         paddingLeft: 30,
         paddingRight: 20,
         backgroundColor: '#283673',
