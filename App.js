@@ -30,7 +30,7 @@ export default function App(){
         <Stack.Navigator>
           <Stack.Screen options={{headerShown:false}} name='Login' component={Login}/>
           <Stack.Screen options={{headerShown:false}} name='HomeSelecao' component={HomeSelecao}/> 
-          <Stack.Screen name='HomeColaborador' component={HomeColaborador}/> 
+          <Stack.Screen options={{headerShown:false}} name='HomeColaborador' component={HomeColaborador}/> 
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoAdicionar' component={AlunoAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='ProfessorCadastro' component={ProfessorCadastro}/>
@@ -38,10 +38,10 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='ResponsavelCadastro' component={ResponsavelCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='TurmaCadastro' component={TurmaCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='TurmaAdicionar' component={TurmaAdicionar}/>
-          <Stack.Screen name='HomeProfessor' component={HomeProfessor}/>
-          <Stack.Screen name='MeudiaProfessor' component={MeudiaProfessor}/>
-          <Stack.Screen name='HomeResponsavel' component={HomeResponsavel}/>
-          <Stack.Screen name='MeudiaResponsavel' component={MeudiaResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={HomeProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={HomeResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
         </Stack.Navigator>
     </NavigationContainer>
   );

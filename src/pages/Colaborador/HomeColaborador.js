@@ -62,6 +62,7 @@ export default function HomeColaborador({navigation}) {
       alignItems: 'center',
       width: '100%',
       padding: 10,
+      paddingTop: 50,
       backgroundColor: '#283673',
     },
     profilePic: {

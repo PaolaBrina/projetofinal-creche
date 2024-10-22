@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     width: '100%',
     padding: 10,
+    paddingTop: 50,
     paddingLeft: 30,
     backgroundColor: '#283673'
   },

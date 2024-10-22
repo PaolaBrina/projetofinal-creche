@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
-import ResponsavelAdicionar from './ResponsavelAdicionar';
+import HorarioAdicionar from './HorarioAdicionar';
+
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function ResponsavelCadastro({navigation}) {
+export default function HorarioCadastro({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [responsaveis, setResponsavel] = useState([]);
+    const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const openModal = () => {
@@ -18,79 +19,92 @@ export default function ResponsavelCadastro({navigation}) {
         setModalVisible(false);
     };
 
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
-    }
-
-    const fetchResponsaveis = async () => {
-        setLoading(true);
+    const fetchHorarios = async () => {
+        setLoading(true); 
         try {
-            const response = await api.get('/responsavel');
+            const response = await api.get('/horario'); 
             console.log('Resposta completa:', response); 
             
             if (Array.isArray(response.data)) {
-                setResponsavel(response.data);
-            } else if (response.data && response.data.responsavel) {
-                setResponsavel(response.data.responsavel); 
+                setHorarios(response.data.horario); 
+            } else if (response.data && response.data.horario) {
+                setHorarios(response.data.horario); 
             } else {
                 console.error('Formato inesperado dos dados:', response.data);
                 Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
             }
         } catch (error) {
-            console.error('Erro ao buscar responsaveis:', error);
-            Alert.alert('Erro', 'Erro ao buscar responsaveis, veja o console para mais detalhes.');
+            console.error('Erro ao buscar horarios:', error);
+            Alert.alert('Erro', 'Erro ao buscar horarios, veja o console para mais detalhes.');
         } finally {
-            setLoading(false); 
+            setLoading(false); // Finaliza o carregamento
         }
     };
+
+    const pickImage = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert('Permission to access camera roll is required!');
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setNewfoto(result.assets[0].uri);
+        }
+    };
+
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador')}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
-                        <Text style={styles.topBarTxt}>Cadastro Responsavel</Text>
+                        <Text style={styles.topBarTxt}>Cadastro Professor</Text>
                     </View>
 
-            <TouchableOpacity style={styles.button} onPress={fetchResponsaveis}>
-                <Text style={styles.buttonText}>Buscar Responsavel</Text>
+            <TouchableOpacity style={styles.button} onPress={fetchHorarios}>
+                <Text style={styles.buttonText}>Buscar horarios</Text>
             </TouchableOpacity>
 
             {loading ? (
                 <Text>Carregando...</Text>
             ) : (
-                responsaveis.length > 0 ? (
+                horarios.length > 0 ? (
                     <FlatList
-                        data={responsaveis}
-                        keyExtractor={(item) => item.codigo.toString()}
+                        data={horarios}
+                        keyExtractor={(item) => item.codigo.toString()} 
                         renderItem={({ item }) => (
-                            <View style={styles.responsavelItem}>
-                                <Text style={styles.responsavelText}>Nome: {item.nome}</Text>
-                                <Text style={styles.responsavelText}>CPF: {item.cpf}</Text>
-                                <Text style={styles.responsavelText}>Data de Nascimento: {item.datanascimento}</Text>
-                                <Text style={styles.responsavelText}>Sexo: {item.sexo}</Text>
-                                <Text style={styles.responsavelText}>Email: {item.email}</Text>
-                                <Text style={styles.responsavelText}>Endereço: {item.endereco}</Text>
-                                <Text style={styles.responsavelText}>Telefone: {item.telefone}</Text>
-                                <Text style={styles.responsavelText}>Login: {item.login}</Text>
-                                <Text style={styles.responsavelText}>Senha: {item.senha}</Text>
-                                <Text style={styles.responsavelText}>Nome Autorizado 1: {item.nomeautorizado1}</Text>
-                                <Text style={styles.responsavelText}>Telefone Autorizado 1: {item.telefoneautorizado1}</Text>
-                                <Text style={styles.responsavelText}>Nome Autorizado 2: {item.nomeautorizado2}</Text>
-                                <Text style={styles.responsavelText}>Telefone Autorizado 1: {item.telefoneautorizado2}</Text>
-                                <Text style={styles.responsavelText}>Status: {item.status}</Text>
+                            <View style={styles.professorItem}>
+                                <Text style={styles.professorText}>Nome: {item.nome}</Text>
+                                <Text style={styles.professorText}>CPF: {item.cpf}</Text>
+                                <Text style={styles.professorText}>Data de Nascimento: {item.datanascimento}</Text>
+                                <Text style={styles.professorText}>Sexo: {item.sexo}</Text>
+                                <Text style={styles.professorText}>Email: {item.email}</Text>
+                                <Text style={styles.professorText}>Endereço: {item.endereco}</Text>
+                                <Text style={styles.professorText}>Telefone: {item.telefone}</Text>
+                                <Text style={styles.professorText}>Login: {item.login}</Text>
+                                <Text style={styles.professorText}>Senha: {item.senha}</Text>
+                                <Text style={styles.professorText}>Status: {item.status}</Text>
                             </View>
                         )}
                     />
                 ) : (
-                    <Text>Nenhum responsavel encontrado.</Text>
+                   <Text></Text>
                 )
             )}
 
             <TouchableOpacity style={styles.button} onPress={openModal}>
-                <Text style={styles.buttonText}>Adicionar Responsavel</Text>
+                <Text style={styles.buttonText}>Adicionar Professor</Text>
             </TouchableOpacity>
 
             <Modal
@@ -104,7 +118,7 @@ export default function ResponsavelCadastro({navigation}) {
                         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
-                        <ResponsavelAdicionar closeModal={closeModal} />
+                        <HorarioAdicionar closeModal={closeModal} />
                     </View>
                 </View>
             </Modal>
@@ -148,14 +162,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    responsavelItem: {
+    professorItem: {
         padding: 15,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
         width: '100%',
     },
-    responsavelText: {
+    professorText: {
         fontSize: 16,
     },
     modalBackground: {
