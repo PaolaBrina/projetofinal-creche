@@ -21,7 +21,8 @@ def turmaController():
             try:
                 data = turma.query.all()
                 new = {'turma': [turma.to_dict() for turma in data]}
-                return new, 200
+                aaa = [turma.to_dict() for turma in data]
+                return aaa, 200
 
             except Exception as e:
                 return 'nao foi possivel buscar turma. {}'.format(str(e)), 404
