@@ -64,7 +64,7 @@ export default function HomeProfessor({navigation}) {
       alignItems: 'center',
       width: '100%',
       padding: 10,
-      paddingTop: 50,
+      paddingTop: 60,
       backgroundColor: '#283673',
     },
     profilePic: {
