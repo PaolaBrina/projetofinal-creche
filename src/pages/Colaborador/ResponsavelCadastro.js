@@ -54,9 +54,16 @@ export default function ResponsavelCadastro({navigation}) {
                         <Text style={styles.topBarTxt}>Cadastro Responsavel</Text>
                     </View>
 
+            <View style={styles.viewbutton}>
+
             <TouchableOpacity style={styles.button} onPress={fetchResponsaveis}>
                 <Text style={styles.buttonText}>Buscar Responsavel</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={openModal}>
+                <Text style={styles.buttonText}>Adicionar Responsavel</Text>
+            </TouchableOpacity>
+            </View>
 
             {loading ? (
                 <Text>Carregando...</Text>
@@ -88,10 +95,6 @@ export default function ResponsavelCadastro({navigation}) {
                     <Text>Nenhum responsavel encontrado.</Text>
                 )
             )}
-
-            <TouchableOpacity style={styles.button} onPress={openModal}>
-                <Text style={styles.buttonText}>Adicionar Responsavel</Text>
-            </TouchableOpacity>
 
             <Modal
                 visible={modalVisible}
@@ -147,6 +150,11 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    viewbutton: {
+        justifyContent: 'space-around',
+        marginTop: 20,
+        paddingHorizontal: 20,
     },
     responsavelItem: {
         padding: 15,

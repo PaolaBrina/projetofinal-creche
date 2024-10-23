@@ -72,6 +72,7 @@ export default function HorarioCadastro({navigation}) {
                         <Text style={styles.topBarTxt}>Cadastro Horário</Text>
                     </View>
             
+            <View style={styles.viewbutton}>
             <TouchableOpacity style={styles.button} onPress={fetchHorarios}>
                 <Text style={styles.buttonText}>Buscar Horários</Text>
             </TouchableOpacity>
@@ -79,6 +80,7 @@ export default function HorarioCadastro({navigation}) {
             <TouchableOpacity style={styles.button} onPress={openModal}>
                 <Text style={styles.buttonText}>Adicionar Horário</Text>
             </TouchableOpacity>
+            </View>
 
             {loading ? (
                 <Text>Carregando...</Text>
@@ -162,6 +164,11 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    viewbutton: {
+        justifyContent: 'space-around',
+        marginTop: 20,
+        paddingHorizontal: 20,
     },
     professorItem: {
         padding: 15,
