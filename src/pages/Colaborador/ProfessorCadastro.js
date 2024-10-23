@@ -53,9 +53,15 @@ export default function ProfessorCadastro({navigation}) {
                         <Text style={styles.topBarTxt}>Cadastro Professor</Text>
                     </View>
 
+            <View style={styles.viewbutton}>
             <TouchableOpacity style={styles.button} onPress={fetchProfessores}>
                 <Text style={styles.buttonText}>Buscar Professores</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={openModal}>
+                <Text style={styles.buttonText}>Adicionar Professor</Text>
+            </TouchableOpacity>
+            </View>
 
             {loading ? (
                 <Text>Carregando...</Text>
@@ -83,10 +89,6 @@ export default function ProfessorCadastro({navigation}) {
                    <Text></Text>
                 )
             )}
-
-            <TouchableOpacity style={styles.button} onPress={openModal}>
-                <Text style={styles.buttonText}>Adicionar Professor</Text>
-            </TouchableOpacity>
 
             <Modal
                 visible={modalVisible}
@@ -142,6 +144,11 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    viewbutton: {
+        justifyContent: 'space-around',
+        marginTop: 20,
+        paddingHorizontal: 20,
     },
     professorItem: {
         padding: 15,

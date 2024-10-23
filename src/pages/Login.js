@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
   topoTxt: {
     color: "#fff",
     fontSize: 25,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   viewTxt: {
-    height: 150,
+    height: 160,
     width: "70%",
     alignContent: 'center',
     fontWeight: 'bold',
