@@ -1,184 +1,295 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { api } from '../../api/api';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
-import ProfessorAdicionar from './ProfessorAdicionar';
-
-
+import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function ProfessorCadastro({navigation}) {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [professores, setProfessores] = useState([]);
-    const [loading, setLoading] = useState(false);
 
-    const openModal = () => {
-        setModalVisible(true);
-    };
+export default function ProfTurmaCadastro({ closeModal }) {
+    const [newcodturma, setNewcodturma] = useState('');
+    const [newcodprofessor, setNewcodprofessor] = useState('');
+    const [newcodauxiliar, setNewcodauxiliar] = useState('');
+    const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+    const [dataturma, setDataturma] = useState([{label: "",value: ""}])
+    const [dataprofessor, setDataprofessor] = useState([{label: "",value: ""}])
+    const [datauxiliar, setDatauxiliar] = useState([{label: "",value: ""}])
 
-    const closeModal = () => {
-        setModalVisible(false);
-    };
-
-    const fetchProfessores = async () => {
-        setLoading(true); // Inicia o carregamento
+    async function fetchTurma(){
         try {
-            const response = await api.get('/professor'); 
-            console.log('Resposta completa:', response); // Log da resposta completa
-            
-            // Verifique se a estrutura da resposta é a esperada
-            if (Array.isArray(response.data)) {
-                setProfessores(response.data.professor); // Armazena os dados recebidos
-            } else if (response.data && response.data.professor) {
-                // Se os dados estiverem dentro de um objeto
-                setProfessores(response.data.professor); // Ajuste conforme a estrutura
-            } else {
-                console.error('Formato inesperado dos dados:', response.data);
-                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
-            }
+            const response = await api.get('/turma')
+            console.log(response)
+            const formattedData = response.data.map(item => ({
+                label: item.nome,  
+                value: item.codigo.toString() 
+            }));
+            setDataturma(formattedData)
         } catch (error) {
-            console.error('Erro ao buscar professores:', error);
-            Alert.alert('Erro', 'Erro ao buscar professores, veja o console para mais detalhes.');
-        } finally {
-            setLoading(false); // Finaliza o carregamento
+            console.log(error)
+        }
+    }
+
+    async function fetchProfessor(){
+        try {
+            const response = await api.get('/professor')
+            console.log("Professor: ", response.dataprofessor)
+            const formattedData = response.data.professor.map(item => ({
+                label: item.nome,  
+                value: item.codigo.toString() 
+            }));
+            setDataprofessor(formattedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function fetchAuxiliar(){
+        try {
+            const response = await api.get('/auxiliar')
+            console.log("Auxiliar: ", response.datauxiliar)
+            const formattedData = response.data.auxiliar.map(item => ({
+                label: item.nome,  
+
+                value: item.codigo.toString() 
+            }));
+            setDatauxiliar(formattedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchTurma()
+        fetchProfessor()
+        fetchAuxiliar()
+    },[])
+
+    const validateFields = () => {
+        if (!newcodturma || !newcodprofessor || !newcodauxiliar) {
+            return false;
+        }
+        return true;
+    };
+
+    const CadProfTurma = async () => {
+        if (!validateFields()) {
+            setFeedbackMessage('Por favor, preencha todos os campos.');
+            return;
+        }
+
+        try {
+            const newItem = {
+                codturma: newcodturma,
+                codprofessor: newcodprofessor,
+                codauxiliar: newcodauxiliar,
+            };
+            const response = await api.post('/professorturma', newItem);
+            //const data = response.data;
+
+            Alert.alert('Cadastro ProfTurma', 'ProfTurma adicionada com sucesso!', [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {text: 'OK', onPress: () => closeModal('ProfTurma adicionada com sucesso!')
+            },
+                ]);
+        } catch (error) {
+            console.error('Erro ao adicionar profturma:', error);
+            setFeedbackMessage('Erro ao adicionar o profturma. Tente novamente.');
         }
     };
 
+    const renderLabel = () => {
+        if (value || isFocus) {
+          return (
+            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+              Dropdown label
+            </Text>
+          );
+        }
+        return null;
+      };
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                    <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador')}>
-                            <AntDesign name="caretleft" size={30} color="white"/>
-                        </TouchableOpacity>
-                        <Text style={styles.topBarTxt}>Cadastro Professor</Text>
-                    </View>
-
-            <View style={styles.viewbutton}>
-            <TouchableOpacity style={styles.button} onPress={fetchProfessores}>
-                <Text style={styles.buttonText}>Buscar Professores</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.button} onPress={openModal}>
-                <Text style={styles.buttonText}>Adicionar Professor</Text>
-            </TouchableOpacity>
-            </View>
-
-            {loading ? (
-                <Text>Carregando...</Text>
-            ) : (
-                professores.length > 0 ? (
-                    <FlatList
-                        data={professores}
-                        keyExtractor={(item) => item.codigo.toString()} 
-                        renderItem={({ item }) => (
-                            <View style={styles.professorItem}>
-                                <Text style={styles.professorText}>Nome: {item.nome}</Text>
-                                <Text style={styles.professorText}>CPF: {item.cpf}</Text>
-                                <Text style={styles.professorText}>Data de Nascimento: {item.datanascimento}</Text>
-                                <Text style={styles.professorText}>Sexo: {item.sexo}</Text>
-                                <Text style={styles.professorText}>Email: {item.email}</Text>
-                                <Text style={styles.professorText}>Endereço: {item.endereco}</Text>
-                                <Text style={styles.professorText}>Telefone: {item.telefone}</Text>
-                                <Text style={styles.professorText}>Login: {item.login}</Text>
-                                <Text style={styles.professorText}>Senha: {item.senha}</Text>
-                                <Text style={styles.professorText}>Status: {item.status}</Text>
-                            </View>
-                        )}
+        <ScrollView contentContainerStyle={styles.scrollView}>
+            <View style={styles.form}>
+                <View style={styles.inputGroup}>
+                    {feedbackMessage !== '' && (
+                        <Text style={styles.feedbackText}>{feedbackMessage}</Text>
+                    )}
+                    <Text style={styles.label}>Codigo da turma:</Text>
+                 <View style={styles.container}>
+                    {renderLabel()}
+                    <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dataturma}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Selecione item' : '...'}
+                    searchPlaceholder="Procurar..."
+                    value={newcodturma}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                        setNewcodturma(item.value);
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                        style={styles.icon}
+                        color={isFocus ? 'blue' : 'black'}
+                        name="Safety"
+                        size={20}
+                        />
+                    )}
                     />
-                ) : (
-                   <Text></Text>
-                )
-            )}
-
-
-            <Modal
-                visible={modalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={closeModal}
-            >
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContainer}>
-                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-                            <Text style={styles.closeButtonText}>X</Text>
-                        </TouchableOpacity>
-                        <ProfessorAdicionar closeModal={closeModal} />
-                    </View>
+                </View> 
                 </View>
-            </Modal>
-            </ScrollView>
-        </KeyboardAvoidingView>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>codigo professor:</Text>
+                    <View style={styles.container}>
+                    {renderLabel()}
+                    <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dataprofessor}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Selecione item' : '...'}
+                    searchPlaceholder="Procurar..."
+                    value={newcodprofessor}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                        setNewcodprofessor(item.value);
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                        style={styles.icon}
+                        color={isFocus ? 'blue' : 'black'}
+                        name="Safety"
+                        size={20}
+                        />
+                    )}
+                    />
+                </View> 
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Digite o codigo auxiliar:</Text>
+                    <View style={styles.container}>
+                    {renderLabel()}
+                    <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={datauxiliar}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Selecione item' : '...'}
+                    searchPlaceholder="Procurar..."
+                    value={newcodauxiliar}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                        setNewcodauxiliar(item.value);
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                        style={styles.icon}
+                        color={isFocus ? 'blue' : 'black'}
+                        name="Safety"
+                        size={20}
+                        />
+                    )}
+                    />
+                </View> 
+                </View>
+                <TouchableOpacity style={styles.btnLogin} onPress={CadProfTurma}>
+                    <Text style={styles.btnTxt}>Cadastrar</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#f5f5f5',
-    },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        padding: 10,
-        paddingTop: 60,
-        paddingLeft: 30,
-        paddingRight: 20,
-        backgroundColor: '#283673',
-      },
-    topBarTxt: {
-        color: '#fff',
-        fontSize: 18,         
-        fontWeight: 'bold'
-    },
-    btnseta: {
-        width: 30,
-        height: 30,
+    scrollView: {
+        flexGrow: 1,
         justifyContent: 'center',
     },
-    button: {
-        backgroundColor: '#FFEF95',
-        padding: 15,
-        borderRadius: 10,
-        marginTop: 20,
-    },
-    buttonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    viewbutton: {
-        justifyContent: 'space-around',
-        marginTop: 20,
-        paddingHorizontal: 20,
-    },
-    professorItem: {
-        padding: 15,
-        backgroundColor: '#fff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        width: '100%',
-    },
-    professorText: {
-        fontSize: 16,
-    },
-    modalBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContainer: {
-        width: '90%',
+    form: {
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 20,
     },
-    closeButton: {
-        alignSelf: 'flex-end',
-        padding: 5,
+    inputGroup: {
+        marginBottom: 15,
     },
-    closeButtonText: {
-        fontSize: 18,
+    label: {
+        fontSize: 16,
+        color: '#333',
+        marginBottom: 5,
+    },
+    input: {
+        width: '100%',
+        height: 45,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        backgroundColor: '#fafafa',
+    },
+    btnLogin: {
+        backgroundColor: '#FFEF95',
+        width: '100%',
+        height: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    btnTxt: {
+        color: '#000',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    feedbackText: {
+        textAlign: 'center',
+        marginBottom: 15,
         color: 'red',
+        fontSize: 16,
     },
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+      },
+      dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+      },
+      icon: {
+        marginRight: 5,
+      },
 });
