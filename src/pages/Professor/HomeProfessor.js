@@ -6,6 +6,9 @@ export default function HomeProfessor({navigation}) {
   const handleMeudia = () => {
     navigation.navigate('MeudiaProfessor');
   }
+  const handleAtividades = () => {
+    navigation.navigate('AtividadesProfessor');
+  }
   return(
   <View style={styles.container}>
   <View style={styles.topBar}>
@@ -32,7 +35,7 @@ export default function HomeProfessor({navigation}) {
         <Text style={styles.buttonText}>Fotos</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleAtividades}>
         <Text style={styles.buttonText}>Atividades</Text>
       </TouchableOpacity>
     </View>
@@ -64,7 +67,7 @@ export default function HomeProfessor({navigation}) {
       alignItems: 'center',
       width: '100%',
       padding: 10,
-      paddingTop: 50,
+      paddingTop: 60,
       backgroundColor: '#283673',
     },
     profilePic: {

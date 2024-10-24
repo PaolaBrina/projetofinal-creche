@@ -49,9 +49,16 @@ export default function AlunoCadastro({navigation}) {
                         <Text style={styles.topBarTxt}>Cadastro Aluno</Text>
                     </View>
 
+            
+            <View style={styles.viewbutton}>
             <TouchableOpacity style={styles.button} onPress={fetchAlunos}>
                 <Text style={styles.buttonText}>Buscar Alunos</Text>
+           </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={openModal}>
+                <Text style={styles.buttonText}>Adicionar Aluno</Text>
             </TouchableOpacity>
+            </View>
 
             {loading ? (
                 <Text>Carregando...</Text>
@@ -74,10 +81,6 @@ export default function AlunoCadastro({navigation}) {
                    <Text></Text>
                 )
             )}
-
-            <TouchableOpacity style={styles.button} onPress={openModal}>
-                <Text style={styles.buttonText}>Adicionar Aluno</Text>
-            </TouchableOpacity>
 
             <Modal
                 visible={modalVisible}
@@ -109,6 +112,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         padding: 10,
+        paddingTop: 60,
         paddingLeft: 30,
         paddingRight: 20,
         backgroundColor: '#283673',
@@ -132,6 +136,11 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    viewbutton: {
+        justifyContent: 'space-around',
+        marginTop: 20,
+        paddingHorizontal: 20,
     },
     alunoItem: {
         padding: 15,

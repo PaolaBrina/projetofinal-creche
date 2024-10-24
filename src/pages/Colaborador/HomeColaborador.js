@@ -29,18 +29,18 @@ export default function HomeColaborador({navigation}) {
         <Text style={styles.buttonText}>Cadastro Turmas</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Cadastro Horários</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HorarioCadastro')}>
+        <Text style={styles.buttonText}>Cadastro Horários </Text>
       </TouchableOpacity>
     </View>
 
     <View style={styles.row}>
-    <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Avisos</Text>
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')}>
+      <Text style={styles.buttonText}>Avisos </Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Calendário</Text>
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')}>
+      <Text style={styles.buttonText}>Calendário </Text>
     </TouchableOpacity>
     </View>
 
@@ -62,7 +62,7 @@ export default function HomeColaborador({navigation}) {
       alignItems: 'center',
       width: '100%',
       padding: 10,
-      paddingTop: 50,
+      paddingTop: 60,
       backgroundColor: '#283673',
     },
     profilePic: {

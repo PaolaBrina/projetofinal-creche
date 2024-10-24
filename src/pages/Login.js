@@ -34,7 +34,7 @@ export default function Login({ navigation }) {
       }
     } catch (error) {
       console.log(error);
-      //Alert.alert('Erro', 'Erro ao verificar telefone.');
+      Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };
 
@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
   topoTxt: {
     color: "#fff",
     fontSize: 25,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   viewTxt: {
-    height: 150,
+    height: 160,
     width: "70%",
     alignContent: 'center',
     fontWeight: 'bold',

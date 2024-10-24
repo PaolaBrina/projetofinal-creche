@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { api } from '../../api/api';
+import { Dropdown } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function HorarioAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
     const [foto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
+    const [dataturma, setDataturma] = useState([{label: "",value: ""}])
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
 
     const validateFields = () => {
         if (!newcodturma || !foto) {
@@ -13,6 +18,23 @@ export default function HorarioAdicionar({ closeModal }) {
         }
         return true;
     };
+    async function fetchTurma(){
+        try {
+            const response = await api.get('/turma')
+            console.log(response)
+            const formattedData = response.data.map(item => ({
+                label: item.nome,  
+                value: item.codigo.toString() 
+            }));
+            setDataturma(formattedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchTurma()
+    },[])
 
     const CadTurma = async () => {
         if (!validateFields()) {
@@ -43,6 +65,16 @@ export default function HorarioAdicionar({ closeModal }) {
             setFeedbackMessage('Erro ao adicionar o turma. Tente novamente.');
         }
     };
+    const renderLabel = () => {
+        if (value || isFocus) {
+          return (
+            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+              Dropdown label
+            </Text>
+          );
+        }
+        return null;
+      };
 
 
     return (
@@ -53,12 +85,38 @@ export default function HorarioAdicionar({ closeModal }) {
                         <Text style={styles.feedbackText}>{feedbackMessage}</Text>
                     )}
                     <Text style={styles.label}>Nome da turma:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite o codigo da turma"
-                        value={newcodturma}
-                        onChangeText={setNewcodturma}
+                    <View style={styles.container}>
+                    {renderLabel()}
+                    <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dataturma}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Selecione item' : '...'}
+                    searchPlaceholder="Procurar..."
+                    value={newcodturma}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                        setNewcodturma(item.value);
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                        style={styles.icon}
+                        color={isFocus ? 'blue' : 'black'}
+                        name="Safety"
+                        size={20}
+                        />
+                    )}
                     />
+                </View> 
                 </View>
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sala:</Text>
@@ -124,4 +182,18 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 16,
     },
+    container: {
+        backgroundColor: 'white',
+        padding: 16,
+      },
+      dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+      },
+      icon: {
+        marginRight: 5,
+      },
 });
