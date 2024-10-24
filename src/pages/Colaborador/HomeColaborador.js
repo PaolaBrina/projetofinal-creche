@@ -44,6 +44,12 @@ export default function HomeColaborador({navigation}) {
     </TouchableOpacity>
     </View>
 
+    <View style={styles.row}>
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AuxiliarCadastro')}>
+      <Text style={styles.buttonText}>Auxiliar </Text>
+    </TouchableOpacity>
+    </View>
+
   </View>
 </View>
 );
