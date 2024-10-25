@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback  } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { api } from '../../api/api';
 import * as ImagePicker from 'expo-image-picker';
+import { Button } from 'react-native-paper';
+import { DatePickerModal, registerTranslation, pt} from 'react-native-paper-dates';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { format } from 'date-fns';
+
+registerTranslation('pt', pt)
 
 export default function AlunoAdicionar({ closeModal }) {
     const [newcodresponsavel, setNewcodresponsavel] = useState('');
     const [newnome, setNewnome] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState(new Date());
+        
+    const [newdatanascimento, setNewdatanascimento] = useState(undefined);
+    const [open, setOpen] = useState(false);
+  
     const [newsexo, setNewsexo] = useState('');
     const [newendereco, setNewendereco] = useState('');
     const [newfoto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
-    const [show, setShow] = useState(false);
+
 
     const validateFields = () => {
         return newcodresponsavel && newnome && newdatanascimento && newsexo && newendereco && newfoto;
@@ -37,15 +45,17 @@ export default function AlunoAdicionar({ closeModal }) {
         }
     };
 
-    const onChangeDate = (event, selectedDate) => {
-        if (event.type === 'set' && selectedDate) {
-            setNewdatanascimento(selectedDate);
-        }
-    };
-
-    const showDatePicker = () => {
-        setShow(true);
-    };
+    const onDismissSingle = useCallback(() => {
+        setOpen(false);
+      }, [setOpen]);
+    
+      const onConfirmSingle = useCallback(
+        (params) => {
+          setOpen(false);
+          setNewdatanascimento(params.date); // Armazenar a data selecionada
+        },
+        [setOpen, setNewdatanascimento]
+      );
 
     const CadAluno = async () => {
         if (!validateFields()) {
@@ -53,10 +63,12 @@ export default function AlunoAdicionar({ closeModal }) {
             return;
         }
         try {
+            const formattedDate = format(new Date(newdatanascimento), 'yyyy-MM-dd'); // Formata a data para 'YYYY-MM-DD'
+
             const newItem = {
                 codresponsavel: newcodresponsavel,
                 nome: newnome,
-                datanascimento: newdatanascimento.toLocaleDateString('pt-BR'),
+                datanascimento: formattedDate, // Data formatada
                 sexo: newsexo,
                 endereco: newendereco,
                 foto: newfoto,
@@ -104,28 +116,26 @@ export default function AlunoAdicionar({ closeModal }) {
                         onChangeText={setNewnome}
                     />
                 </View>
+
                 <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Data de Nascimento:</Text>
-                 {/*    <TouchableOpacity onPress={showDatePicker}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Escolha a data'
-                            value={newdatanascimento.toLocaleDateString('pt-BR')}
-                            editable={false} // Desativar a edição manual
+                        <Text style={styles.label}>Data de Nascimento:</Text>
+                    <SafeAreaProvider>
+                    <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                        <Text> Escolher data de nascimento </Text>
+                        </Button>
+                        <DatePickerModal
+                        locale="pt"
+                        mode="single"
+                        visible={open}
+                        onDismiss={onDismissSingle}
+                        date={newdatanascimento}
+                        onConfirm={onConfirmSingle}
                         />
-                    </TouchableOpacity>
-                    {show && ( */}
-                        <DateTimePicker
-                            style={styles.aaa}
-                            value={newdatanascimento}
-                            mode="date"
-                            is24Hour={true}
-                            display="calendar"
-                            onChange={onChangeDate}
-                            maximumDate={new Date()} // Impede a seleção de uma data futura
-                        />
-                    {/* )} */}
-                </View>
+                    </View>
+                    </SafeAreaProvider>
+                    </View>
+
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
                     <TextInput

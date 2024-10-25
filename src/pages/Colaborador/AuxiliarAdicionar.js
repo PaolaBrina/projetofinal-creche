@@ -21,7 +21,6 @@ export default function AuxiliarAdicionar({ closeModal }) {
     const [newtelefone, setNewtelefone] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
    
-    const [date, setDate] = useState(undefined);
     
   
     const onDismissSingle = useCallback(() => {
@@ -108,6 +107,7 @@ export default function AuxiliarAdicionar({ closeModal }) {
                         keyboardType="numeric"
                     />
                 </View>
+
                 <View style={styles.inputGroup}>
                         <Text style={styles.label}>Data de Nascimento:</Text>
                     <SafeAreaProvider>
@@ -125,8 +125,8 @@ export default function AuxiliarAdicionar({ closeModal }) {
                         />
                     </View>
                     </SafeAreaProvider>
-
                     </View>
+                    
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
                     <TextInput

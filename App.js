@@ -20,6 +20,7 @@ import AuxiliarAdicionar from './src/pages/Colaborador/AuxiliarAdicionar';
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
 import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
 import AtividadesProfessor from './src/pages/Professor/AtividadesProfessor';
+import FotoProfessor from './src/pages/Professor/FotoProfessor';
 /* Responsável */
 import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
@@ -44,9 +45,12 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='TurmaAdicionar' component={TurmaAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AuxiliarCadastro' component={AuxiliarCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AuxiliarAdicionar' component={AuxiliarAdicionar}/>
+
           <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={HomeProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfessor' component={AtividadesProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>
+
           <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={HomeResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
           

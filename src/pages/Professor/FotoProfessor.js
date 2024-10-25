@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { api } from '../../api/api';
 import * as ImagePicker from 'expo-image-picker';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+import { Button } from 'react-native-paper';
+import { DatePickerModal, registerTranslation, pt,TimePickerModal } from 'react-native-paper-dates';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { format } from 'date-fns';
+
+registerTranslation('pt', pt)
+
 export default function FotoProfessor({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState([{label: "",value: ""}])
-    const [newdatahora, setNewdatahora] = useState(null);
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+
+    const [newdata, setNewdata] = useState(undefined);
+    const [open, setOpen] = useState(false);
+    const [visible, setVisible] = React.useState(false)
+    const [selectedTime, setSelectedTime] = useState({ hours: undefined, minutes: undefined });
+
     const [newdescricao, setNewdescricao] = useState('');
     const [newfoto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
-    const [show, setShow] = useState(false);
-
+   
 
     async function fetchTurma(){
         try {
@@ -23,7 +35,7 @@ export default function FotoProfessor({ closeModal }) {
                 label: item.nome,  
                 value: item.codigo.toString() 
             }));
-            setDataturma(formattedData)
+            setNewcodturma(formattedData)
         } catch (error) {
             console.log(error)
         }
@@ -33,9 +45,31 @@ export default function FotoProfessor({ closeModal }) {
         fetchTurma()
     },[])
 
+    const renderLabel = () => {
+        if (value || isFocus) {
+          return (
+            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+              Dropdown label
+            </Text>
+          );
+        }
+        return null;
+      };
+
+    const onDismiss = React.useCallback(() => {
+        setVisible(false)
+      }, [setVisible])
+    
+      const onConfirm = React.useCallback(
+        ({ hours, minutes }) => {
+          setVisible(false);
+          console.log({ hours, minutes });
+        },
+        [setVisible]
+      );
 
     const validateFields = () => {
-        return newcodturma && newdatahora && newdescricao &&  newfoto;
+        return newcodturma && newdata && selectedTime && newdescricao &&  newfoto;
     };
 
     const pickImage = async () => {
@@ -57,18 +91,18 @@ export default function FotoProfessor({ closeModal }) {
         }
     };
 
-    const handleDateChange = (event, selectedDate) => {
-        if (event.type === 'set') {
-            const currentDate = selectedDate || Date
-            console.log(currentDate);
-            setNewdatahora(currentDate);
-        }
-        setNewdatahora(false)
-    };
-
-    const showDatePicker = () => {
-        setShow(true);
-    };
+    const onDismissSingle = useCallback(() => {
+        setOpen(false);
+      }, [setOpen]);
+    
+      const onConfirmSingle = useCallback(
+        (params) => {
+          setOpen(false);
+          setNewdata(params.date); // Armazenar a data selecionada
+        },
+        [setOpen, setNewdata]
+      );
+      
 
     const CadAluno = async () => {
         if (!validateFields()) {
@@ -77,9 +111,12 @@ export default function FotoProfessor({ closeModal }) {
         }
 
         try {
+            const formattedDate = format(new Date(newdata), 'yyyy-MM-dd');
+            const dataHora = `${formattedDate} ${String(selectedTime.hours).padStart(2, '0')}:${String(selectedTime.minutes).padStart(2, '0')}:00`;
+
             const newItem = {
                 codturma: newcodturma,
-                datahora: newdatahora.toLocaleDateString('pt-BR'),
+                datahora: dataHora,
                 descricao: newdescricao,
                 foto: newfoto,
                 status: 1
@@ -118,7 +155,7 @@ export default function FotoProfessor({ closeModal }) {
                     selectedTextStyle={styles.selectedTextStyle}
                     inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
-                    data={dataturma}
+                    data={newcodturma}
                     search
                     maxHeight={300}
                     labelField="label"
@@ -143,29 +180,41 @@ export default function FotoProfessor({ closeModal }) {
                     />
                 </View> 
                 </View>
+    
+
                 <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Nome:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Digite o nome'
-                        value={newnome}
-                        onChangeText={setNewnome}
-                    />
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Data e hora:</Text>
-                    <TouchableOpacity onPress={showDatePicker} style={styles.aaa}>
-                        <Text style={styles.btnTxt}>Abrir data hora</Text>
-                    </TouchableOpacity>
-                    {
-                        show && (
-                        <DateTimePicker
-                            mode={'date'}
-                            value={newdatahora || new Date()}
-                            onChange={handleDateChange}
+                        <Text style={styles.label}>Data Hora:</Text>
+                    <SafeAreaProvider>
+                    <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                        <Text> Escolher data</Text>
+                        </Button>
+                        <DatePickerModal
+                        locale="pt"
+                        mode="single"
+                        visible={open}
+                        onDismiss={onDismissSingle}
+                        date={newdata}
+                        onConfirm={onConfirmSingle}
                         />
-                    )}
-                </View>
+                    </View>
+
+                    <View style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+                        <Button onPress={() => setVisible(true)} uppercase={false} mode="outlined">
+                        Escolher tempo
+                        </Button>
+                        <TimePickerModal
+                        visible={visible}
+                        onDismiss={onDismiss}
+                        onConfirm={onConfirm}
+                        hours={12}
+                        minutes={14}
+                        />
+                    </View>
+
+                    </SafeAreaProvider>
+                    </View>
+
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Descrição:</Text>
                     <TextInput
@@ -256,765 +305,3 @@ const styles = StyleSheet.create({
         marginRight: 5,
       },
 });
-
-/* 
-
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
-import { api } from '../../api/api';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import * as ImagePicker from 'expo-image-picker';
-
-export default function AlunoCadastro({navigation}) {
-    const [newcodresponsavel, setNewcodresponsavel] = useState('');
-    const [newnome, setNewnome] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState('');
-    const [newsexo, setNewsexo] = useState('');
-    const [newendereco, setNewendereco] = useState('');
-    const [newfoto, setNewfoto] = useState(''); // Alterado para ser um objeto de imagem
-
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
-    };
-
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setNewfoto(result.assets[0].uri); // Armazena a URI da imagem selecionada
-        }
-    };
-
-    const CadAluno = async () => {
-        try {
-            const newItem = {
-                codresponsavel: newcodresponsavel,
-                nome: newnome,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                endereco: newendereco,
-                foto: newfoto, 
-                status: 1
-            };
-            const response = await api.post('/aluno', newItem);
-            const data = response.data; 
-            console.log(data); 
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        } 
-    };
-
-    return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.topBar}>
-                    <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
-                        <AntDesign name="caretleft" size={30} color="white" />
-                    </TouchableOpacity>
-                    <Text style={styles.topBarTxt}>Cadastro Aluno</Text>
-                </View>
-                <View style={styles.form}>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Codigo Responsavel:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o codigo'
-                            value={newcodresponsavel}
-                            onChangeText={setNewcodresponsavel}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Nome:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o nome'
-                            value={newnome}
-                            onChangeText={setNewnome}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data de Nascimento:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite a data nascimento'
-                            value={newdatanascimento}
-                            onChangeText={setNewdatanascimento}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sexo:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o sexo'
-                            value={newsexo}
-                            onChangeText={setNewsexo}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Endereco:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o endereco'
-                            value={newendereco}
-                            onChangeText={setNewendereco}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Foto:</Text>
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                            <Text style={styles.imagePickerText}>Escolher Foto</Text>
-                        </TouchableOpacity>
-                        {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
-                    </View>
-                    <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
-                        <Text style={styles.btnTxt}>Cadastrar</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#f5f5f5',
-    },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: 'center',
-    },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        padding: 10,
-        paddingLeft: 30,
-        paddingRight: 20,
-        backgroundColor: '#283673',
-    },
-    topBarTxt: {
-        color: '#fff',
-        fontSize: 18,         
-        fontWeight: 'bold',
-    },
-    btnseta: {
-        width: 30,
-        height: 30,
-        justifyContent: 'center',
-    },
-    form: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
-    },
-    inputGroup: {
-        marginBottom: 15,
-    },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    imagePicker: {
-        padding: 10,
-        backgroundColor: '#FFEF95',
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    imagePickerText: {
-        color: '#333',
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginTop: 10,
-    },
-    btnLogin: {
-        backgroundColor: "#FFEF95",
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    btnTxt: {
-        color: "#000",
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-});
-
-*/
-
-
-/* import React, { useState,useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert,Platform  } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { api } from '../../api/api';
-import SelectDropdown from 'react-native-select-dropdown';
-
-
-import * as ImagePicker from 'expo-image-picker';
-
-export default function AlunoAdicionar({ closeModal }) {
-    const [newcodresponsavel, setNewcodresponsavel] = useState('');
-    const [newnome, setNewnome] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState('');
-    const [newsexo, setNewsexo] = useState('');
-    const [newendereco, setNewendereco] = useState('');
-    const [newfoto, setNewfoto] = useState('');
-    const [feedbackMessage, setFeedbackMessage] = useState('');
-    const [show, setShow] = useState(false);
-    const [date, setDate] = useState(new Date());
-    const [responsavelSelecionado, setResponsavelSelecionado] = useState(null); // Responsável selecionado
-    const [responsaveis, setResponsaveis] = useState([]); // Lista de responsáveis 
-
-
-
-    
-    useEffect(() => {
-        const fetchResponsaveis = async () => {
-          try {
-            const response = await api.get('/responsavel');
-            console.log('Responsáveis fetched:', response.data);
-      
-            // Acesse o array de responsáveis na propriedade 'responsavel'
-            if (response.data && Array.isArray(response.data.responsavel)) {
-              setResponsaveis(response.data.responsavel); // Define o estado com os responsáveis
-            } else {
-              // Se o formato não for o esperado
-              console.error('Formato inesperado da resposta:', response.data);
-              setFeedbackMessage('Formato inesperado da resposta da API.');
-            }
-          } catch (err) {
-            console.error('Erro ao buscar responsáveis:', err);
-            setFeedbackMessage('Não foi possível carregar a lista de responsáveis.');
-          }
-        };
-      
-        fetchResponsaveis();
-      }, []);
-    
-      const handleSelectResponsavel = (responsavelSelecionado, index) => {
-        const selecionado = responsaveis[index]; // Aqui, certifique-se de que o índice é o correto
-        setResponsavelSelecionado(selecionado);
-        setNewcodresponsavel(selecionado.codigo); // Ajuste conforme a estrutura dos dados
-    };
-
-
-
-    const validateFields = () => {
-        if (!newcodresponsavel || !responsavelSelecionado || !newnome || !newdatanascimento || !newsexo || !newendereco || !newfoto) {
-            return false;
-        }
-        return true;
-    };
-
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setNewfoto(result.assets[0].uri);
-        }
-    };
-
-
-    const onChange = (event, selectedDate) => {
-        if (Platform.OS === 'android') {
-            setShow(false); // Para Android, esconder o picker após a seleção
-        }
-
-        if (selectedDate) {
-            setDate(selectedDate);
-            setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
-        }
-    };
-
-    const showDatePicker = () => {
-        setShow(true);
-    };
-    
-    const CadAluno = async () => {
-        if (!validateFields()) {
-            setFeedbackMessage('Por favor, preencha todos os campos.');
-            return;
-        }
-        try {
-            const newItem = {
-                codresponsavel: newcodresponsavel,
-                nome: newnome,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                endereco: newendereco,
-                foto: newfoto, 
-                status: 1
-            };
-            const response = await api.post('/aluno', newItem);
-            const data = response.data;
-
-            Alert.alert('Cadastro Aluno', 'Aluno adicionado com sucesso!', [
-                {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel',
-                },
-                {text: 'OK', onPress: () => closeModal('Aluno adicionado com sucesso!')
-            },
-                ]);
-                 // Limpar os campos após o cadastro bem-sucedido
-            setResponsavelSelecionado(null);
-            setNewcodresponsavel('');
-            setNewnome('');
-            setNewdatanascimento('');
-            setNewsexo('');
-            setNewendereco('');
-            setNewfoto('');
-            setFeedbackMessage('');
-        } catch (error) {
-            console.error('Erro ao adicionar aluno:', error);
-            setFeedbackMessage('Erro ao adicionar o aluno. Tente novamente.');
-        }
-    };
-    
-
-    return (
-        <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.form}>
-            <View style={styles.inputGroup}>
-                                {feedbackMessage !== '' && (
-                                    <Text style={styles.feedbackText}>{feedbackMessage}</Text>
-                                )}
-                                <Text style={styles.label}>Código Responsável:</Text>
-                                icon
-                                <SelectDropdown
-                                    data={responsaveis}
-                                    onSelect={handleSelectResponsavel}
-                                    defaultButtonText="Escolha um responsável"
-                                    buttonStyle={styles.dropdownButtonStyle}
-                                    buttonTextStyle={styles.dropdownButtonTxtStyle}
-                                    renderButtonText={(selectedItem) => 
-                                        selectedItem ? selectedItem.nome : 'Escolha um responsável'
-                                    }
-                                    renderCustomizedRowChild={(item, index) => (
-                                        <View style={styles.dropdownItemStyle}>
-                                            <Text style={styles.dropdownItemTxtStyle}>{item.nome}</Text>
-                                        </View>
-                                    )}
-                                    dropdownStyle={styles.dropdownMenuStyle}
-                                    rowStyle={styles.dropdownRowStyle}
-                                    rowTextStyle={styles.dropdownRowTextStyle}
-                                    showsVerticalScrollIndicator={false}
-                                />
-                            </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Nome:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o nome'
-                            value={newnome}
-                            onChangeText={setNewnome}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data de Nascimento:</Text>
-                        <TouchableOpacity onPress={showDatePicker}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Escolha a data'
-                            value={newdatanascimento}
-                            onChangeText={setNewdatanascimento}
-                            editable={false} // Desativar a edição manual
-                        />
-                        </TouchableOpacity>
-                        {show && (
-                        <DateTimePicker
-                            value={date}
-                            mode="date"
-                            display="default"
-                            onChange={onChange}
-                            maximumDate={new Date()}  // Impede a seleção de uma data futura
-                        />
-                    )}
-                    </View>                    
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sexo:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o sexo'
-                            value={newsexo}
-                            onChangeText={setNewsexo}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Endereco:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o endereco'
-                            value={newendereco}
-                            onChangeText={setNewendereco}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Foto:</Text>
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                            <Text style={styles.imagePickerText}>Escolher Foto</Text>
-                        </TouchableOpacity>
-                        {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
-                    </View>
-                    <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
-                        <Text style={styles.btnTxt}>Cadastrar</Text>
-                    </TouchableOpacity>
-                </View>
-        </ScrollView>
-    );
-}
-
-const styles = StyleSheet.create({
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: 'center',
-    },
-    form: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
-    },
-    inputGroup: {
-        marginBottom: 15,
-    },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    btnLogin: {
-        backgroundColor: '#FFEF95',
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    btnTxt: {
-        color: '#000',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    feedbackText: {
-        textAlign: 'center',
-        marginBottom: 15,
-        color: 'red',
-        fontSize: 16,
-    },
-    dropdownButtonStyle: {
-        width: '100%',
-        height: 50,
-        backgroundColor: '#FFF',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#444',
-    },
-    dropdownButtonInner: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10,
-        height: '100%',
-    },
-    dropdownButtonIconStyle: {
-        color: '#444',
-    },
-    dropdownButtonTxtStyle: {
-        flex: 1,
-        textAlign: 'left',
-        fontSize: 16,
-        color: '#444',
-    },
-    dropdownButtonArrowStyle: {
-        color: '#444',
-    },
-    dropdownMenuStyle: {
-        borderRadius: 8,
-    },
-    dropdownItemStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 10,
-    },
-    dropdownItemSelectedStyle: {
-        backgroundColor: '#D2D9DF',
-    },
-    dropdownItemIconStyle: {
-        marginRight: 10,
-        color: '#444',
-    },
-    dropdownItemTxtStyle: {
-        fontSize: 16,
-        color: '#444',
-    },
-    dropdownRowStyle: {
-        backgroundColor: '#FFF',
-    },
-    dropdownRowTextStyle: {
-        textAlign: 'left',
-        fontSize: 16,
-        color: '#444',
-},
-});
- */
-/* 
-
-import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
-import { api } from '../../api/api';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import * as ImagePicker from 'expo-image-picker';
-
-export default function AlunoCadastro({navigation}) {
-    const [newcodresponsavel, setNewcodresponsavel] = useState('');
-    const [newnome, setNewnome] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState('');
-    const [newsexo, setNewsexo] = useState('');
-    const [newendereco, setNewendereco] = useState('');
-    const [newfoto, setNewfoto] = useState(''); // Alterado para ser um objeto de imagem
-
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
-    };
-
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setNewfoto(result.assets[0].uri); // Armazena a URI da imagem selecionada
-        }
-    };
-
-    const CadAluno = async () => {
-        try {
-            const newItem = {
-                codresponsavel: newcodresponsavel,
-                nome: newnome,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                endereco: newendereco,
-                foto: newfoto, 
-                status: 1
-            };
-            const response = await api.post('/aluno', newItem);
-            const data = response.data; 
-            console.log(data); 
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        } 
-    };
-
-    return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.topBar}>
-                    <TouchableOpacity style={styles.btnseta} onPress={handleSeta}>
-                        <AntDesign name="caretleft" size={30} color="white" />
-                    </TouchableOpacity>
-                    <Text style={styles.topBarTxt}>Cadastro Aluno</Text>
-                </View>
-                <View style={styles.form}>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Codigo Responsavel:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o codigo'
-                            value={newcodresponsavel}
-                            onChangeText={setNewcodresponsavel}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Nome:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o nome'
-                            value={newnome}
-                            onChangeText={setNewnome}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data de Nascimento:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite a data nascimento'
-                            value={newdatanascimento}
-                            onChangeText={setNewdatanascimento}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Sexo:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o sexo'
-                            value={newsexo}
-                            onChangeText={setNewsexo}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Endereco:</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Digite o endereco'
-                            value={newendereco}
-                            onChangeText={setNewendereco}
-                        />
-                    </View>
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Foto:</Text>
-                        <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                            <Text style={styles.imagePickerText}>Escolher Foto</Text>
-                        </TouchableOpacity>
-                        {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
-                    </View>
-                    <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
-                        <Text style={styles.btnTxt}>Cadastrar</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#f5f5f5',
-    },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: 'center',
-    },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        padding: 10,
-        paddingLeft: 30,
-        paddingRight: 20,
-        backgroundColor: '#283673',
-    },
-    topBarTxt: {
-        color: '#fff',
-        fontSize: 18,         
-        fontWeight: 'bold',
-    },
-    btnseta: {
-        width: 30,
-        height: 30,
-        justifyContent: 'center',
-    },
-    form: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
-    },
-    inputGroup: {
-        marginBottom: 15,
-    },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    imagePicker: {
-        padding: 10,
-        backgroundColor: '#FFEF95',
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    imagePickerText: {
-        color: '#333',
-    },
-    image: {
-        width: 100,
-        height: 100,
-        marginTop: 10,
-    },
-    btnLogin: {
-        backgroundColor: "#FFEF95",
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    btnTxt: {
-        color: "#000",
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-});
-
-*/

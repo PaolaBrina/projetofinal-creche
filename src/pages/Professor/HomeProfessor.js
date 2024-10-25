@@ -9,6 +9,10 @@ export default function HomeProfessor({navigation}) {
   const handleAtividades = () => {
     navigation.navigate('AtividadesProfessor');
   }
+
+  const handleFotos = () => {
+    navigation.navigate('FotoProfessor');
+  }
   return(
   <View style={styles.container}>
   <View style={styles.topBar}>
@@ -31,7 +35,7 @@ export default function HomeProfessor({navigation}) {
     </View>
 
     <View style={styles.row}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleFotos}>
         <Text style={styles.buttonText}>Fotos</Text>
       </TouchableOpacity>
 
