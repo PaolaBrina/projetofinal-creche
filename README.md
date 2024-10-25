@@ -8,7 +8,8 @@
 
 
 # precisa desse negoci de baixo?
-# npm i @date-io/date-fns
+# npm install date-fns
+
 
 
 

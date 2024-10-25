@@ -4,6 +4,7 @@ import { api } from '../../api/api';
 import { Button } from 'react-native-paper';
 import { DatePickerModal, registerTranslation, pt} from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { format } from 'date-fns';
 
 registerTranslation('pt', pt)
 
@@ -30,7 +31,7 @@ export default function AuxiliarAdicionar({ closeModal }) {
     const onConfirmSingle = useCallback(
       (params) => {
         setOpen(false);
-        setNewdatanascimento(params.newdatanascimento);
+        setNewdatanascimento(params.date); // Armazenar a data selecionada
       },
       [setOpen, setNewdatanascimento]
     );
@@ -42,25 +43,27 @@ export default function AuxiliarAdicionar({ closeModal }) {
         }
         return true;
     };
-
-
+    
     const CadAuxiliares = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
+            console.log("3", newdatanascimento);
             return;
         }
 
         try {
-            const newItem = {
-                nome: newnome,
-                cpf: newcpf,
-                datanascimento: newdatanascimento,
-                sexo: newsexo,
-                email: newemail,
-                endereco: newendereco,
-                telefone: newtelefone,
-                status: 1,
-            };
+            const formattedDate = format(new Date(newdatanascimento), 'yyyy-MM-dd'); // Formata a data para 'YYYY-MM-DD'
+
+        const newItem = {
+            nome: newnome,
+            cpf: newcpf,
+            datanascimento: formattedDate, // Data formatada
+            sexo: newsexo,
+            email: newemail,
+            endereco: newendereco,
+            telefone: newtelefone,
+            status: 1,
+        };
             const response = await api.post('/auxiliar', newItem);
             const data = response.data;
 
@@ -76,6 +79,7 @@ export default function AuxiliarAdicionar({ closeModal }) {
         } catch (error) {
             console.error('Erro ao adicionar Auxiliar:', error);
             setFeedbackMessage('Erro ao adicionar o Auxiliar. Tente novamente.');
+            console.log('Erro ao adicionar Auxiliar:', newdatanascimento);
         }
     };
 
@@ -115,11 +119,9 @@ export default function AuxiliarAdicionar({ closeModal }) {
                         locale="pt"
                         mode="single"
                         visible={open}
-                        presentationStyle={'formSheet'}
                         onDismiss={onDismissSingle}
                         date={newdatanascimento}
                         onConfirm={onConfirmSingle}
-                        
                         />
                     </View>
                     </SafeAreaProvider>

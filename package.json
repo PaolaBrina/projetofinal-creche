@@ -9,10 +9,12 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.0.0",
     "@expo/metro-runtime": "~3.2.1",
-    "@react-native-community/datetimepicker": "^8.2.0",
+    "@react-native-community/datetimepicker": "^8.0.1",
     "@react-navigation/stack": "^6.4.1",
     "axios": "^1.7.7",
+    "date-fns": "^3.6.0",
     "expo": "~51.0.14",
     "expo-image-picker": "^15.0.7",
     "expo-status-bar": "~1.12.1",
@@ -22,6 +24,9 @@
     "react-native-element-dropdown": "^2.12.2",
     "react-native-gesture-handler": "^2.16.2",
     "react-native-masked-text": "^1.13.0",
+    "react-native-paper": "^5.12.5",
+    "react-native-paper-dates": "^0.22.26",
+    "react-native-safe-area-context": "^4.11.1",
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {
