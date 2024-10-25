@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
-import ProfessorAdicionar from './ProfessorAdicionar';
+import AuxiliarAdicionar from './AuxiliarAdicionar';
 
 
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -99,7 +99,7 @@ export default function AuxiliarCadastro({navigation}) {
                         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
-                        <ProfessorAdicionar closeModal={closeModal} />
+                        <AuxiliarAdicionar closeModal={closeModal} />
                     </View>
                 </View>
             </Modal>

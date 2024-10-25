@@ -25,9 +25,6 @@ import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
   
 export default function App(){
-
- 
-
   const Stack = createStackNavigator();
 
   return(

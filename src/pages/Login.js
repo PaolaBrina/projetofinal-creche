@@ -56,7 +56,7 @@ export default function Login({ navigation }) {
               placeholder="Telefone"
               value={telefone}
               onChangeText={setTelefone}
-              inputMode="phone-pad"
+              inputMode="tel"
             />
         </View>
 

@@ -1,19 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView,Alert } from 'react-native';
 import { api } from '../../api/api';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Button } from 'react-native-paper';
+import { DatePickerModal, registerTranslation, pt} from 'react-native-paper-dates';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+registerTranslation('pt', pt)
 
 export default function AuxiliarAdicionar({ closeModal }) {
     const [newnome, setNewnome] = useState('');
     const [newcpf, setNewcpf] = useState('');
-    const [newdatanascimento, setNewdatanascimento] = useState('');
+    
+    const [newdatanascimento, setNewdatanascimento] = useState(undefined);
+    const [open, setOpen] = useState(false);
+  
     const [newsexo, setNewsexo] = useState('');
     const [newemail, setNewemail] = useState('');
     const [newendereco, setNewendereco] = useState('');
     const [newtelefone, setNewtelefone] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
-    const [show, setShow] = useState(false);
-    const [date, setDate] = useState(new Date());
+   
+    const [date, setDate] = useState(undefined);
+    
+  
+    const onDismissSingle = useCallback(() => {
+      setOpen(false);
+    }, [setOpen]);
+  
+    const onConfirmSingle = useCallback(
+      (params) => {
+        setOpen(false);
+        setNewdatanascimento(params.newdatanascimento);
+      },
+      [setOpen, setNewdatanascimento]
+    );
+
 
     const validateFields = () => {
         if (!newnome || !newcpf || !newdatanascimento || !newsexo || !newemail || !newendereco || !newtelefone) {
@@ -22,20 +43,6 @@ export default function AuxiliarAdicionar({ closeModal }) {
         return true;
     };
 
-    const onChange = (event, selectedDate) => {
-        if (Platform.OS === 'android') {
-            setShow(false); // Para Android, esconder o picker após a seleção
-        }
-
-        if (selectedDate) {
-            setDate(selectedDate);
-            setNewdatanascimento(selectedDate.toLocaleDateString('pt-BR'));
-        }
-    };
-
-    const showDatePicker = () => {
-        setShow(true);
-    };
 
     const CadAuxiliares = async () => {
         if (!validateFields()) {
@@ -99,24 +106,24 @@ export default function AuxiliarAdicionar({ closeModal }) {
                 </View>
                 <View style={styles.inputGroup}>
                         <Text style={styles.label}>Data de Nascimento:</Text>
-                        <TouchableOpacity onPress={showDatePicker}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder='Escolha a data'
-                            value={newdatanascimento}
-                            onChangeText={setNewdatanascimento}
-                            editable={false} // Desativar a edição manual
+                    <SafeAreaProvider>
+                    <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                        <Text> Escolher data de nascimento </Text>
+                        </Button>
+                        <DatePickerModal
+                        locale="pt"
+                        mode="single"
+                        visible={open}
+                        presentationStyle={'formSheet'}
+                        onDismiss={onDismissSingle}
+                        date={newdatanascimento}
+                        onConfirm={onConfirmSingle}
+                        
                         />
-                        </TouchableOpacity>
-                        {show && (
-                        <DateTimePicker
-                            value={date}
-                            mode="date"
-                            display="default"
-                            onChange={onChange}
-                            maximumDate={new Date()}  // Impede a seleção de uma data futura
-                        />
-                    )}
+                    </View>
+                    </SafeAreaProvider>
+
                     </View>
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
@@ -209,5 +216,30 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         color: 'red',
         fontSize: 16,
+    },
+    datePicker:{
+        height: 120,
+        marginTop:-10,
+    },
+    iosstyle:{
+        flexDirection:'row',
+        justifyContent: "space-aeound",
+    },
+    pickerButton:{
+        paddingHorizontal: 20,
+    },
+    button:{
+        height:50,
+        justifyContent:"center",
+        alignItems:"center",
+        borderRadius:50,
+        marginTop:10,
+        marginBottom:15,
+        backgroundColor:"#075985"
+    },
+    buttonText:{
+       fontSize:14,
+       fontWeight:'500',
+       color:"#fff",
     },
 });
