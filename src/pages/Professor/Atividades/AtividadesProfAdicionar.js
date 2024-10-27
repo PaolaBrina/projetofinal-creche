@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform } from 'react-native';
-import { api } from '../../api/api';
+import { api } from '../../../api/api';
 import * as ImagePicker from 'expo-image-picker';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -13,7 +13,7 @@ import { ptBR } from 'date-fns/locale'; // Garantir o uso do português, se nece
 
 registerTranslation('pt', pt)
 
-export default function FotoProfessor({ closeModal, navigation }) {
+export default function AtividadesProfAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('')
     const [dataturma, setDataturma] = useState([{label: "",value: ""}])
     const [value, setValue] = useState(null);
@@ -150,28 +150,20 @@ export default function FotoProfessor({ closeModal, navigation }) {
                 descricao: newdescricao,
                 foto: newfoto,
             };
-            await api.post('/fotos', newItem);
-            Alert.alert(
-                'Cadastro Fotos',
-                'Fotos adicionado com sucesso!',
-                [
-                  {
+            await api.post('/atividades', newItem);
+            Alert.alert('Cadastro Atividades', 'Atividades adicionada com sucesso!', [
+                {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
-                  },
-                  {
-                    text: 'OK',
-                    onPress: () => {
-                        navigation.navigate('HomeProfessor'); // Navegar para HomeProfessor
-                    },
-                  },
-                ]
-              );
+                },
+                {text: 'OK', onPress: () => closeModal('Atividades adicionada com sucesso!')
+            },
+                ]);
         } catch (error) {
-            console.error('Erro ao adicionar Fotos:', error);
+            console.error('Erro ao adicionar Atividades:', error);
             console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
-            setFeedbackMessage('Erro ao adicionar o Fotos. Tente novamente.');
+            setFeedbackMessage('Erro ao adicionar o Atividades. Tente novamente.');
         }
     };
 
@@ -219,7 +211,7 @@ export default function FotoProfessor({ closeModal, navigation }) {
     
 
                 <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Data Hora:</Text>
+                            <Text style={styles.label}>Data e hora de entrega atividade:</Text>
                         <SafeAreaProvider>
                         <View style={styles.timeContainer}>
                         <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>

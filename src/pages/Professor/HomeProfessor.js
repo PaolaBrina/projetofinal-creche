@@ -7,7 +7,7 @@ export default function HomeProfessor({navigation}) {
     navigation.navigate('MeudiaProfessor');
   }
   const handleAtividades = () => {
-    navigation.navigate('AtividadesProfessor');
+    navigation.navigate('AtividadesCadastro');
   }
 
   const handleFotos = () => {
