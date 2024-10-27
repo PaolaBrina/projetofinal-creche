@@ -16,6 +16,8 @@ from routes.meudiamanhaRoutes import meudiamanha
 from routes.meudiatardeRoutes import meudiatarde
 from routes.loginRoutes import login
 from routes.professorturmaRoutes import professorturma
+from routes.listademateriaisRoutes import listademateriais
+from routes.calendarioRoutes import calendario
 
 def default_routes(app):
     turma(app)
@@ -36,4 +38,5 @@ def default_routes(app):
     meudiatarde(app)
     login(app)
     professorturma(app)
-    
+    listademateriais(app)
+    calendario(app)
