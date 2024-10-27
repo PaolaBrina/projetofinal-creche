@@ -32,23 +32,23 @@ export default function ProfessorCadastro({navigation}) {
     const fetchTurmas = async () => {
         setLoading(true);
         try {
-            const response = await api.get('/turma'); 
-            console.log('Resposta completa:', response); 
-            if (Array.isArray(response.data)) {
-                setTurmas(response.data.turma); 
-            } else if (response.data && response.data.turma) {
-                setTurmas(response.data.turma); 
-            } else {
-                console.error('Formato inesperado dos dados:', response.data);
-                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
-            }
+            const response = await api.get('/turma');
+            console.log('Resposta completa:', response);
+    
+            // Garantindo que o dado retornado é um array, mesmo que vazio
+            const turmasData = Array.isArray(response.data) 
+                ? response.data 
+                : response.data?.turma || [];
+    
+            setTurmas(turmasData); // Define turmas no estado
         } catch (error) {
-            console.error('Erro ao buscar turma:', error);
-            Alert.alert('Erro', 'Erro ao buscar turmas, veja o console para mais detalhes.');
+            console.error('Erro ao buscar turmas:', error);
+            Alert.alert('Erro', 'Erro ao buscar turmas. Verifique o console para mais detalhes.');
         } finally {
-            setLoading(false); 
+            setLoading(false); // Encerrar o loading
         }
     };
+    
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -74,25 +74,26 @@ export default function ProfessorCadastro({navigation}) {
                 </View>
 
 
-            {loading ? (
-                <Text>Carregando...</Text>
-            ) : (
-                turmas.length > 0 ? (
-                    <FlatList
-                        data={turmas}
-                        keyExtractor={(item) => item.codigo.toString()} 
-                        renderItem={({ item }) => (
-                            <View style={styles.turmaItem}>
-                                <Text style={styles.turmaText}>Nome: {item.nome}</Text>
-                                <Text style={styles.turmaText}>Sala: {item.sala}</Text>
-                                <Text style={styles.turmaText}>Status: {item.status}</Text>
-                            </View>
-                        )}
-                    />
+                {loading ? (
+                    <Text>Carregando...</Text>
                 ) : (
-                   <Text></Text>
-                )
-            )}
+                    turmas && turmas.length > 0 ? (
+                        <FlatList
+                            data={turmas}
+                            keyExtractor={(item) => item.codigo.toString()}
+                            renderItem={({ item }) => (
+                                <View style={styles.turmaItem}>
+                                    <Text style={styles.turmaText}>Nome: {item.nome}</Text>
+                                    <Text style={styles.turmaText}>Sala: {item.sala}</Text>
+                                    <Text style={styles.turmaText}>Status: {item.status}</Text>
+                                </View>
+                            )}
+                        />
+                    ) : (
+                        <Text>Nenhuma turma encontrada.</Text>
+                    )
+                )}
+
 
            
 

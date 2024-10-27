@@ -9,37 +9,53 @@ import { Button } from 'react-native-paper';
 import { DatePickerModal, registerTranslation, pt,TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale'; // Garantir o uso do português, se necessário.
 
 registerTranslation('pt', pt)
 
-export default function FotoProfessor({ closeModal }) {
-    const [newcodturma, setNewcodturma] = useState([{label: "",value: ""}])
+export default function FotoProfessor({ closeModal, navigation }) {
+    const [newcodturma, setNewcodturma] = useState('')
+    const [dataturma, setDataturma] = useState([{label: "",value: ""}])
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
     const [newdata, setNewdata] = useState(undefined);
     const [open, setOpen] = useState(false);
-    const [visible, setVisible] = React.useState(false)
-    const [selectedTime, setSelectedTime] = useState({ hours: undefined, minutes: undefined });
+    const [timeOpen, setTimeOpen] = useState(false)
+    const [time, setTime] = useState({ hours: undefined, minutes: undefined });
 
     const [newdescricao, setNewdescricao] = useState('');
     const [newfoto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
-   
 
+    const maxFontSizeMultiplier = 1.5
+    // Exemplo de uso:
+    
+
+   
+    // Função para formatar a hora no formato brasileiro
+  const formatTime = () => {
+    if (time.hours === undefined || time.minutes === undefined) {
+      return 'Nenhum horário selecionado';
+    }
+    const horas = String(time.hours).padStart(2, '0');
+    const minutos = String(time.minutes).padStart(2, '0');
+    return `${horas}:${minutos}`;
+  };
+   
     async function fetchTurma(){
         try {
-            const response = await api.get('/turma')
-            console.log(response)
+            const response = await api.get('/turma') 
             const formattedData = response.data.map(item => ({
                 label: item.nome,  
                 value: item.codigo.toString() 
             }));
-            setNewcodturma(formattedData)
+            setDataturma(formattedData)
         } catch (error) {
             console.log(error)
         }
     }
+   
 
     useEffect(() => {
         fetchTurma()
@@ -56,20 +72,30 @@ export default function FotoProfessor({ closeModal }) {
         return null;
       };
 
-    const onDismiss = React.useCallback(() => {
-        setVisible(false)
-      }, [setVisible])
+      let timeDate = new Date();
+        if (time.hours !== undefined) {
+            timeDate.setHours(time.hours);
+        }
+        if (time.minutes !== undefined) {
+            timeDate.setMinutes(time.minutes);
+        }
+        console.log(timeDate); // Exibe a data/hora atualizada no console
+
+      
+      
+      const onConfirmTime = useCallback(({ hours, minutes }) => {
+        console.log('Horas:', hours, 'Minutos:', minutes); // Debug para garantir valores corretos
+        setTimeOpen(false); // Fechar o modal
+        setTime({ hours, minutes }); // Atualizar o estado com a hora e minutos selecionados
+      }, []);
     
-      const onConfirm = React.useCallback(
-        ({ hours, minutes }) => {
-          setVisible(false);
-          console.log({ hours, minutes });
-        },
-        [setVisible]
-      );
+      const onDismissTime = useCallback(() => {
+        setTimeOpen(false); // Fechar o modal sem selecionar nada
+      }, []);
+      
 
     const validateFields = () => {
-        return newcodturma && newdata && selectedTime && newdescricao &&  newfoto;
+        return newcodturma && newdata && newdata && time && newdescricao &&  newfoto;
     };
 
     const pickImage = async () => {
@@ -111,30 +137,43 @@ export default function FotoProfessor({ closeModal }) {
         }
 
         try {
-            const formattedDate = format(new Date(newdata), 'yyyy-MM-dd');
-            const dataHora = `${formattedDate} ${String(selectedTime.hours).padStart(2, '0')}:${String(selectedTime.minutes).padStart(2, '0')}:00`;
+           // Formatar a data selecionada para 'yyyy-MM-dd'
+            const formattedDate = format(new Date(newdata), 'yyyy-MM-dd', { locale: ptBR });
 
+            // Garantir que a hora e minuto selecionados sejam formatados corretamente
+            const formattedTime = `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}:00`;
+
+            // Concatenar a data e hora para o formato final
+            const dataHora = `${formattedDate} ${formattedTime}`;
+
+            console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
             const newItem = {
                 codturma: newcodturma,
                 datahora: dataHora,
                 descricao: newdescricao,
                 foto: newfoto,
-                status: 1
             };
             await api.post('/fotos', newItem);
-            Alert.alert('Cadastro Fotos', 'Fotos adicionado com sucesso!', [
-                {
+            Alert.alert(
+                'Cadastro Fotos',
+                'Fotos adicionado com sucesso!',
+                [
+                  {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
-                },
-                {
+                  },
+                  {
                     text: 'OK',
-                    onPress: () => closeModal('Fotos adicionado com sucesso!')
-                },
-            ]);
+                    onPress: () => {
+                        navigation.navigate('HomeProfessor'); // Navegar para HomeProfessor
+                    },
+                  },
+                ]
+              );
         } catch (error) {
             console.error('Erro ao adicionar Fotos:', error);
+            console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
             setFeedbackMessage('Erro ao adicionar o Fotos. Tente novamente.');
         }
     };
@@ -155,7 +194,7 @@ export default function FotoProfessor({ closeModal }) {
                     selectedTextStyle={styles.selectedTextStyle}
                     inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
-                    data={newcodturma}
+                    data={dataturma}
                     search
                     maxHeight={300}
                     labelField="label"
@@ -183,38 +222,61 @@ export default function FotoProfessor({ closeModal }) {
     
 
                 <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data Hora:</Text>
-                    <SafeAreaProvider>
-                    <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                        <Text> Escolher data</Text>
-                        </Button>
-                        <DatePickerModal
-                        locale="pt"
-                        mode="single"
-                        visible={open}
-                        onDismiss={onDismissSingle}
-                        date={newdata}
-                        onConfirm={onConfirmSingle}
-                        />
-                    </View>
+                            <Text style={styles.label}>Data Hora:</Text>
+                        <SafeAreaProvider>
+                        <View style={styles.timeContainer}>
+                        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                            <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined" style={styles.timeButton}>
+                            <Text> Escolher Data </Text>
+                            </Button>
+                            <DatePickerModal
+                            locale="pt"
+                            mode="single"
+                            visible={open}
+                            onDismiss={onDismissSingle}
+                            date={newdata}
+                            onConfirm={onConfirmSingle}
+                            />
+                        </View>
+                        <View>
+                            <Text>
+                               Data selecionada: {newdata ? format(newdata, 'dd/MM/yyyy', { locale: ptBR }) : 'Nenhuma data selecionada'}
+                            </Text>
+                        </View>
 
-                    <View style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
-                        <Button onPress={() => setVisible(true)} uppercase={false} mode="outlined">
-                        Escolher tempo
-                        </Button>
-                        <TimePickerModal
-                        visible={visible}
-                        onDismiss={onDismiss}
-                        onConfirm={onConfirm}
-                        hours={12}
-                        minutes={14}
-                        />
+                        <View style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+                            <Button onPress={() => setTimeOpen(true)} uppercase={false} mode="outlined" style={styles.timeButton}>
+                            {/* mode="contained-tonal" */}
+                            Escolher tempo
+                            </Button>
+                            <TimePickerModal
+                            locale="pt"
+                            visible={timeOpen}
+                            onDismiss={onDismissTime}
+                            onConfirm={onConfirmTime}
+                            hours={time.hours}
+                            minutes={time.minutes}
+                            />
+                        </View>
+                        <View>
+                        <Text style={{ fontSize: 18, marginTop: 20 }}>
+                            Horário selecionado: {formatTime()}
+                        </Text>
                     </View>
+                        </View>
 
-                    </SafeAreaProvider>
-                    </View>
+                        </SafeAreaProvider>
+                        </View>
 
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Descrição:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Digite uma descrição'
+                        value={newfoto}
+                        onChangeText={setNewfoto}
+                    />
+                </View>
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Descrição:</Text>
                     <TextInput
@@ -224,13 +286,13 @@ export default function FotoProfessor({ closeModal }) {
                         onChangeText={setNewdescricao}
                     />
                 </View>
-                <View style={styles.inputGroup}>
+                {/* <View style={styles.inputGroup}>
                     <Text style={styles.label}>Foto:</Text>
                     <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                         <Text style={styles.imagePickerText}>Escolher Foto</Text>
                     </TouchableOpacity>
                     {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
-                </View>
+                </View> */}
                 <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
                     <Text style={styles.btnTxt}>Cadastrar</Text>
                 </TouchableOpacity>
@@ -303,5 +365,12 @@ const styles = StyleSheet.create({
       },
       icon: {
         marginRight: 5,
+      },
+      timeContainer: {
+        marginTop: 20, // Espaçamento entre este grupo e o próximo bloco
+        marginBottom: 20, // Espaçamento entre este grupo e o próximo bloco
+      },
+      timeButton: {
+        marginVertical: 10, // Espaçamento vertical entre os botões
       },
 });
