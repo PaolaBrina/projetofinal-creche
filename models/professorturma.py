@@ -9,14 +9,14 @@ class professorturma(db.Model):
             'codturma': self.codturma,
             'codprofessor': self.codprofessor,
             'codturma': self.codturma,
-            'periodo': self.alergia,
+            'periodo': self.periodo,
         }
     
     codigo = db.Column(db.Integer, primary_key=True)
     codturma = db.Column(ForeignKey('turma.codigo'))
     codprofessor = db.Column(ForeignKey('professor.codigo'))
     codauxiliar = db.Column(ForeignKey('auxiliar.codigo'))
-    periodo = db.Column(db.String('50'))
+    periodo = db.Column(db.String('100'))
 
     turma = relationship('turma', backref='professorturma')
     professor = relationship('professor', backref='professorturma')

@@ -22,7 +22,7 @@ def professorturmaController():
                 new = {'professorturma': [professorturma.to_dict() for professorturma in data]}
                 return new, 200
             except Exception as e:
-                return 'nao foi possivel buscar professorturma. {}'.format(str(e)), 404
+                return 'Não foi possivel buscar professorturma. {}'.format(str(e)), 404
 
 
         elif request.method == 'DELETE':
