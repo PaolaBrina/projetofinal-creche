@@ -16,6 +16,10 @@ import TurmaCadastro from './src/pages/Colaborador/TurmaCadastro';
 import TurmaAdicionar from './src/pages/Colaborador/TurmaAdicionar';
 import AuxiliarCadastro from './src/pages/Colaborador/AuxiliarCadastro';
 import AuxiliarAdicionar from './src/pages/Colaborador/AuxiliarAdicionar';
+import ListaMaterialCadastro from './src/pages/Colaborador/ListaMaterialCadastro';
+import ListaMaterialAdicionar from './src/pages/Colaborador/ListaMaterialAdicionar';
+import calendarioCadastro from './src/pages/Colaborador/calendarioCadastro';
+import calendarioAdicionar from './src/pages/Colaborador/calendarioAdicionar';
 /* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
 import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
@@ -47,6 +51,10 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='TurmaAdicionar' component={TurmaAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AuxiliarCadastro' component={AuxiliarCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AuxiliarAdicionar' component={AuxiliarAdicionar}/>
+          <Stack.Screen options={{headerShown:false}} name='ListaMaterialAdicionar' component={ListaMaterialAdicionar}/>
+          <Stack.Screen options={{headerShown:false}} name='ListaMaterialCadastro' component={ListaMaterialCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='calendarioCadastro' component={calendarioCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='calendarioAdicionar' component={calendarioAdicionar}/>
 
           <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={HomeProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>

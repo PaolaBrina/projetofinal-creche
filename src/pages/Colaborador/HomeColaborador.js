@@ -39,13 +39,17 @@ export default function HomeColaborador({navigation}) {
       <Text style={styles.buttonText}>Avisos </Text>
     </TouchableOpacity>
 
-    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')}>
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('calendarioCadastro')}>
       <Text style={styles.buttonText}>Calendário </Text>
     </TouchableOpacity>
     </View>
 
     <View style={styles.row}>
     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AuxiliarCadastro')}>
+      <Text style={styles.buttonText}>Auxiliar </Text>
+    </TouchableOpacity>
+
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListaMaterialCadastro')}>
       <Text style={styles.buttonText}>Auxiliar </Text>
     </TouchableOpacity>
     </View>
