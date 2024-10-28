@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
-import calendarioAdicionar from './calendarioAdicionar';
+import CalendarioAdicionar from './CalendarioAdicionar';
 
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function calendarioCadastro({navigation}) {
+export default function CalendarioCadastro({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [calendario, setCalendario] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -112,7 +112,7 @@ export default function calendarioCadastro({navigation}) {
                         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
-                        <calendarioAdicionar closeModal={closeModal} />
+                        <CalendarioAdicionar closeModal={closeModal} />
                     </View>
                 </View>
             </Modal>

@@ -1,10 +1,8 @@
 import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { api } from '../../api/api';
-import { Dropdown } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function calendarioAdicionar({ closeModal }) {
+export default function CalendarioAdicionar({ closeModal }) {
     const [foto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const validateFields = () => {
