@@ -7,7 +7,7 @@ def professorturmaController():
             try: 
                 data = request.get_json()
                 print(data)
-                professorturmas = professorturma(data['codturma'],data['codprofessor'],data['codauxiliar'])
+                professorturmas = professorturma(data['codturma'],data['codprofessor'],data['codauxiliar'],data['periodo'])
                 db.session.add(professorturmas)
                 db.session.commit()
                 return 'professorturma criado com sucesso', 200 
@@ -50,6 +50,7 @@ def professorturmaController():
               professorturmas.codturma = data.get('codturma', professorturmas.codturma)
               professorturmas.codprofessor = data.get('codprofessor', professorturmas.codprofessor)
               professorturmas.codauxiliar = data.get('codauxiliar', professorturmas.codauxiliar)
+              professorturmas.periodo = data.get('periodo', professorturmas.periodo)
 
               db.session.commit()
               return 'professorturma atualizado com sucesso', 200 
