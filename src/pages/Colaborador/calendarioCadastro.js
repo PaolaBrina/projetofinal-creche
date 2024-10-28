@@ -85,7 +85,7 @@ export default function CalendarioCadastro({navigation}) {
             {loading ? (
                 <Text>Carregando...</Text>
             ) : (
-                horarios.length > 0 ? (
+                calendario.length > 0 ? (
                     <FlatList
                         data={calendario}
                         keyExtractor={(item) => item.codigo.toString()} 

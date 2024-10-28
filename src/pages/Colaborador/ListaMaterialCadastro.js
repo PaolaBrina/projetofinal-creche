@@ -85,7 +85,7 @@ export default function ListaMaterialCadastro({navigation}) {
             {loading ? (
                 <Text>Carregando...</Text>
             ) : (
-                horarios.length > 0 ? (
+                listamaterial.length > 0 ? (
                     <FlatList
                         data={listamaterial}
                         keyExtractor={(item) => item.codigo.toString()} 

@@ -6,14 +6,14 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function ListaMaterialAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
-    const [foto, setNewfoto] = useState('');
+    const [newfoto, setNewfoto] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const [dataturma, setDataturma] = useState([{label: "",value: ""}])
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
     const validateFields = () => {
-        if (!newcodturma || !foto) {
+        if (!newcodturma || !newfoto) {
             return false;
         }
         return true;

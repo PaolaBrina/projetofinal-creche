@@ -21,7 +21,7 @@ export default function CalendarioAdicionar({ closeModal }) {
 
         try {
             const newItem = {
-                sala: foto,
+                foto: foto,
             };
             const response = await api.post('/calendario', newItem);
             const data = response.data;
@@ -47,7 +47,7 @@ export default function CalendarioAdicionar({ closeModal }) {
         <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.form}>
                 <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Sala:</Text>
+                    <Text style={styles.label}>Foto:</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Adicione foto"
