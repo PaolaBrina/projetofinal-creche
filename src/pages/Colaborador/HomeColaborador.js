@@ -50,7 +50,7 @@ export default function HomeColaborador({navigation}) {
     </TouchableOpacity>
 
     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListaMaterialCadastro')}>
-      <Text style={styles.buttonText}>Auxiliar </Text>
+      <Text style={styles.buttonText}>Lista de Materiais </Text>
     </TouchableOpacity>
     </View>
 

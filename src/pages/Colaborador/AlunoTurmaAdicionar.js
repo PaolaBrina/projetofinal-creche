@@ -10,17 +10,14 @@ const periodos = [
   ];
 
 
-export default function ProfTurmaCadastro({ closeModal }) {
+export default function AlunoTurmaCadastro({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
-    const [newcodprofessor, setNewcodprofessor] = useState('');
-    const [newcodauxiliar, setNewcodauxiliar] = useState('');
-    const [newPeriodo, setNewPeriodo] = useState('');
+    const [newcodaluno, setNewcodaluno] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [dataturma, setDataturma] = useState([{label: "",value: ""}])
-    const [dataprofessor, setDataprofessor] = useState([{label: "",value: ""}])
-    const [datauxiliar, setDatauxiliar] = useState([{label: "",value: ""}])
+    const [dataAluno, setDataAluno] = useState([{label: "",value: ""}])
 
     async function fetchTurma(){
         try {
@@ -36,30 +33,15 @@ export default function ProfTurmaCadastro({ closeModal }) {
         }
     }
 
-    async function fetchProfessor(){
+    async function fetchAluno(){
         try {
-            const response = await api.get('/professor')
-            console.log("Professor: ", response.dataprofessor)
-            const formattedData = response.data.professor.map(item => ({
+            const response = await api.get('/aluno')
+            console.log("Aluno: ", response.data.aluno)
+            const formattedData = response.data.aluno.map(item => ({
                 label: item.nome,  
                 value: item.codigo.toString() 
             }));
-            setDataprofessor(formattedData)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async function fetchAuxiliar(){
-        try {
-            const response = await api.get('/auxiliar')
-            console.log("Auxiliar: ", response.datauxiliar)
-            const formattedData = response.data.auxiliar.map(item => ({
-                label: item.nome,  
-
-                value: item.codigo.toString() 
-            }));
-            setDatauxiliar(formattedData)
+            setDataAluno(formattedData)
         } catch (error) {
             console.log(error)
         }
@@ -67,45 +49,42 @@ export default function ProfTurmaCadastro({ closeModal }) {
 
     useEffect(() => {
         fetchTurma()
-        fetchProfessor()
-        fetchAuxiliar()
+        fetchAluno()
     },[])
 
     const validateFields = () => {
-        if (!newcodturma || !newcodprofessor || !newcodauxiliar || !newPeriodo) {
+        if (!newcodturma || !newcodaluno) {
             return false;
         }
         return true;
     };
 
-    const CadProfTurma = async () => {
+    const CadAlunoTurma = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
             return;
         }
+
         try {
             const newItem = {
                 codturma: newcodturma,
-                codprofessor: newcodprofessor,
-                codauxiliar: newcodauxiliar,
-                periodo: newPeriodo,
+                codaluno: newcodaluno,
             };
-            const response = await api.post('/professorturma', newItem);
+            const response = await api.post('/alunoturma', newItem);
             //const data = response.data;
 
-            Alert.alert('Cadastro ProfTurma', 'ProfTurma adicionada com sucesso!', [
+            Alert.alert('Cadastro AlunoTurma', 'AlunoTurma adicionada com sucesso!', [
                 {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
-                {text: 'OK', onPress: () => closeModal('ProfTurma adicionada com sucesso!')
+                {text: 'OK', onPress: () => closeModal('AlunoTurma adicionada com sucesso!')
             },
                 ]);
         } catch (error) {
-            console.log("1",newcodturma,"2",newcodprofessor,"3",newcodauxiliar,"4",newPeriodo)
-            console.error('Erro ao adicionar profturma:', error);
-            setFeedbackMessage('Erro ao adicionar o profturma. Tente novamente.');
+            console.error('Erro ao adicionar AlunoTurma:', error);
+            setFeedbackMessage('Erro ao adicionar o AlunoTurma. Tente novamente.');
         }
     };
 
@@ -161,7 +140,7 @@ export default function ProfTurmaCadastro({ closeModal }) {
                 </View> 
                 </View>
                 <View style={styles.inputGroup}>
-                    <Text style={styles.label}>codigo professor:</Text>
+                    <Text style={styles.label}>Codigo Aluno:</Text>
                     <View style={styles.container}>
                     {renderLabel()}
                     <Dropdown
@@ -170,18 +149,18 @@ export default function ProfTurmaCadastro({ closeModal }) {
                     selectedTextStyle={styles.selectedTextStyle}
                     inputSearchStyle={styles.inputSearchStyle}
                     iconStyle={styles.iconStyle}
-                    data={dataprofessor}
+                    data={dataAluno}
                     search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder={!isFocus ? 'Selecione item' : '...'}
                     searchPlaceholder="Procurar..."
-                    value={newcodprofessor}
+                    value={newcodaluno}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
                     onChange={item => {
-                        setNewcodprofessor(item.value);
+                        setNewcodaluno(item.value);
                         setIsFocus(false);
                     }}
                     renderLeftIcon={() => (
@@ -194,81 +173,8 @@ export default function ProfTurmaCadastro({ closeModal }) {
                     )}
                     />
                 </View> 
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Digite o codigo auxiliar:</Text>
-                    <View style={styles.container}>
-                    {renderLabel()}
-                    <Dropdown
-                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
-                    iconStyle={styles.iconStyle}
-                    data={datauxiliar}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={!isFocus ? 'Selecione item' : '...'}
-                    searchPlaceholder="Procurar..."
-                    value={newcodauxiliar}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
-                    onChange={item => {
-                        setNewcodauxiliar(item.value);
-                        setIsFocus(false);
-                    }}
-                    renderLeftIcon={() => (
-                        <AntDesign
-                        style={styles.icon}
-                        color={isFocus ? 'blue' : 'black'}
-                        name="Safety"
-                        size={20}
-                        />
-                    )}
-                    />
                 </View> 
-
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Período:</Text>
-                    <View style={styles.container}>
-                    {renderLabel()}
-                    <Dropdown
-                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
-                    iconStyle={styles.iconStyle}
-                    data={periodos}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={!isFocus ? 'Selecione período' : '...'}
-                    searchPlaceholder="Procurar..."
-                    value={newPeriodo}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
-                    onChange={item => {
-                        setNewPeriodo(item.label);
-                        setIsFocus(false);
-                    }}
-                    renderLeftIcon={() => (
-                        <AntDesign
-                        style={styles.icon}
-                        color={isFocus ? 'blue' : 'black'}
-                        name="Safety"
-                        size={20}
-                        />
-                    )}
-                    />
-                </View> 
-                </View>
-
-                
-                </View>
-                <TouchableOpacity style={styles.btnLogin} onPress={CadProfTurma}>
+                <TouchableOpacity style={styles.btnLogin} onPress={CadAlunoTurma}>
                     <Text style={styles.btnTxt}>Cadastrar</Text>
                 </TouchableOpacity>
             </View>

@@ -3,6 +3,7 @@ import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView ,viewbutton } from 'react-native';
 import TurmaAdicionar from './TurmaAdicionar';
 import ProfTurmaCadastro from './ProfTurmaCadastro';
+import AlunoTurmaCadastro from './AlunoTurmaAdicionar';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -25,6 +26,11 @@ export default function ProfessorCadastro({navigation}) {
     
     const openProfTurmaModal = () => {
         setModalContent('profTurma');
+        setModalVisible(true);
+    };
+
+    const openAlunoTurmaModal = () => {
+        setModalContent('alunoTurma');
         setModalVisible(true);
     };
     
@@ -71,6 +77,9 @@ export default function ProfessorCadastro({navigation}) {
                     <TouchableOpacity style={styles.button} onPress={openProfTurmaModal}>
                         <Text style={styles.buttonText}>Adicionar Professor Turma</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={openAlunoTurmaModal}>
+                        <Text style={styles.buttonText}>Adicionar Aluno Turma</Text>
+                    </TouchableOpacity>
                 </View>
 
 
@@ -110,6 +119,7 @@ export default function ProfessorCadastro({navigation}) {
                         </TouchableOpacity>
                         {modalContent === 'turma' && <TurmaAdicionar closeModal={closeModal} />}
                         {modalContent === 'profTurma' && <ProfTurmaCadastro closeModal={closeModal} />}
+                        {modalContent === 'alunoTurma' && <AlunoTurmaCadastro closeModal={closeModal} />}
                     </View>
                 </View>
             </Modal>
