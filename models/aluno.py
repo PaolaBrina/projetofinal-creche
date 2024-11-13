@@ -21,7 +21,7 @@ class aluno(db.Model):
     datanascimento = db.Column(db.Date)
     sexo = db.Column(db.String('50'))
     endereco = db.Column(db.String('100'))
-    foto = db.Column(db.String('100'))
+    foto = db.Column(db.Text)
     status = db.Column(db.Boolean)
 
     responsavel = relationship('responsavel', backref='aluno')

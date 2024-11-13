@@ -12,7 +12,7 @@ class horario(db.Model):
     
     codigo = db.Column(db.Integer, primary_key=True)
     codturma = db.Column(ForeignKey('turma.codigo'))
-    foto = db.Column(db.String('100'))
+    foto = db.Column(db.String('4000'))
 
     turma = relationship('turma', backref='horario')
 
