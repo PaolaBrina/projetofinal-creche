@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView,Image  } from 'react-native';
 import AlunoAdicionar from './AlunoAdicionar';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -72,6 +72,12 @@ export default function AlunoCadastro({navigation}) {
                                 <Text style={styles.alunoText}>Nome: {item.nome}</Text>
                                 <Text style={styles.alunoText}>Data de Nascimento: {item.datanascimento}</Text>
                                 <Text style={styles.alunoText}>Sexo: {item.sexo}</Text>
+                                {item.foto && (
+                                    <Image
+                                        source={{ uri: `data:image/jpeg;base64,${item.foto}` }}
+                                        style={styles.alunoImage}
+                                    />
+                                )}
                                 <Text style={styles.alunoText}>Endereço: {item.endereco}</Text>
                                 <Text style={styles.alunoText}>Status: {item.status}</Text>
                             </View>
@@ -171,5 +177,12 @@ const styles = StyleSheet.create({
     closeButtonText: {
         fontSize: 18,
         color: 'red',
+    },
+    alunoImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 10,
+        marginTop: 10,
+        alignSelf: 'center'
     },
 });

@@ -19,7 +19,7 @@ import AuxiliarAdicionar from './src/pages/Colaborador/AuxiliarAdicionar';
 import ListaMaterialCadastro from './src/pages/Colaborador/ListaMaterialCadastro';
 import ListaMaterialAdicionar from './src/pages/Colaborador/ListaMaterialAdicionar';
 import CalendarioAdicionar from './src/pages/Colaborador/CalendarioAdicionar';
-import CalendarioCadastro from  './src/pages/Colaborador/CalendarioCadastro';
+import CalendarioCadastro from './src/pages/Colaborador/CalendarioCadastro';
 /* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
 import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';

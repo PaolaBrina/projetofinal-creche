@@ -1,61 +1,94 @@
-import React, { useState, useCallback  } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform, PermissionsAndroid } from 'react-native';
 import { api } from '../../api/api';
 import * as ImagePicker from 'expo-image-picker';
 import { Button } from 'react-native-paper';
-import { DatePickerModal, registerTranslation, pt} from 'react-native-paper-dates';
+import { DatePickerModal, registerTranslation, pt } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { format } from 'date-fns';
 
-registerTranslation('pt', pt)
+registerTranslation('pt', pt);
 
 export default function AlunoAdicionar({ closeModal }) {
     const [newcodresponsavel, setNewcodresponsavel] = useState('');
     const [newnome, setNewnome] = useState('');
-        
     const [newdatanascimento, setNewdatanascimento] = useState(undefined);
     const [open, setOpen] = useState(false);
-  
     const [newsexo, setNewsexo] = useState('');
     const [newendereco, setNewendereco] = useState('');
     const [newfoto, setNewfoto] = useState('');
+    const [base64Image, setBase64Image] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
 
-
     const validateFields = () => {
-        return newcodresponsavel && newnome && newdatanascimento && newsexo && newendereco && newfoto;
+        return newcodresponsavel && newnome && newdatanascimento && newsexo && newendereco && base64Image;
+    };
+
+    useEffect(() => {
+        requestPermissions();
+    }, []);
+
+    const requestPermissions = async () => {
+        if (Platform.OS === 'android') {
+            const cameraPermission = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+                {
+                    title: "Permissão de Câmera",
+                    message: "Este aplicativo precisa de acesso à câmera para selecionar fotos.",
+                    buttonNeutral: "Perguntar Depois",
+                    buttonNegative: "Cancelar",
+                    buttonPositive: "OK"
+                }
+            );
+
+            const storagePermission = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                {
+                    title: "Permissão de Armazenamento",
+                    message: "Este aplicativo precisa de acesso à galeria para selecionar fotos.",
+                    buttonNeutral: "Perguntar Depois",
+                    buttonNegative: "Cancelar",
+                    buttonPositive: "OK"
+                }
+            );
+
+            if (cameraPermission !== PermissionsAndroid.RESULTS.GRANTED || storagePermission !== PermissionsAndroid.RESULTS.GRANTED) {
+                alert("As permissões para câmera e armazenamento são necessárias.");
+            }
+        } else {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Permissão para acessar a câmera é necessária!');
+            }
+        }
     };
 
     const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permissionResult.granted) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
+            base64: true, // Adiciona a opção de base64
         });
 
         if (!result.canceled) {
-            setNewfoto(result.assets[0].uri);
+            setNewfoto(result.assets[0].uri); // URI da imagem para visualização
+            setBase64Image(result.assets[0].base64); // Salva a imagem em base64
         }
     };
 
     const onDismissSingle = useCallback(() => {
         setOpen(false);
-      }, [setOpen]);
-    
-      const onConfirmSingle = useCallback(
+    }, [setOpen]);
+
+    const onConfirmSingle = useCallback(
         (params) => {
-          setOpen(false);
-          setNewdatanascimento(params.date); // Armazenar a data selecionada
+            setOpen(false);
+            setNewdatanascimento(params.date);
         },
         [setOpen, setNewdatanascimento]
-      );
+    );
 
     const CadAluno = async () => {
         if (!validateFields()) {
@@ -63,15 +96,15 @@ export default function AlunoAdicionar({ closeModal }) {
             return;
         }
         try {
-            const formattedDate = format(new Date(newdatanascimento), 'yyyy-MM-dd'); // Formata a data para 'YYYY-MM-DD'
+            const formattedDate = format(new Date(newdatanascimento), 'yyyy-MM-dd');
 
             const newItem = {
                 codresponsavel: newcodresponsavel,
                 nome: newnome,
-                datanascimento: formattedDate, // Data formatada
+                datanascimento: formattedDate,
                 sexo: newsexo,
                 endereco: newendereco,
-                foto: newfoto,
+                foto: base64Image, // Envia a imagem em base64 para o backend
                 status: 1
             };
             await api.post('/aluno', newItem);
@@ -118,23 +151,23 @@ export default function AlunoAdicionar({ closeModal }) {
                 </View>
 
                 <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Data de Nascimento:</Text>
+                    <Text style={styles.label}>Data de Nascimento:</Text>
                     <SafeAreaProvider>
-                    <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                        <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                        <Text> Escolher data de nascimento </Text>
-                        </Button>
-                        <DatePickerModal
-                        locale="pt"
-                        mode="single"
-                        visible={open}
-                        onDismiss={onDismissSingle}
-                        date={newdatanascimento}
-                        onConfirm={onConfirmSingle}
-                        />
-                    </View>
+                        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                            <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                                <Text> Escolher data de nascimento </Text>
+                            </Button>
+                            <DatePickerModal
+                                locale="pt"
+                                mode="single"
+                                visible={open}
+                                onDismiss={onDismissSingle}
+                                date={newdatanascimento}
+                                onConfirm={onConfirmSingle}
+                            />
+                        </View>
                     </SafeAreaProvider>
-                    </View>
+                </View>
 
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
@@ -161,6 +194,7 @@ export default function AlunoAdicionar({ closeModal }) {
                     </TouchableOpacity>
                     {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
                 </View>
+
                 <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
                     <Text style={styles.btnTxt}>Cadastrar</Text>
                 </TouchableOpacity>
@@ -223,7 +257,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 10
-    }
+    },
+    imagePicker: {
+        width: '100%',
+        height: 50,
+        backgroundColor: '#ccc', // Cor cinza
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    imagePickerText: {
+        color: '#333', // Cor do texto
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    image: {
+        width: '100%',
+        height: 200,
+        marginTop: 10,
+        borderRadius: 10,
+    },
 });
 
 /* 
