@@ -41,27 +41,6 @@ export default function HorarioCadastro({navigation}) {
         }
     };
 
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setNewfoto(result.assets[0].uri);
-        }
-    };
-
-
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <ScrollView contentContainerStyle={styles.scrollView}>
@@ -90,17 +69,10 @@ export default function HorarioCadastro({navigation}) {
                         data={horarios}
                         keyExtractor={(item) => item.codigo.toString()} 
                         renderItem={({ item }) => (
-                            <View style={styles.professorItem}>
-                                <Text style={styles.professorText}>Nome: {item.nome}</Text>
-                                <Text style={styles.professorText}>CPF: {item.cpf}</Text>
-                                <Text style={styles.professorText}>Data de Nascimento: {item.datanascimento}</Text>
-                                <Text style={styles.professorText}>Sexo: {item.sexo}</Text>
-                                <Text style={styles.professorText}>Email: {item.email}</Text>
-                                <Text style={styles.professorText}>Endereço: {item.endereco}</Text>
-                                <Text style={styles.professorText}>Telefone: {item.telefone}</Text>
-                                <Text style={styles.professorText}>Login: {item.login}</Text>
-                                <Text style={styles.professorText}>Senha: {item.senha}</Text>
-                                <Text style={styles.professorText}>Status: {item.status}</Text>
+                            <View style={styles.horarioText}>
+                                <Text style={styles.horarioText}>Codturma: {item.codturma}</Text>
+                                <Text style={styles.horarioText}>CPF: {item.cpf}</Text>
+                                <Text style={styles.horarioText}>Data de Nascimento: {item.datanascimento}</Text>
                             </View>
                         )}
                     />
@@ -170,14 +142,14 @@ const styles = StyleSheet.create({
         marginTop: 20,
         paddingHorizontal: 20,
     },
-    professorItem: {
+    horarioText: {
         padding: 15,
         backgroundColor: '#fff',
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
         width: '100%',
     },
-    professorText: {
+    horarioText: {
         fontSize: 16,
     },
     modalBackground: {
