@@ -7,6 +7,8 @@ import HomeSelecao from './src/pages/HomeSelecao';
 import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
 import AlunoCadastro from './src/pages/Colaborador/AlunoCadastro';
 import AlunoAdicionar from './src/pages/Colaborador/AlunoAdicionar';
+import AlunoEditar from './src/pages/Colaborador/AlunoEditar';
+
 import HorarioCadastro from './src/pages/Colaborador/HorarioCadastro';
 import HorarioAdicionar from './src/pages/Colaborador/HorarioAdicionar';
 import ProfessorCadastro from './src/pages/Colaborador/ProfessorCadastro';
@@ -42,6 +44,7 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='HomeColaborador' component={HomeColaborador}/> 
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoAdicionar' component={AlunoAdicionar}/>
+          <Stack.Screen options={{headerShown:false}} name='AlunoEditar' component={AlunoEditar}/>
           <Stack.Screen options={{headerShown:false}} name='HorarioCadastro' component={HorarioCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='HorarioAdicionar' component={HorarioAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='ProfessorCadastro' component={ProfessorCadastro}/>

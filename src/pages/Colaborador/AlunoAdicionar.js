@@ -9,6 +9,51 @@ import { format } from 'date-fns';
 
 registerTranslation('pt', pt);
 
+const RadioButton = ({ selectedOption, setSelectedOption }) => {
+  const options = [
+    { label: 'Feminino', value: 'feminino' },
+    { label: 'Masculino', value: 'masculino' },
+    { label: 'Outro', value: 'outro' },
+  ];
+
+  return (
+    <View>
+      {options.map((option) => (
+        <TouchableOpacity
+          key={option.value}
+          onPress={() => setSelectedOption(option.value)}
+          style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}
+        >
+          <View
+            style={{
+              height: 20,
+              width: 20,
+              borderRadius: 10,
+              borderWidth: 2,
+              borderColor: '#000',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: 10,
+            }}
+          >
+            {selectedOption === option.value && (
+              <View
+                style={{
+                  height: 10,
+                  width: 10,
+                  borderRadius: 5,
+                  backgroundColor: '#000',
+                }}
+              />
+            )}
+          </View>
+          <Text>{option.label}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
 export default function AlunoAdicionar({ closeModal }) {
     const [newcodresponsavel, setNewcodresponsavel] = useState('');
     const [newnome, setNewnome] = useState('');
@@ -97,6 +142,7 @@ export default function AlunoAdicionar({ closeModal }) {
         }
         try {
             const formattedDate = format(new Date(newdatanascimento), 'yyyy-MM-dd');
+            console.log("1",newcodresponsavel,"2",newnome,"3",formattedDate,"4",newsexo,"5",newendereco,"6",base64Image)
 
             const newItem = {
                 codresponsavel: newcodresponsavel,
@@ -120,6 +166,7 @@ export default function AlunoAdicionar({ closeModal }) {
                 },
             ]);
         } catch (error) {
+            console.log("1",newcodresponsavel,"2",newnome,"3",formattedDate,"4",newsexo,"5",newendereco,"6",base64Image)
             console.error('Erro ao adicionar aluno:', error);
             setFeedbackMessage('Erro ao adicionar o aluno. Tente novamente.');
         }
@@ -171,13 +218,9 @@ export default function AlunoAdicionar({ closeModal }) {
 
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Digite o sexo'
-                        value={newsexo}
-                        onChangeText={setNewsexo}
-                    />
+                    <RadioButton selectedOption={newsexo} setSelectedOption={setNewsexo} />
                 </View>
+
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Endereco:</Text>
                     <TextInput
