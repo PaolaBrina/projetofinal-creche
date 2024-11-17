@@ -21,6 +21,7 @@ def auxiliarController():
             try:
                 data = auxiliar.query.all()
                 new = {'auxiliar': [auxiliar.to_dict() for auxiliar in data]}
+                print(new)
                 return new, 200
 
             except Exception as e:
