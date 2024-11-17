@@ -1,31 +1,41 @@
-import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image, Alert } from 'react-native';
+import { useState, useContext } from 'react';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Alert } from 'react-native';
+import { AuthContext } from "./AuthContext";
 import { api } from '../api/api';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function Login({ navigation }) {
   const [telefone, setTelefone] = useState('');
+  const { login } = useContext(AuthContext); 
+
+  const storeUserData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+      console.log(`${key} salvo no AsyncStorage!`);
+      console.log(value)
+    } catch (error) {
+      console.error('Erro ao salvar no AsyncStorage:', error);
+    }
+  };
 
   const handleLogin = async () => {
-    console.log(1)
     try {
-      const response = await api.post('/login', {telefone})
-      console.log(response.data)
-      console.log(3)
-      const { status, data } = response.data;
+      const response = await api.post('/login', { telefone });
+      const { status, data, nome, codigo } = response.data;
+
       switch (status) {
         case 'multi':
+          await storeUserData('userData', { telefone, roles: data, nome, codigo });
+          login({ telefone, roles: data });
           navigation.navigate('HomeSelecao', { data });
           break;
         case 'responsavel':
-          navigation.navigate('HomeResponsavel');
-          break;
         case 'professor':
-          navigation.navigate('HomeProfessor');
-          break;
         case 'colaborador':
-          navigation.navigate('HomeColaborador');
+          await storeUserData('userData', { telefone, role: status, nome, codigo });
+          login({ telefone, role: status });
+          navigation.navigate(`Home${status.charAt(0).toUpperCase() + status.slice(1)}`);
           break;
         case 'nao_encontrado':
         default:
@@ -33,7 +43,7 @@ export default function Login({ navigation }) {
           break;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };
@@ -45,20 +55,20 @@ export default function Login({ navigation }) {
         </View> 
     
         <View style={styles.viewTxt}>
-          <Text style={styles.txt}>Insira seu número de celular para que possamos enviar um codigo de confirmação.</Text>
+          <Text style={styles.txt}>Insira seu número de celular para que possamos enviar um código de confirmação.</Text>
         </View>
 
         <View style={styles.containerLogin}>
-        <View style={styles.inputContainer}>
-          <FontAwesome name="phone" size={24} color="white" style={styles.icon} />
-          <TextInput
-              style={styles.input}
-              placeholder="Telefone"
-              value={telefone}
-              onChangeText={setTelefone}
-              inputMode="tel"
-            />
-        </View>
+          <View style={styles.inputContainer}>
+            <FontAwesome name="phone" size={24} color="white" style={styles.icon} />
+            <TextInput
+                style={styles.input}
+                placeholder="Telefone"
+                value={telefone}
+                onChangeText={setTelefone}
+                inputMode="tel"
+              />
+          </View>
 
           <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
             <Text style={styles.btnTxt}>Entrar</Text>
@@ -141,21 +151,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-/* 
-import { TextInputMask } from 'react-native-masked-text'; // Importa a biblioteca para máscara
-
-          <FontAwesome name="phone" size={24} color="white" style={styles.icon} />
-          <TextInputMask
-            type={'cel-phone'}
-            options={{
-              maskType: 'BRL',
-              withDDD: true,
-              dddMask: '(99) '
-            }}
-            style={styles.input}
-            placeholder="Telefone"
-            value={telefone}
-            onChangeText={setTelefone}
-          /> 
-*/
