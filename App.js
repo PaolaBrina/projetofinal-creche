@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { AuthProvider } from './src/pages/AuthContext';
 
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
@@ -24,7 +25,7 @@ import CalendarioAdicionar from './src/pages/Colaborador/CalendarioAdicionar';
 import CalendarioCadastro from './src/pages/Colaborador/CalendarioCadastro';
 /* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
-import MeudiaProfessor from './src/pages/Professor/MeudiaProfessor';
+import MeudiaProfessor from './src/pages/Professor/Meu_dia/MeudiaProfessor';
 import AtividadesCadastro from './src/pages/Professor/Atividades/AtividadesCadastro';
 import AtividadesProfAdicionar from './src/pages/Professor/Atividades/AtividadesProfAdicionar';
 import AtividadesProfBuscar from './src/pages/Professor/Atividades/AtividadesBuscar';
@@ -37,6 +38,7 @@ export default function App(){
   const Stack = createStackNavigator();
 
   return(
+    <AuthProvider>
     <NavigationContainer> 
         <Stack.Navigator>
           <Stack.Screen options={{headerShown:false}} name='Login' component={Login}/>
@@ -71,5 +73,6 @@ export default function App(){
           
         </Stack.Navigator>
     </NavigationContainer>
+    </AuthProvider>
   );
 }
