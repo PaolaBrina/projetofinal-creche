@@ -4,6 +4,7 @@ import { AuthProvider } from './src/pages/AuthContext';
 
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
+import Suporte from './src/pages/Suporte';
 /* Colaborador */
 import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
 import AlunoCadastro from './src/pages/Colaborador/AlunoCadastro';
@@ -42,6 +43,7 @@ export default function App(){
     <NavigationContainer> 
         <Stack.Navigator>
           <Stack.Screen options={{headerShown:false}} name='Login' component={Login}/>
+          <Stack.Screen options={{headerShown:false}} name='Suporte' component={Suporte}/>
           <Stack.Screen options={{headerShown:false}} name='HomeSelecao' component={HomeSelecao}/> 
           <Stack.Screen options={{headerShown:false}} name='HomeColaborador' component={HomeColaborador}/> 
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>

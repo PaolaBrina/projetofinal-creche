@@ -22,7 +22,7 @@ export default function HomeProfessor({ navigation, route }) {
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
         <View style={styles.icons}>
-          <TouchableOpacity style={styles.icon}>
+          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte')}>
             <MaterialIcons name="support-agent" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
