@@ -2,6 +2,7 @@ from database.db import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 class avisos(db.Model): 
     def to_dict(self):
@@ -17,7 +18,7 @@ class avisos(db.Model):
     codturma = db.Column(ForeignKey('turma.codigo'))
     datahora = db.Column(db.DateTime(timezone=True),server_default=func.now())
     descricao = db.Column(db.Text)
-    foto = db.Column(db.String('100'))
+    foto = db.Column(LONGTEXT)
 
     turma = relationship('turma', backref='avisos')
 

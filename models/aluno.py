@@ -1,6 +1,7 @@
 from database.db import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 class aluno(db.Model): 
     def to_dict(self):
@@ -21,7 +22,7 @@ class aluno(db.Model):
     datanascimento = db.Column(db.Date)
     sexo = db.Column(db.String('50'))
     endereco = db.Column(db.String('100'))
-    foto = db.Column(db.Text)
+    foto = db.Column(LONGTEXT)
     status = db.Column(db.Boolean)
 
     responsavel = relationship('responsavel', backref='aluno')

@@ -1,6 +1,7 @@
 from database.db import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 class listademateriais(db.Model): 
     def to_dict(self):
@@ -12,7 +13,7 @@ class listademateriais(db.Model):
     
     codigo = db.Column(db.Integer, primary_key=True)
     codturma = db.Column(ForeignKey('turma.codigo'))
-    foto = db.Column(db.String('100'))
+    foto = db.Column(LONGTEXT)
 
     turma = relationship('turma', backref='listademateriais')
 

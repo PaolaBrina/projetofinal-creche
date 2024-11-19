@@ -1,4 +1,5 @@
 from database.db import db
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 class calendario(db.Model): 
     def to_dict(self):
@@ -8,7 +9,7 @@ class calendario(db.Model):
         }
     
     codigo = db.Column(db.Integer, primary_key=True)
-    foto = db.Column(db.String('100'))
+    foto = db.Column(LONGTEXT)
 
     def __init__(self,foto):
         self.foto = foto
