@@ -1,52 +1,70 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image,ScrollView} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 
-export default function HomeResponsavel({navigation}) {
-  
-  return(
-      <View style={styles.container}> 
-        <View style={styles.topBar}>
-          <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
-          <View style={styles.icons}>
-            <TouchableOpacity style={styles.icon}>
-              <Text>👤</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <Text>🔔</Text>
-            </TouchableOpacity>
-          </View>
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+
+export default function HomeResponsavel({ navigation, route }) {
+  // Recupera o código passado via parâmetros
+  const { codigo } = route.params || {}; // Desestruturação com fallback caso o código não esteja disponível
+
+  useEffect(() => {
+    // Verifica se o código foi passado corretamente
+    if (codigo) {
+      console.log('Código do responsável:', codigo); // Exibe o código no console para verificação
+    } else {
+      Alert.alert('Erro', 'Código não encontrado.');
+    }
+  }, [codigo]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
+        <View style={styles.icons}>
+          <TouchableOpacity style={styles.icon}>
+          <MaterialIcons name="support-agent" size={30} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.icon}>
+            <MaterialCommunityIcons name="bell" size={30} color="#fdd835" />
+          </TouchableOpacity>
         </View>
+      </View>
 
-        <ScrollView>
+      <ScrollView>
         <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#fdd835' }]}   onPress={() => navigation.navigate('MeudiaResponsavel')}>
-          <Text style={styles.buttonText}>Meu dia na creche</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#29b6f6' }]}>
-          <Text style={styles.buttonText}>Atividades</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#ef5350' }]}>
-          <Text style={styles.buttonText}>Calendário</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#66bb6a' }]}>
-          <Text style={styles.buttonText}>Chamadas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#ab47bc' }]}>
-          <Text style={styles.buttonText}>Fotos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#ffa726' }]}>
-          <Text style={styles.buttonText}>Horários</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: '#ba68c8' }]}>
-          <Text style={styles.buttonText}>Lista de Materiais</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#fdd835' }]} onPress={() => navigation.navigate('MeudiaResponsavel')}>
+            <Text style={styles.buttonText}>Meu dia na creche</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#29b6f6' }]} onPress={() => navigation.navigate('Atividades')}>
+            <Text style={styles.buttonText}>Atividades</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#ef5350' }]} onPress={() => navigation.navigate('Calendario')}>
+            <Text style={styles.buttonText}>Calendário</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#66bb6a' }]} onPress={() => navigation.navigate('Chamadas')}>
+            <Text style={styles.buttonText}>Chamadas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#ab47bc' }]} onPress={() => navigation.navigate('Fotos')}>
+            <Text style={styles.buttonText}>Fotos</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#ffa726' }]} onPress={() => navigation.navigate('Horarios')}>
+            <Text style={styles.buttonText}>Horários</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#ba68c8' }]} onPress={() => navigation.navigate('ListaMateriais')}>
+            <Text style={styles.buttonText}>Lista de Materiais</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      {/* Exibe o código do responsável */}
+      <View style={styles.codeContainer}>
+        <Text style={styles.codeText}>Código do Responsável: {codigo}</Text>
       </View>
-    </ScrollView>
-  
-      </View>
-    );
-  };
-  
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -91,5 +109,16 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  codeContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+  },
+  codeText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
