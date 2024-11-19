@@ -6,6 +6,8 @@ import { Button } from 'react-native-paper';
 import { DatePickerModal, registerTranslation, pt } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { format } from 'date-fns';
+import { Dropdown } from 'react-native-element-dropdown';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 registerTranslation('pt', pt);
 
@@ -56,6 +58,10 @@ const RadioButton = ({ selectedOption, setSelectedOption }) => {
 
 export default function AlunoAdicionar({ closeModal }) {
     const [newcodresponsavel, setNewcodresponsavel] = useState('');
+    const [value, setValue] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
+    const [dataresponsavel, setDataresponsavel] = useState([{label: "",value: ""}])
+
     const [newnome, setNewnome] = useState('');
     const [newdatanascimento, setNewdatanascimento] = useState(undefined);
     const [open, setOpen] = useState(false);
@@ -135,6 +141,35 @@ export default function AlunoAdicionar({ closeModal }) {
         [setOpen, setNewdatanascimento]
     );
 
+    async function fetchResponsavel(){
+        try {
+            const response = await api.get('/responsavel')
+            console.log("Responsavel: ", response.dataresponsavel)
+            const formattedData = response.data.responsavel.map(item => ({
+                label: item.nome,  
+                value: item.codigo.toString() 
+            }));
+            setDataresponsavel(formattedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        fetchResponsavel()
+    },[])
+
+    const renderLabel = () => {
+        if (value || isFocus) {
+          return (
+            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+              Dropdown label
+            </Text>
+          );
+        }
+        return null;
+      };
+
     const CadAluno = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
@@ -178,15 +213,42 @@ export default function AlunoAdicionar({ closeModal }) {
                 {feedbackMessage !== '' && (
                     <Text style={styles.feedbackText}>{feedbackMessage}</Text>
                 )}
-                <View style={styles.inputGroup}>
+                  <View style={styles.inputGroup}>
                     <Text style={styles.label}>Codigo Responsavel:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Digite o codigo do responsavel'
-                        value={newcodresponsavel}
-                        onChangeText={setNewcodresponsavel}
+                    <View style={styles.container}>
+                    {renderLabel()}
+                    <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dataresponsavel}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Selecione item' : '...'}
+                    searchPlaceholder="Procurar..."
+                    value={newcodresponsavel}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                        setNewcodresponsavel(item.value);
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                        style={styles.icon}
+                        color={isFocus ? 'blue' : 'black'}
+                        name="Safety"
+                        size={20}
+                        />
+                    )}
                     />
+                </View> 
                 </View>
+
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Nome:</Text>
                     <TextInput
@@ -197,24 +259,30 @@ export default function AlunoAdicionar({ closeModal }) {
                     />
                 </View>
 
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Data de Nascimento:</Text>
-                    <SafeAreaProvider>
-                        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                            <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
-                                <Text> Escolher data de nascimento </Text>
-                            </Button>
-                            <DatePickerModal
-                                locale="pt"
-                                mode="single"
-                                visible={open}
-                                onDismiss={onDismissSingle}
-                                date={newdatanascimento}
-                                onConfirm={onConfirmSingle}
-                            />
-                        </View>
-                    </SafeAreaProvider>
+                                <View style={styles.inputGroup}>
+                <Text style={styles.label}>Data de Nascimento:</Text>
+                <SafeAreaProvider>
+                    <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
+                    <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                        <Text> Escolher data de nascimento </Text>
+                    </Button>
+                    <DatePickerModal
+                        locale="pt"
+                        mode="single"
+                        visible={open}
+                        onDismiss={onDismissSingle}
+                        date={newdatanascimento}
+                        onConfirm={onConfirmSingle}
+                    />
+                    </View>
+                    {newdatanascimento && (
+                    <Text style={styles.selectedDate}>
+                        Data selecionada: {format(new Date(newdatanascimento), 'dd/MM/yyyy')}
+                    </Text>
+                    )}
+                </SafeAreaProvider>
                 </View>
+
 
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Sexo:</Text>
@@ -321,6 +389,16 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 10,
     },
+    dropdown: {
+        height: 50,
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingHorizontal: 8,
+      },
+      icon: {
+        marginRight: 5,
+      },
 });
 
 /* 
