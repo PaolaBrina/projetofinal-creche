@@ -169,12 +169,11 @@ const styles = StyleSheet.create({
     },
     topBar: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
         padding: 10,
         paddingTop: 60,
-        paddingLeft: 30,
+        paddingLeft: 20,
         paddingRight: 20,
         backgroundColor: '#283673',
     },
@@ -182,7 +181,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+        flex: 1, // Permite que o texto ocupe o espaço disponível
+        textAlign: 'center', // Centraliza o texto
     },
+    btnseta: {
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+    },
+    
     btnseta: {
         width: 30,
         height: 30,
