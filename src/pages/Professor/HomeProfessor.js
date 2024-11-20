@@ -30,7 +30,6 @@ export default function HomeProfessor({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
-
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.button}
@@ -72,7 +71,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+    justifyContent: 'center', // Centraliza verticalmente
+    alignItems: 'center', // Centraliza horizontalmente
   },
   topBar: {
     flexDirection: 'row',
@@ -82,6 +82,8 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 60,
     backgroundColor: '#283673',
+    position: 'absolute', // Fixa no topo
+    top: 0,
   },
   profilePic: {
     width: 50,
@@ -91,13 +93,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  profileText: {
-    color: '#000',
-  },
-  topBarText: {
-    color: '#fff',
-    fontSize: 16,
-  },
   icons: {
     flexDirection: 'row',
   },
@@ -106,13 +101,13 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     width: '90%',
-    flexDirection: 'column',
     alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
+    marginTop: 20, // Espaçamento entre as linhas
   },
   button: {
     width: '40%',
