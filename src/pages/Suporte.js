@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export default function Suporte({ navigation }) {
   const handleVoltar = () => {
@@ -38,11 +40,15 @@ export default function Suporte({ navigation }) {
         </Text>
 
         <TouchableOpacity style={styles.whatsappButton} onPress={handleWhatsApp}>
-          <Text style={styles.whatsappText}>📱 Falar no WhatsApp</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <FontAwesome name="whatsapp" size={24} color="black" style={{ marginRight: 8 }} />
+            <Text style={styles.whatsappText}>Falar no WhatsApp</Text>
+          </View>
         </TouchableOpacity>
 
+
         <Text style={styles.text}>
-          Estamos disponíveis de segunda a sexta, das 8h às 18h.
+          Estamos disponíveis de segunda a sexta, das 7:30h às 18h.
         </Text>
       </View>
 
