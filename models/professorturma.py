@@ -8,7 +8,7 @@ class professorturma(db.Model):
             'codigo': self.codigo,
             'codturma': self.codturma,
             'codprofessor': self.codprofessor,
-            'codturma': self.codturma,
+            'codauxiliar': self.codauxiliar,
             'periodo': self.periodo,
         }
     
