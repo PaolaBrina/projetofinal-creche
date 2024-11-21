@@ -15,21 +15,18 @@ export default function HomeSelecao({ navigation }) {
       if (!userData) {
         throw new Error('Nenhum dado de usuário encontrado.');
       }
-
-      const { telefone } = JSON.parse(userData); // Obtém o telefone do AsyncStorage
-      const response = await api.post('/login', { telefone }); // Chamada ao back-end
-      const { status, data, codigo } = response.data;
-
-      if (status === 'multi') {
+  
+      const { telefone, roles, codigo } = JSON.parse(userData); // Obtém os dados do usuário
+      if (roles && roles.length > 1) {
         const novoBotao = [];
-        if (data.includes('professor')) {
-          novoBotao.push({ name: 'Professor', route: 'HomeProfessor', codigo: codigo[data.indexOf('professor')] });
+        if (roles.includes('professor')) {
+          novoBotao.push({ name: 'Professor', route: 'HomeProfessor', codigo: codigo[roles.indexOf('professor')] });
         }
-        if (data.includes('colaborador')) {
-          novoBotao.push({ name: 'Colaborador', route: 'HomeColaborador', codigo: codigo[data.indexOf('colaborador')] });
+        if (roles.includes('colaborador')) {
+          novoBotao.push({ name: 'Colaborador', route: 'HomeColaborador', codigo: codigo[roles.indexOf('colaborador')] });
         }
-        if (data.includes('responsavel')) {
-          novoBotao.push({ name: 'Responsável', route: 'HomeResponsavel', codigo: codigo[data.indexOf('responsavel')] });
+        if (roles.includes('responsavel')) {
+          novoBotao.push({ name: 'Responsável', route: 'HomeResponsavel', codigo: codigo[roles.indexOf('responsavel')] });
         }
         setBotao(novoBotao);
       } else {
@@ -43,7 +40,8 @@ export default function HomeSelecao({ navigation }) {
       setLoading(false);
     }
   };
-
+  
+  
   useEffect(() => {
     fetchRoles();
   }, []);

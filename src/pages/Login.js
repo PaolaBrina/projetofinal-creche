@@ -23,30 +23,24 @@ export default function Login({ navigation }) {
     try {
       const response = await api.post('/login', { telefone });
       const { status, data, nome, codigo } = response.data;
-
-      switch (status) {
-        case 'multi':
-          await storeUserData('userData', { telefone, roles: data, nome, codigo });
-          login({ telefone, roles: data });
-          navigation.navigate('HomeSelecao', { data });
-          break;
-        case 'responsavel':
-        case 'professor':
-        case 'colaborador':
-          await storeUserData('userData', { telefone, role: status, nome, codigo });
-          login({ telefone, role: status });
-          navigation.navigate(`Home${status.charAt(0).toUpperCase() + status.slice(1)}`);
-          break;
-        case 'nao_encontrado':
-        default:
-          Alert.alert('Erro', 'Telefone não encontrado.');
-          break;
+  
+      if (status === 'multi') {
+        await storeUserData('userData', { telefone, roles: data, nome, codigo });
+        login({ telefone, roles: data, nome, codigo });
+        navigation.navigate('HomeSelecao', { data });
+      } else if (['responsavel', 'professor', 'colaborador'].includes(status)) {
+        await storeUserData('userData', { telefone, role: status, nome, codigo });
+        login({ telefone, role: status, nome, codigo });
+        navigation.navigate(`Home${status.charAt(0).toUpperCase() + status.slice(1)}`, { codigo });
+      } else {
+        Alert.alert('Erro', 'Telefone não encontrado.');
       }
     } catch (error) {
       console.error(error);
       Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };
+
 
   return (
       <View style={styles.container}>
