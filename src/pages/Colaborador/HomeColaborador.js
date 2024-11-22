@@ -21,46 +21,46 @@ export default function HomeColaborador({ navigation, route }) {
       </View>
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AlunoCadastro')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AlunoCadastro', { codigo })}>
           <Text style={styles.buttonText}>Cadastro Aluno</Text>
         </TouchableOpacity>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ResponsavelCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ResponsavelCadastro', { codigo })}>
             <Text style={styles.buttonText}>Cadastro Responsável</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProfessorCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProfessorCadastro', { codigo })}>
             <Text style={styles.buttonText}>Cadastro Professor</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TurmaCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TurmaCadastro', { codigo })}>
             <Text style={styles.buttonText}>Cadastro Turmas</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HorarioCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HorarioCadastro', { codigo })}>
             <Text style={styles.buttonText}>Cadastro Horários </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('', { codigo })}>
             <Text style={styles.buttonText}>Avisos </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CalendarioCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CalendarioCadastro', { codigo })}>
             <Text style={styles.buttonText}>Calendário </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AuxiliarCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AuxiliarCadastro', { codigo })}>
             <Text style={styles.buttonText}>Auxiliar </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListaMaterialCadastro')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ListaMaterialCadastro', { codigo })}>
             <Text style={styles.buttonText}>Lista de Materiais </Text>
           </TouchableOpacity>
         </View>

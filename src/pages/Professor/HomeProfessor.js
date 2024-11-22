@@ -33,18 +33,18 @@ export default function HomeProfessor({ navigation, route }) {
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('MeudiaProfessor')}
+          onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}
         >
           <Text style={styles.buttonText}>Meu dia na creche</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AtividadesCadastro')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AtividadesCadastro', { codigo })}>
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('FotoProfessor')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('FotoProfessor', { codigo })}>
           <Text style={styles.buttonText}>Atividades</Text>
         </TouchableOpacity>
       </View>

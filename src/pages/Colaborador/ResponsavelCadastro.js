@@ -42,7 +42,7 @@ export default function ResponsavelCadastro({navigation}) {
     };
 
     const handleSeta = () => {
-        navigation.navigate('HomeColaborador');
+        navigation.navigate('HomeColaborador, { codigo }');
     }
 
     const fetchResponsaveis = async () => {

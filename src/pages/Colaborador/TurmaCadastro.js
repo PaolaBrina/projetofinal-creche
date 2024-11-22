@@ -59,7 +59,7 @@ export default function ProfessorCadastro({navigation}) {
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
                     <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador')}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador', { codigo })}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
                         <Text style={styles.topBarTxt}>Cadastro Turma</Text>
