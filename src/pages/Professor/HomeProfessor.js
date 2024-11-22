@@ -1,78 +1,86 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, ScrollView } from "react-native";
+import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome } from "@expo/vector-icons";
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-export default function HomeProfessor({ navigation, route }) {
-  // Recupera o código passado via parâmetros
-  const { codigo } = route.params || {}; // Desestruturação com fallback caso o código não esteja disponível
+export default function HomeResponsavel({ navigation, route }) {
+  const { codigo } = route.params || {}; 
 
   useEffect(() => {
-    // Verifica se o código foi passado corretamente
     if (codigo) {
-      console.log('Código do usuário:', codigo); // Exibe o código no console para verificação
+      console.log('Código do responsável:', codigo); 
     } else {
       Alert.alert('Erro', 'Código não encontrado.');
     }
   }, [codigo]);
 
   return (
-    <View style={styles.container}>
+      <ImageBackground 
+        source={require("../../../assets/nuvem.png")} 
+        style={styles.container} 
+        resizeMode="cover" 
+      >
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
         <View style={styles.icons}>
-          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte')}>
-            <MaterialIcons name="support-agent" size={30} color="#000" />
+          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte', { codigo })} >
+          <MaterialIcons name="support-agent" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
             <MaterialCommunityIcons name="bell" size={30} color="#fdd835" />
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}
-        >
-          <Text style={styles.buttonText}>Meu dia na creche</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Linha 1: Botão Amarelo */}
+      <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('MeuDiaProfessor', { codigo })}>
+        <Octicons name="smiley" size={24} color="black" />
+        <Text style={styles.buttonText}>Meu dia na creche</Text>
+      </TouchableOpacity>
 
+      {/* Linha 2: Botões Vermelho e Azul */}
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AtividadesCadastro', { codigo })}>
-          <Text style={styles.buttonText}>Fotos</Text>
+        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]}>
+          <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
+          <Text style={styles.buttonText}>Calendário</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('FotoProfessor', { codigo })}>
+        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]}>
+          <FontAwesome name="pencil-square-o" size={24} color="black" />
           <Text style={styles.buttonText}>Atividades</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]}>
+          <Ionicons name="images" size={24} color="#000" />
+          <Text style={styles.buttonText}>Fotos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]}>
+          <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
           <Text style={styles.buttonText}>Chamadas</Text>
         </TouchableOpacity>
+      </View>
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Calendário</Text>
+      {/* Linha 4: Botões Invisivel e Laranja */}
+      <View style={styles.row}>
+        <TouchableOpacity disabled={true} style={[styles.buttonLeft]} />
+        <TouchableOpacity style={[styles.buttonRight, styles.orange]}>
+          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
+          <Text style={styles.buttonText}>Horários</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Exibe o código do professor */}
-      <View style={styles.codeContainer}>
-        <Text style={styles.codeText}>Código do Professor: {codigo}</Text>
-      </View>
-    </View>
+      <TouchableOpacity disabled={true} style={[styles.buttonBottom, styles.yellow]}>
+        <Text style={styles.buttonText}></Text>
+      </TouchableOpacity>
+  </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center', // Centraliza verticalmente
-    alignItems: 'center', // Centraliza horizontalmente
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   topBar: {
     flexDirection: 'row',
@@ -80,17 +88,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     padding: 10,
-    paddingTop: 60,
+    paddingTop: 50,
     backgroundColor: '#283673',
-    position: 'absolute', // Fixa no topo
-    top: 0,
+    marginBottom: 50,
   },
   profilePic: {
     width: 50,
     height: 50,
     backgroundColor: '#fff',
     borderRadius: 25,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   icons: {
@@ -99,39 +105,58 @@ const styles = StyleSheet.create({
   icon: {
     marginHorizontal: 10,
   },
-  buttonsContainer: {
-    width: '90%',
-    alignItems: 'center',
-  },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 20, // Espaçamento entre as linhas
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  button: {
-    width: '40%',
-    height: 100,
-    backgroundColor: '#d3d3d3',
-    marginVertical: 10,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+  buttonTop: {
+    width: 190,
+    height: 110,
+    margin: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+  },
+  buttonBottom: {
+    width: 190,
+    height: 110,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+    marginBottom: 0, // Remova qualquer espaço abaixo
+  },
+  buttonLeft: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomLeftRadius: 40,
+    borderTopLeftRadius: 40,
+    marginBottom: 0, // Remova a margem inferior
+  },
+  buttonRight: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 40,
+    borderTopRightRadius: 40,
+    marginBottom: 0, // Remova a margem inferior
   },
   buttonText: {
-    color: '#000',
+    color: "#000",
     fontSize: 16,
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  codeContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
-  codeText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+  yellow: { backgroundColor: "#FFD700" },
+  red: { backgroundColor: "#FF6347" },
+  blue: { backgroundColor: "#00BFFF" },
+  purple: { backgroundColor: "#9370DB" },
+  green: { backgroundColor: "#32CD32" },
+  pink: { backgroundColor: "#FF69B4" },
+  orange: { backgroundColor: "#FFA500" },
 });
