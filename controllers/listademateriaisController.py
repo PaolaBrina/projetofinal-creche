@@ -1,6 +1,10 @@
 from flask import request
 from database.db import db
 from models.listademateriais import listademateriais
+from models.turma import turma
+from models.alunoturma import alunoturma
+from models.aluno import aluno
+from models.listademateriais import listademateriais
 
 def listademateriaisController():
         if request.method == 'POST':
@@ -22,7 +26,7 @@ def listademateriaisController():
                 new = {'listademateriais': [listademateriais.to_dict() for listademateriais in data]}
                 return new, 200
             except Exception as e:
-                return 'nao foi possivel buscar Horario. {}'.format(str(e)), 404
+                return 'nao foi possivel buscar Lista Materias. {}'.format(str(e)), 404
 
 
         elif request.method == 'DELETE':
@@ -56,3 +60,37 @@ def listademateriaisController():
             except Exception as e:
                 return 'Não foi possivel alterar listadematerial, {}'.format(str(e)), 405
     
+
+def get_materiais_por_responsavel(codigo_responsavel):
+    try:
+        print(f"Código recebido no controlador: {codigo_responsavel}")  # LOG TEMPORÁRIO
+        
+        # Realiza a consulta com joins e filtros
+        materiais_data = db.session.query(
+            turma.nome.label('nome_turma'),  # Nome da turma
+            listademateriais.foto           # Imagem da lista de materiais
+        ).join(alunoturma, alunoturma.codturma == turma.codigo) \
+         .join(aluno, aluno.codigo == alunoturma.codaluno) \
+         .join(listademateriais, listademateriais.codturma == turma.codigo) \
+         .filter(aluno.codresponsavel == codigo_responsavel) \
+         .distinct()  # Remove duplicações (considerando todas as colunas)
+
+        materiais_data = materiais_data.all()  # Chama o método all() após a aplicação do distinct
+
+        print("Dados retornados da consulta:", materiais_data)  # LOG
+
+        # Formatar os resultados em uma lista de dicionários
+        materiais = [
+            {
+                "nome_turma": item.nome_turma,
+                "foto": item.foto
+            }
+            for item in materiais_data
+        ]
+
+        for material in materiais:
+            print(f"Turma: {material['nome_turma']}, Foto: {material['foto'][:30]}...")  # LOG Melhorado
+        
+        return materiais  # Retorna a lista de materiais diretamente
+    except Exception as e:
+        raise e
