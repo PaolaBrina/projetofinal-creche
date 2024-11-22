@@ -1,129 +1,155 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from "react-native";
+import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
-export default function ChamadasResponsavel({navigation}) {
-    return (
-        <View style={styles.container}>
-          {/* Linha 1: Botão Amarelo */}
-          <TouchableOpacity style={[styles.button, styles.yellow]}>
-            <Text style={styles.buttonText}>Meu dia na creche</Text>
+export default function ChamadasResponsavel() {
+  return (
+      <ImageBackground 
+        source={require("../../../assets/nuvem.png")} 
+        style={styles.container} 
+        resizeMode="cover" 
+      >
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
+        <View style={styles.icons}>
+          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte')} >
+          <MaterialIcons name="support-agent" size={30} color="#000" />
           </TouchableOpacity>
-    
-          {/* Linha 2: Botões Azul e Vermelho (calendário um pouco abaixo) */}
-          <View style={styles.row}>
-            <TouchableOpacity style={[styles.buttonLeft, styles.red, styles.offsetCalendario]}>
-              <Text style={styles.buttonText}>Calendário</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.buttonRight, styles.blue]}>
-              <Text style={styles.buttonText}>Atividades</Text>
-            </TouchableOpacity>
-          </View>
-    
-          {/* Linha 3: Botões Roxo e Verde (chamadas abaixo de fotos) */}
-          <View style={styles.row}>
-            <TouchableOpacity style={[styles.buttonLeft, styles.purple, styles.offsetChamadas]}>
-              <Text style={styles.buttonText}>Fotos</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.buttonRight, styles.green, ]}>
-              <Text style={styles.buttonText}>Chamadas</Text>
-            </TouchableOpacity>
-          </View>
-    
-          {/* Linha 4: Botões Rosa e Laranja (horários abaixo de lista de materiais) */}
-          <View style={styles.row}>
-            <TouchableOpacity style={[styles.buttonLeft, styles.pink , styles.offsetHorarios]}>
-              <Text style={styles.buttonText}>Lista de Materiais</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.buttonRight, styles.orange]}>
-              <Text style={styles.buttonText}>Horários</Text>
-            </TouchableOpacity>
-          </View>
-    
-          {/* Linha 5: Botão Amarelo */}
-          <TouchableOpacity style={[styles.button, styles.yellow]}>
-            <Text style={styles.buttonText}></Text>
+          <TouchableOpacity style={styles.icon}>
+            <MaterialCommunityIcons name="bell" size={30} color="#fdd835" />
           </TouchableOpacity>
         </View>
-      );
-    }
-    
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: "#b3d9ff", // Fundo azul com nuvens
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      row: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 10,
-      },
-      button: {
-        width: 140,
-        height: 80,
-        margin: 5,
-        justifyContent: "center",
-        alignItems: "center",
-        borderTopLeftRadius: 40,
-        borderTopRightRadius: 40,
-        borderBottomLeftRadius: 40,
-        borderBottomRightRadius: 40,
-      },
-      buttonRight: {
-        width: 140,
-        height: 80,
-        margin: 5,
-        justifyContent: "center",
-        alignItems: "center",
-        borderTopRightRadius: 40,
-        borderBottomRightRadius: 40,
-      },
-      buttonLeft: {
-        width: 140,
-        height: 80,
-        margin: 5,
-        justifyContent: "center",
-        alignItems: "center",
-        borderTopLeftRadius: 40,
-        borderBottomLeftRadius: 40,
-      },
-      buttonText: {
-        color: "#000",
-        fontSize: 14,
-        fontWeight: "bold",
-        textAlign: "center",
-      },
-      yellow: {
-        backgroundColor: "#FFD700",
-        width: 200,
-      },
-      red: {
-        backgroundColor: "#FF6347",
-      },
-      blue: {
-        backgroundColor: "#00BFFF",
-      },
-      purple: {
-        backgroundColor: "#9370DB",
-      },
-      green: {
-        backgroundColor: "#32CD32",
-      },
-      pink: {
-        backgroundColor: "#FF69B4",
-      },
-      orange: {
-        backgroundColor: "#FFA500",
-      },
-      offsetCalendario: {
-        marginTop: 50, // Calendário deslocado para baixo
-      },
-      offsetChamadas: {
-        marginTop: 50, // Chamadas deslocadas para baixo
-      },
-      offsetHorarios: {
-        marginTop: 50, // Horários deslocados para baixo
-      },
-    });
+      </View>
+      {/* Linha 1: Botão Amarelo */}
+      <TouchableOpacity style={[styles.buttonTop, styles.yellow]}>
+        <Octicons name="smiley" size={24} color="#000" />
+        <Text style={styles.buttonText}>Meu dia na creche</Text>
+      </TouchableOpacity>
+
+      {/* Linha 2: Botões Vermelho e Azul */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]}>
+          <FontAwesome5 name="calendar-alt" size={24} color="#000" />
+          <Text style={styles.buttonText}>Calendário</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]}>
+          <FontAwesome name="pencil-square-o" size={24} color="#000" />
+          <Text style={styles.buttonText}>Atividades</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Linha 3: Botões Roxo e Verde */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]}>
+          <Ionicons name="images" size={24} color="#000" />
+          <Text style={styles.buttonText}>Fotos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]}>
+          <MaterialCommunityIcons name="checkbox-outline" size={24} color="#000" />
+          <Text style={styles.buttonText}>Chamadas</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Linha 4: Botões Rosa e Laranja */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]}>
+          <MaterialIcons name="list-alt" size={24} color="#000" />
+          <Text style={styles.buttonText}>Lista de Materiais</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]}>
+          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
+          <Text style={styles.buttonText}>Horários</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Linha 5: Botão Amarelo */}
+      <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
+        <Text style={styles.buttonText}></Text>
+      </TouchableOpacity>
+  </ImageBackground>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    padding: 10,
+    paddingTop: 50,
+    backgroundColor: '#283673',
+    marginBottom: 50,
+  },
+  profilePic: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  icons: {
+    flexDirection: 'row',
+  },
+  icon: {
+    marginHorizontal: 10,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonTop: {
+    width: 190,
+    height: 110,
+    margin: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+  },
+  buttonBottom: {
+    width: 190,
+    height: 110,
+    margin: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  buttonLeft: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomLeftRadius: 40,
+    borderTopLeftRadius: 40,
+  },
+  buttonRight: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 40,
+    borderTopRightRadius: 40,
+  },
+  buttonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  yellow: { backgroundColor: "#FFD700" },
+  red: { backgroundColor: "#FF6347" },
+  blue: { backgroundColor: "#00BFFF" },
+  purple: { backgroundColor: "#9370DB" },
+  green: { backgroundColor: "#32CD32" },
+  pink: { backgroundColor: "#FF69B4" },
+  orange: { backgroundColor: "#FFA500" },
+});
