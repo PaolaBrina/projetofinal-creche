@@ -31,11 +31,15 @@ import AtividadesCadastro from './src/pages/Professor/Atividades/AtividadesCadas
 import AtividadesProfAdicionar from './src/pages/Professor/Atividades/AtividadesProfAdicionar';
 import AtividadesProfBuscar from './src/pages/Professor/Atividades/AtividadesBuscar';
 import FotoProfessor from './src/pages/Professor/FotoProfessor';
+import CalendarioProfessor from './src/pages/Professor/CalendarioProfessor';
 /* Responsável */
 import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
 import ChamadasResponsavel from './src/pages/Responsavel/ChamadasResponsavel';
 import ListadeMateriaisResponsavel from './src/pages/Responsavel/ListadeMateriaisResponsavel';
+import AtividadesResponsavel from './src/pages/Responsavel/AtividadesResponsavel';
+import CalendarioResponsavel from './src/pages/Responsavel/CalendarioResponsavel';
+import HorarioResponsavel from './src/pages/Responsavel/HorarioResponsavel';
   
 export default function App(){
   const Stack = createStackNavigator();
@@ -71,11 +75,15 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfAdicionar' component={AtividadesProfAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfBuscar' component={AtividadesProfBuscar}/>
           <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='CalendarioProfessor' component={CalendarioProfessor}/>
 
           <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={HomeResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='AtividadesResponsavel' component={AtividadesResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='CalendarioResponsavel' component={CalendarioResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='HorarioResponsavel' component={HorarioResponsavel}/>
           
         </Stack.Navigator>
     </NavigationContainer>

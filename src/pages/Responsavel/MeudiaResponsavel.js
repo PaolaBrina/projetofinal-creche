@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, FlatList, View,TouchableOpacity } from 'react-native';
 import { api } from '../../api/api';
 
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 export default function MeudiaResponsavel({navigation}) {
   const [manhaItems, setManhaItems] = useState([]);
   const [tardeItems, setTardeItems] = useState([]);
@@ -36,9 +39,12 @@ export default function MeudiaResponsavel({navigation}) {
 
 
     return (
-      <View style={styles.container}> 
-        <View style={styles.topBar}>
-          <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
+      <View style={styles.container}>
+      <View style={styles.topBar}>
+            <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeResponsavel', { codigo })}>
+                <AntDesign name="caretleft" size={30} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.topBarTxt}>Meu Dia</Text>
         </View>
 
       

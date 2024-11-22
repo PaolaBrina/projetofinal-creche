@@ -1,155 +1,133 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from "react-native";
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground } from "react-native";
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
-export default function ChamadasResponsavel() {
-  return (
-      <ImageBackground 
-        source={require("../../../assets/nuvem.png")} 
-        style={styles.container} 
-        resizeMode="cover" 
-      >
-      <View style={styles.topBar}>
-        <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
-        <View style={styles.icons}>
-          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte')} >
-          <MaterialIcons name="support-agent" size={30} color="#000" />
+export default function ChamadasResponsavel({navigation,route}) {
+    return (
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButton}>
+            <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.icon}>
-            <MaterialCommunityIcons name="bell" size={30} color="#fdd835" />
+          <Text style={styles.title}>Chamada</Text>
+        </View>
+  
+        {/* Seletor de turma e data */}
+        <View style={styles.filterRow}>
+          <View style={styles.tag}>
+            <Text style={styles.tagText}>Berçário II</Text>
+          </View>
+          <TouchableOpacity style={styles.dateButton}>
+            <Text style={styles.dateText}>Data</Text>
           </TouchableOpacity>
         </View>
+  
+        {/* Lista de alunos */}
+        <ScrollView>
+          {[1, 2, 3, 4, 5].map((day, index) => (
+            <View key={index} style={styles.card}>
+              <Text style={styles.dayText}>Dia: 0{day}/11</Text>
+              <View style={styles.studentRow}>
+                <Text style={styles.studentName}>Nome Aluno</Text>
+                <View style={styles.attendanceDots}>
+                  {[...Array(4)].map((_, i) => (
+                    <View key={i} style={styles.dot}></View>
+                  ))}
+                </View>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
       </View>
-      {/* Linha 1: Botão Amarelo */}
-      <TouchableOpacity style={[styles.buttonTop, styles.yellow]}>
-        <Octicons name="smiley" size={24} color="#000" />
-        <Text style={styles.buttonText}>Meu dia na creche</Text>
-      </TouchableOpacity>
-
-      {/* Linha 2: Botões Vermelho e Azul */}
-      <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]}>
-          <FontAwesome5 name="calendar-alt" size={24} color="#000" />
-          <Text style={styles.buttonText}>Calendário</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]}>
-          <FontAwesome name="pencil-square-o" size={24} color="#000" />
-          <Text style={styles.buttonText}>Atividades</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Linha 3: Botões Roxo e Verde */}
-      <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]}>
-          <Ionicons name="images" size={24} color="#000" />
-          <Text style={styles.buttonText}>Fotos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]}>
-          <MaterialCommunityIcons name="checkbox-outline" size={24} color="#000" />
-          <Text style={styles.buttonText}>Chamadas</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Linha 4: Botões Rosa e Laranja */}
-      <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]}>
-          <MaterialIcons name="list-alt" size={24} color="#000" />
-          <Text style={styles.buttonText}>Lista de Materiais</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]}>
-          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
-          <Text style={styles.buttonText}>Horários</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Linha 5: Botão Amarelo */}
-      <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
-        <Text style={styles.buttonText}></Text>
-      </TouchableOpacity>
-  </ImageBackground>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-  },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    padding: 10,
-    paddingTop: 50,
-    backgroundColor: '#283673',
-    marginBottom: 50,
-  },
-  profilePic: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  icons: {
-    flexDirection: 'row',
-  },
-  icon: {
-    marginHorizontal: 10,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonTop: {
-    width: 190,
-    height: 110,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopRightRadius: 40,
-    borderTopLeftRadius: 40,
-  },
-  buttonBottom: {
-    width: 190,
-    height: 110,
-    margin: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomRightRadius: 40,
-    borderBottomLeftRadius: 40,
-  },
-  buttonLeft: {
-    width: 160,
-    height: 80,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomLeftRadius: 40,
-    borderTopLeftRadius: 40,
-  },
-  buttonRight: {
-    width: 160,
-    height: 80,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomRightRadius: 40,
-    borderTopRightRadius: 40,
-  },
-  buttonText: {
-    color: "#000",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  yellow: { backgroundColor: "#FFD700" },
-  red: { backgroundColor: "#FF6347" },
-  blue: { backgroundColor: "#00BFFF" },
-  purple: { backgroundColor: "#9370DB" },
-  green: { backgroundColor: "#32CD32" },
-  pink: { backgroundColor: "#FF69B4" },
-  orange: { backgroundColor: "#FFA500" },
-});
+    );
+  };
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#f9f9f9',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#1A5BAF',
+      paddingVertical: 15,
+      paddingHorizontal: 10,
+    },
+    backButton: {
+      paddingRight: 10,
+    },
+    backText: {
+      color: '#fff',
+      fontSize: 20,
+    },
+    title: {
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    filterRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 10,
+      backgroundColor: '#fff',
+    },
+    tag: {
+      backgroundColor: '#FFEB3B',
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+      borderRadius: 5,
+    },
+    tagText: {
+      color: '#000',
+      fontWeight: 'bold',
+    },
+    dateButton: {
+      backgroundColor: '#E0E0E0',
+      paddingVertical: 5,
+      paddingHorizontal: 15,
+      borderRadius: 5,
+    },
+    dateText: {
+      color: '#000',
+    },
+    card: {
+      backgroundColor: '#fff',
+      marginVertical: 5,
+      marginHorizontal: 10,
+      padding: 10,
+      borderRadius: 8,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowOffset: { width: 0, height: 1 },
+      shadowRadius: 2,
+      elevation: 3,
+    },
+    dayText: {
+      fontSize: 14,
+      color: '#777',
+      marginBottom: 10,
+    },
+    studentRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    studentName: {
+      fontSize: 16,
+      color: '#333',
+    },
+    attendanceDots: {
+      flexDirection: 'row',
+      gap: 5,
+    },
+    dot: {
+      width: 12,
+      height: 12,
+      backgroundColor: '#ccc',
+      borderRadius: 6,
+    },
+  });
+  

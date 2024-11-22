@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View,TouchableOpacity } from 'react-native';
 import { api } from '../../api/api';
 
-export default function AtividadesResponsavel({navigation}) {
+export default function AtividadesResponsavel({navigation,route}) {
   const [atividades, setAtividades] = useState([]);
 
    const Atividades = async () => {

@@ -7,7 +7,7 @@ export default function HomeResponsavel({ navigation, route }) {
 
   useEffect(() => {
     if (codigo) {
-      console.log('Código do responsável:', codigo); 
+      console.log('Código do responsável:', { codigo }); 
     } else {
       Alert.alert('Erro', 'Código não encontrado.');
     }
@@ -22,7 +22,7 @@ export default function HomeResponsavel({ navigation, route }) {
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
         <View style={styles.icons}>
-          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte')} >
+          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte', { codigo }) } >
           <MaterialIcons name="support-agent" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
@@ -31,18 +31,18 @@ export default function HomeResponsavel({ navigation, route }) {
         </View>
       </View>
       {/* Linha 1: Botão Amarelo */}
-      <TouchableOpacity style={[styles.buttonTop, styles.yellow]}>
+      <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('MeudiaResponsavel', { codigo }) }>
         <Octicons name="smiley" size={24} color="black" />
         <Text style={styles.buttonText}>Meu dia na creche</Text>
       </TouchableOpacity>
 
       {/* Linha 2: Botões Vermelho e Azul */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]} onPress={() => navigation.navigate('CalendarioResponsavel', { codigo }) }>
           <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
           <Text style={styles.buttonText}>Calendário</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]}>
+        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]} onPress={() => navigation.navigate('AtividadesResponsavel', { codigo }) }>
           <FontAwesome name="pencil-square-o" size={24} color="black" />
           <Text style={styles.buttonText}>Atividades</Text>
         </TouchableOpacity>
@@ -50,11 +50,11 @@ export default function HomeResponsavel({ navigation, route }) {
 
       {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('', { codigo }) }>
           <Ionicons name="images" size={24} color="#000" />
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]}>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('ChamadasResponsavel', { codigo }) }>
           <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
           <Text style={styles.buttonText}>Chamadas</Text>
         </TouchableOpacity>
@@ -62,11 +62,11 @@ export default function HomeResponsavel({ navigation, route }) {
 
       {/* Linha 4: Botões Rosa e Laranja */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('ListadeMateriaisResponsavel', { codigo }) }>
           <MaterialIcons name="list" size={24} color="#000" />
           <Text style={styles.buttonText}>Lista de Materiais</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]}>
+        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioResponsavel', { codigo }) }>
           <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
           <Text style={styles.buttonText}>Horários</Text>
         </TouchableOpacity>
