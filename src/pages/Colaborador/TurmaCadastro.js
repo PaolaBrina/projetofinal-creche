@@ -7,11 +7,13 @@ import AlunoTurmaCadastro from './AlunoTurmaAdicionar';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function ProfessorCadastro({navigation}) {
+export default function ProfessorCadastro({navigation,route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [turmas, setTurmas] = useState([]);
     const [loading, setLoading] = useState(false);
     const [modalContent, setModalContent] = useState(null); // 'turma' ou 'profTurma'
+
+    const { codigo } = route.params || {};
 
 
     const closeModal = () => {

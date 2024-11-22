@@ -34,6 +34,8 @@ import FotoProfessor from './src/pages/Professor/FotoProfessor';
 /* Responsável */
 import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
+import ChamadasResponsavel from './src/pages/Responsavel/ChamadasResponsavel';
+import ListadeMateriaisResponsavel from './src/pages/Responsavel/ListadeMateriaisResponsavel';
   
 export default function App(){
   const Stack = createStackNavigator();
@@ -72,6 +74,8 @@ export default function App(){
 
           <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={HomeResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>
           
         </Stack.Navigator>
     </NavigationContainer>

@@ -6,10 +6,12 @@ import HorarioAdicionar from './HorarioAdicionar';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function HorarioCadastro({navigation}) {
+export default function HorarioCadastro({navigation,route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const { codigo } = route.params || {};
 
     const openModal = () => {
         setModalVisible(true);

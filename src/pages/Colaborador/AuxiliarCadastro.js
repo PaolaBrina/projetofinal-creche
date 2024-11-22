@@ -7,13 +7,15 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import TurmaAdicionar from './TurmaAdicionar';
 
-export default function AuxiliarCadastro({navigation}) {
+export default function AuxiliarCadastro({navigation, route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [auxiliares, setAuxiliar] = useState([]);
     const [calendario, setCalendario] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedAluno, setSelectedAluno] = useState(null);
     const [modalEditVisible, setModalEditVisible] = useState(false);  // Novo estado para controle do modal de edição
+
+    const { codigo } = route.params || {};
 
     const openEditModal = (aluno) => {
         setSelectedAluno(aluno);  // Define o aluno que será editado

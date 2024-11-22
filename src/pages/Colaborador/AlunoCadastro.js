@@ -7,12 +7,14 @@ import AlunoEditar from './AlunoEditar';  // Importando o componente de edição
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function AlunoCadastro({ navigation }) {
+export default function AlunoCadastro({ navigation,route }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalEditVisible, setModalEditVisible] = useState(false);  // Novo estado para controle do modal de edição
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedAluno, setSelectedAluno] = useState(null);
+
+    const { codigo } = route.params || {};
 
     const openAddModal = () => {
         setModalVisible(true);

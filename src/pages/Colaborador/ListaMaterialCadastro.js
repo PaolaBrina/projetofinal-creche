@@ -7,11 +7,13 @@ import ListaMaterialAdicionar from './ListaMaterialAdicionar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function ListaMaterialCadastro({navigation}) {
+export default function ListaMaterialCadastro({navigation, route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [listamaterial, setListamaterial] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedAluno, setSelectedAluno] = useState(null);
+
+    const { codigo } = route.params || {};
 
     const openAddModal = () => {
         setModalVisible(true);
@@ -59,7 +61,7 @@ export default function ListaMaterialCadastro({navigation}) {
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador, { codigo }')}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador', { codigo })}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
                         <Text style={styles.topBarTxt}>Cadastro Lista de Material</Text>

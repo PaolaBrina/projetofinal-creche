@@ -6,12 +6,14 @@ import ResponsavelAdicionar from './ResponsavelAdicionar';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function ResponsavelCadastro({navigation}) {
+export default function ResponsavelCadastro({navigation,route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [responsaveis, setResponsavel] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedAluno, setSelectedAluno] = useState(null);
     const [modalEditVisible, setModalEditVisible] = useState(false);  // Novo estado para controle do modal de edição
+
+    const { codigo } = route.params || {};
 
     const openEditModal = (responsaveis) => {
         setSelectedAluno(responsaveis);  // Define o responsaveis que será editado
