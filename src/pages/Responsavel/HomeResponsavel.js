@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
-
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, ScrollView } from "react-native";
+import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome } from "@expo/vector-icons";
 
 export default function HomeResponsavel({ navigation, route }) {
-  // Recupera o código passado via parâmetros
-  const { codigo } = route.params || {}; // Desestruturação com fallback caso o código não esteja disponível
+  const { codigo } = route.params || {}; 
 
   useEffect(() => {
-    // Verifica se o código foi passado corretamente
     if (codigo) {
-      console.log('Código do responsável:', codigo); // Exibe o código no console para verificação
+      console.log('Código do responsável:', codigo); 
     } else {
       Alert.alert('Erro', 'Código não encontrado.');
     }
   }, [codigo]);
 
   return (
-    <View style={styles.container}>
+      <ImageBackground 
+        source={require("../../../assets/nuvem.png")} 
+        style={styles.container} 
+        resizeMode="cover" 
+      >
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
         <View style={styles.icons}>
@@ -32,46 +30,62 @@ export default function HomeResponsavel({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
+      {/* Linha 1: Botão Amarelo */}
+      <TouchableOpacity style={[styles.buttonTop, styles.yellow]}>
+        <Octicons name="smiley" size={24} color="black" />
+        <Text style={styles.buttonText}>Meu dia na creche</Text>
+      </TouchableOpacity>
 
-      <ScrollView>
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#fdd835' }]} onPress={() => navigation.navigate('MeudiaResponsavel', { codigo })}>
-            <Text style={styles.buttonText}>Meu dia na creche</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#29b6f6' }]} onPress={() => navigation.navigate('Atividades', { codigo })}>
-            <Text style={styles.buttonText}>Atividades</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#ef5350' }]} onPress={() => navigation.navigate('Calendario', { codigo })}>
-            <Text style={styles.buttonText}>Calendário</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#66bb6a' }]} onPress={() => navigation.navigate('ChamadasResponsavel', { codigo })}>
-            <Text style={styles.buttonText}>Chamadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#ab47bc' }]} onPress={() => navigation.navigate('Fotos', { codigo })}>
-            <Text style={styles.buttonText}>Fotos</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#ffa726' }]} onPress={() => navigation.navigate('HorarioResponsavel', { codigo })}>
-            <Text style={styles.buttonText}>Horários</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#ba68c8' }]} onPress={() => navigation.navigate('ListadeMateriaisResponsavel', { codigo })}>
-            <Text style={styles.buttonText}>Lista de Materiais</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      {/* Exibe o código do responsável */}
-      <View style={styles.codeContainer}>
-        <Text style={styles.codeText}>Código do Responsável: {codigo}</Text>
+      {/* Linha 2: Botões Vermelho e Azul */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]}>
+          <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
+          <Text style={styles.buttonText}>Calendário</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]}>
+          <FontAwesome name="pencil-square-o" size={24} color="black" />
+          <Text style={styles.buttonText}>Atividades</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+
+      {/* Linha 3: Botões Roxo e Verde */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]}>
+          <Ionicons name="images" size={24} color="#000" />
+          <Text style={styles.buttonText}>Fotos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]}>
+          <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
+          <Text style={styles.buttonText}>Chamadas</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Linha 4: Botões Rosa e Laranja */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]}>
+          <MaterialIcons name="list" size={24} color="#000" />
+          <Text style={styles.buttonText}>Lista de Materiais</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]}>
+          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
+          <Text style={styles.buttonText}>Horários</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Linha 5: Botão Amarelo */}
+      <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
+        <Text style={styles.buttonText}></Text>
+      </TouchableOpacity>
+  </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ADD8E6',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   topBar: {
     flexDirection: 'row',
@@ -81,7 +95,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 50,
     backgroundColor: '#283673',
-    marginBottom: 20,
+    marginBottom: 50,
   },
   profilePic: {
     width: 50,
@@ -96,20 +110,50 @@ const styles = StyleSheet.create({
   icon: {
     marginHorizontal: 10,
   },
-  buttonsContainer: {
-    width: '100%',
-    padding: 10,
+  row: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  button: {
-    marginVertical: 10,
-    padding: 20,
-    borderRadius: 20,
-    alignItems: 'center',
+  buttonTop: {
+    width: 190,
+    height: 110,
+    margin: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopRightRadius: 40,
+    borderTopLeftRadius: 40,
+  },
+  buttonBottom: {
+    width: 190,
+    height: 110,
+    margin: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  buttonLeft: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomLeftRadius: 40,
+    borderTopLeftRadius: 40,
+  },
+  buttonRight: {
+    width: 160,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomRightRadius: 40,
+    borderTopRightRadius: 40,
   },
   buttonText: {
-    color: 'black',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   codeContainer: {
     marginTop: 20,
@@ -122,4 +166,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
+  yellow: { backgroundColor: "#FFD700" },
+  red: { backgroundColor: "#FF6347" },
+  blue: { backgroundColor: "#00BFFF" },
+  purple: { backgroundColor: "#9370DB" },
+  green: { backgroundColor: "#32CD32" },
+  pink: { backgroundColor: "#FF69B4" },
+  orange: { backgroundColor: "#FFA500" },
 });
