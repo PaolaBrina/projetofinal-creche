@@ -1,5 +1,310 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView,TextInput } from 'react-native';
+import TurmaAdicionar from './TurmaAdicionar';
+import AlunoTurmaAdicionar from './AlunoTurmaAdicionar';
+import ProfTurmaCadastro from './ProfTurmaCadastro';
+
+import AntDesign from '@expo/vector-icons/AntDesign';
+
+export default function TurmaCadastro({ navigation, route }) {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [data, setData] = useState([]); // Dados retornados do banco
+    const [loading, setLoading] = useState(false);
+    const [selectedTab, setSelectedTab] = useState('turma'); // Aba selecionada
+    const { codigo } = route.params || {};
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
+    const openModal = () => {
+        setModalVisible(true);
+    };
+
+    const fetchData = async (endpoint) => {
+        setLoading(true);
+        try {
+            const response = await api.get(endpoint);
+            console.log('Dados recebidos:', response.data);
+    
+            let fetchedData = [];
+            if (Array.isArray(response.data)) {
+                fetchedData = response.data; // Caso de 'turma'
+            } else if (response.data) {
+                // Caso de 'professorturma' ou 'alunoturma'
+                const key = Object.keys(response.data)[0]; // Pega a primeira chave do objeto
+                fetchedData = response.data[key];
+            }
+    
+            setData(fetchedData);
+        } catch (error) {
+            console.error('Erro ao buscar dados:', error);
+            Alert.alert('Erro', 'Erro ao buscar dados.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    
+
+    const handleTabChange = (tab) => {
+        setSelectedTab(tab);
+        if (tab === 'turma') {
+            fetchData('/turma');
+        } else if (tab === 'profTurma') {
+            fetchData('/professorturma');
+        } else if (tab === 'alunoTurma') {
+            fetchData('/alunoturma');
+        }
+        console.log('Estado de dados atualizado:', data); // Veja o estado após a chamada
+    };
+    
+
+    return (
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
+            {/* Top Bar */}
+            <View style={styles.topBar}>
+                <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador', { codigo })}>
+                    <AntDesign name="caretleft" size={30} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.topBarTxt}>Cadastro Turma</Text>
+            </View>
+
+            {/* Tabs */}
+            <View style={styles.tabsContainer}>
+                <TouchableOpacity
+                    style={[styles.tab, selectedTab === 'turma' && styles.activeTab]}
+                    onPress={() => handleTabChange('turma')}
+                >
+                    <Text style={[styles.tabText, selectedTab === 'turma' && styles.activeTabText]}>Turma</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.tab, selectedTab === 'profTurma' && styles.activeTab]}
+                    onPress={() => handleTabChange('profTurma')}
+                >
+                    <Text style={[styles.tabText, selectedTab === 'profTurma' && styles.activeTabText]}>Professor Turma</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.tab, selectedTab === 'alunoTurma' && styles.activeTab]}
+                    onPress={() => handleTabChange('alunoTurma')}
+                >
+                    <Text style={[styles.tabText, selectedTab === 'alunoTurma' && styles.activeTabText]}>Aluno Turma</Text>
+                </TouchableOpacity>
+            </View>
+
+             {/* Search Bar and Add Button */}
+             <View style={styles.searchAndButton}>
+                <TextInput style={styles.searchBox} placeholder="Pesquisar" />
+                 {/* Botão para adicionar (modal) */}
+                <TouchableOpacity style={styles.addButton} onPress={openModal}>
+                    <Text style={styles.addButtonText}>
+                        {selectedTab === 'turma'
+                            ? 'Adicionar Turma'
+                            : selectedTab === 'profTurma'
+                            ? 'Adicionar Professor Turma'
+                            : 'Adicionar Aluno Turma'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+           
+
+            {/* Lista de Dados */}
+            <View style={styles.contentContainer}>
+                {loading ? (
+                    <Text>Carregando...</Text>
+                ) : data && data.length > 0 ? (
+                    <FlatList
+                        data={data}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => (
+                            <View style={styles.item}>
+                                {selectedTab === 'turma' && (
+                                    <>
+                                        <Text style={styles.itemText}>Codigo: {item.codigo}</Text>
+                                        <Text style={styles.itemText}>Nome: {item.nome}</Text>
+                                        <Text style={styles.itemText}>Sala: {item.sala}</Text>
+                                       
+                                    </>
+                                )}
+                                {selectedTab === 'profTurma' && (
+                                    <>
+                                        <Text style={styles.itemText}>Codigo: {item.codigo}</Text>
+                                        <Text style={styles.itemText}>Codigo Turma: {item.codturma}</Text>
+                                        <Text style={styles.itemText}>Codigo Professor: {item.codprofessor}</Text>
+                                        <Text style={styles.itemText}>Codigo Auxiliar: {item.codauxiliar}</Text>
+                                        <Text style={styles.itemText}>Periodo: {item.periodo}</Text>
+                                    </>
+                                )}
+                                {selectedTab === 'alunoTurma' && (
+                                    <>
+                                        <Text style={styles.itemText}>Codigo: {item.codigo}</Text>
+                                        <Text style={styles.itemText}>Codigo Aluno: {item.codaluno}</Text>
+                                        <Text style={styles.itemText}>Codigo Turma: {item.codturma}</Text>
+                                    </>
+                                )}
+                            </View>
+                        )}
+                    />
+                ) : (
+                    <Text style={styles.noDataText}>Nenhum dado encontrado.</Text>
+                )}
+            </View>
+
+            
+
+            {/* Modal */}
+            <Modal
+                visible={modalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>X</Text>
+                        </TouchableOpacity>
+                        {selectedTab === 'turma' && <TurmaAdicionar closeModal={closeModal} />}
+                        {selectedTab === 'profTurma' && <ProfTurmaCadastro closeModal={closeModal} />}
+                        {selectedTab === 'alunoTurma' && <AlunoTurmaAdicionar closeModal={closeModal} />}
+                    </View>
+                </View>
+            </Modal>
+        </KeyboardAvoidingView>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f5f5f5',
+    },
+    topBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        paddingTop: 60,
+        backgroundColor: '#283673',
+    },
+    topBarTxt: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        flex: 1,
+    },
+    btnseta: {
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+    },
+    tabsContainer: {
+        flexDirection: 'row',
+        marginTop: 20,
+        width: '100%',
+        height: 50,
+        backgroundColor: '#ffffff',
+        elevation: 4, // Sombra para destacar
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+    },
+    tab: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        borderBottomWidth: 3,
+        borderBottomColor: 'transparent', // Transição suave entre Tabs
+    },
+    activeTab: {
+        backgroundColor: '#ffffff', // Fundo branco para a aba ativa
+        borderBottomColor: '#3b5998', // Destaque com uma linha
+    },
+    tabText: {
+        fontSize: 14,
+        color: '#555',
+        fontWeight: '500',
+    },
+    activeTabText: {
+        color: '#3b5998',
+        fontWeight: 'bold',
+    },
+    contentContainer: {
+        flex: 1,
+        paddingHorizontal: 10,
+        marginTop: 10,
+    },
+    item: {
+        padding: 15,
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+        marginBottom: 5,
+    },
+    itemText: {
+        fontSize: 16,
+    },
+    noDataText: {
+        textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
+    },
+    addButton: {
+        backgroundColor: '#FFEF95',
+        padding: 15,
+        borderRadius: 5,
+        margin: 10,
+        alignItems: 'center',
+    },
+    addButtonText: {
+        color: '#000',
+        fontWeight: 'bold',
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '90%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+    },
+    closeButton: {
+        alignSelf: 'flex-end',
+        padding: 5,
+    },
+    closeButtonText: {
+        fontSize: 18,
+        color: 'red',
+    },
+    searchAndButton: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        marginTop: 20,
+    },
+    searchBox: {
+        flex: 1,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 10,
+        marginRight: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+    },
+});
+
+
+
+/* import React, { useState } from 'react';
+import { api } from '../../api/api';
 import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView ,viewbutton } from 'react-native';
 import TurmaAdicionar from './TurmaAdicionar';
 import ProfTurmaCadastro from './ProfTurmaCadastro';
@@ -7,7 +312,7 @@ import AlunoTurmaCadastro from './AlunoTurmaAdicionar';
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function ProfessorCadastro({navigation,route}) {
+export default function TurmaCadastro({navigation,route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [turmas, setTurmas] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -202,7 +507,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'red',
     },
-});
+}); */
 
 
 

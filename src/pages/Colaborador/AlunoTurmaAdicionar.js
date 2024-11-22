@@ -10,7 +10,7 @@ const periodos = [
   ];
 
 
-export default function AlunoTurmaCadastro({ closeModal }) {
+export default function AlunoTurmaAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
     const [newcodaluno, setNewcodaluno] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
