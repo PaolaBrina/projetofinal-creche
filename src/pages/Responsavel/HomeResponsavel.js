@@ -50,7 +50,7 @@ export default function HomeResponsavel({ navigation, route }) {
           <TouchableOpacity style={[styles.button, { backgroundColor: '#ab47bc' }]} onPress={() => navigation.navigate('Fotos', { codigo })}>
             <Text style={styles.buttonText}>Fotos</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { backgroundColor: '#ffa726' }]} onPress={() => navigation.navigate('Horarios', { codigo })}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: '#ffa726' }]} onPress={() => navigation.navigate('HorarioResponsavel', { codigo })}>
             <Text style={styles.buttonText}>Horários</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { backgroundColor: '#ba68c8' }]} onPress={() => navigation.navigate('ListadeMateriaisResponsavel', { codigo })}>

@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform, PermissionsAndroid } from 'react-native';
 import { api } from '../../api/api';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 
+
+
 export default function HorarioAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
-    const [foto, setNewfoto] = useState(null); // Agora armazenando a foto como um objeto
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const [dataturma, setDataturma] = useState([{ label: "", value: "" }]);
     const [isFocus, setIsFocus] = useState(false);
+    const [newfoto, setNewfoto] = useState('');
+    const [base64Image, setBase64Image] = useState('');
 
     // Função para validar campos
     const validateFields = () => {
-        if (!newcodturma || !foto) {
+        if (!newcodturma || !newfoto) {
             return false;
         }
         return true;
@@ -36,68 +39,58 @@ export default function HorarioAdicionar({ closeModal }) {
 
     useEffect(() => {
         fetchTurma();
+        requestPermissions();
     }, []);
 
-    // Função para enviar o novo horário e turma
-    const CadTurma = async () => {
-        if (!validateFields()) {
-            setFeedbackMessage('Por favor, preencha todos os campos.');
-            return;
-        }
+   
 
-        try {
-            const formData = new FormData();
-            formData.append('codturma', newcodturma);
-            formData.append('status', 1);
-
-            // Verificando se a foto foi selecionada
-            if (foto) {
-                const photo = {
-                    uri: foto.uri,
-                    type: foto.type,
-                    name: foto.fileName || 'photo.jpg',
-                };
-                formData.append('foto', photo);
-            }
-
-            // Enviando os dados para o backend
-            const response = await api.post('/horario', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            Alert.alert('Cadastro Turma', 'Turma adicionada com sucesso!', [
+    const requestPermissions = async () => {
+        if (Platform.OS === 'android') {
+            const cameraPermission = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
                 {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel',
-                },
-                { text: 'OK', onPress: () => closeModal('Turma adicionada com sucesso!') },
-            ]);
-        } catch (error) {
-            console.error('Erro ao adicionar turma:', error);
-            setFeedbackMessage('Erro ao adicionar a turma. Tente novamente.');
+                    title: "Permissão de Câmera",
+                    message: "Este aplicativo precisa de acesso à câmera para selecionar fotos.",
+                    buttonNeutral: "Perguntar Depois",
+                    buttonNegative: "Cancelar",
+                    buttonPositive: "OK"
+                }
+            );
+
+            const storagePermission = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                {
+                    title: "Permissão de Armazenamento",
+                    message: "Este aplicativo precisa de acesso à galeria para selecionar fotos.",
+                    buttonNeutral: "Perguntar Depois",
+                    buttonNegative: "Cancelar",
+                    buttonPositive: "OK"
+                }
+            );
+
+            if (cameraPermission !== PermissionsAndroid.RESULTS.GRANTED || storagePermission !== PermissionsAndroid.RESULTS.GRANTED) {
+                alert("As permissões para câmera e armazenamento são necessárias.");
+            }
+        } else {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Permissão para acessar a câmera é necessária!');
+            }
         }
     };
 
-    // Função para permitir a escolha de imagem
     const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permissionResult.granted) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
+            base64: true, // Adiciona a opção de base64
         });
 
         if (!result.canceled) {
-            setNewfoto(result.assets[0]); // Armazenando a foto selecionada no estado
+            setNewfoto(result.assets[0].uri); // URI da imagem para visualização
+            setBase64Image(result.assets[0].base64); // Salva a imagem em base64
         }
     };
 
@@ -111,6 +104,37 @@ export default function HorarioAdicionar({ closeModal }) {
             );
         }
         return null;
+    };
+
+     // Função para enviar o novo horário e turma
+     const CadHorario = async () => {
+        if (!validateFields()) {
+            setFeedbackMessage('Por favor, preencha todos os campos.');
+            return;
+        }
+        try {
+            const newItem = {
+                codturma: newcodturma,
+                foto: base64Image,
+            };
+            const response = await api.post('/horario', newItem);
+            const data = response.data;
+
+            Alert.alert('Cadastro Horario', 'Horario adicionado com sucesso!', [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'OK',
+                    onPress: () => closeModal('Horario adicionado com sucesso!')
+                },
+            ]);
+        } catch (error) {
+            console.error('Erro ao adicionar Horario:', error);
+            setFeedbackMessage('Erro ao adicionar o Horario. Tente novamente.');
+        }
     };
 
     return (
@@ -156,14 +180,14 @@ export default function HorarioAdicionar({ closeModal }) {
                 </View>
 
                 <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Foto da sala:</Text>
-                    <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
+                    <Text style={styles.label}>Foto:</Text>
+                    <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                         <Text style={styles.imagePickerText}>Escolher Foto</Text>
                     </TouchableOpacity>
-                    {foto && <Image source={{ uri: foto.uri }} style={styles.image} />}
+                    {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
                 </View>
 
-                <TouchableOpacity style={styles.btnLogin} onPress={CadTurma}>
+                <TouchableOpacity style={styles.btnLogin} onPress={CadHorario}>
                     <Text style={styles.btnTxt}>Cadastrar</Text>
                 </TouchableOpacity>
             </View>
@@ -239,5 +263,25 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    imagePicker: {
+        width: '100%',
+        height: 50,
+        backgroundColor: '#ccc', // Cor cinza
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    imagePickerText: {
+        color: '#333', // Cor do texto
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    image: {
+        width: '100%',
+        height: 200,
+        marginTop: 10,
+        borderRadius: 10,
     },
 });
