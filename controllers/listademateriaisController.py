@@ -4,7 +4,7 @@ from models.listademateriais import listademateriais
 from models.turma import turma
 from models.alunoturma import alunoturma
 from models.aluno import aluno
-from models.listademateriais import listademateriais
+
 
 def listademateriaisController():
         if request.method == 'POST':

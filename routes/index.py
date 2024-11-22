@@ -19,6 +19,7 @@ from routes.professorturmaRoutes import professorturma
 from routes.listademateriaisRoutes import listademateriais
 from routes.calendarioRoutes import calendario
 from routes.listademateriaisRoutes import lista_materiais_bp
+from routes.horarioRoutes import horarios_bp
 
 def default_routes(app):
     turma(app)
@@ -42,3 +43,4 @@ def default_routes(app):
     listademateriais(app)
     calendario(app)
     app.register_blueprint(lista_materiais_bp)  # Registrar o blueprint corretamente
+    app.register_blueprint(horarios_bp)  # Registrar o blueprint corretamente

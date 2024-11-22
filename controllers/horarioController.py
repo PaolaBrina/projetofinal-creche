@@ -1,6 +1,12 @@
 from flask import request
 from database.db import db
 from models.horario import horario
+from database.db import db
+from models.turma import turma
+from models.alunoturma import alunoturma
+from models.aluno import aluno
+from models.responsavel import responsavel
+
 
 def horarioController():
         if request.method == 'POST':
@@ -56,3 +62,38 @@ def horarioController():
             except Exception as e:
                 return 'Não foi possivel alterar Horarios, {}'.format(str(e)), 405
 
+
+
+def get_horarios_por_responsavel(codigo_responsavel):
+    try:
+        print(f"Código recebido no controlador: {codigo_responsavel}")  # LOG TEMPORÁRIO
+        
+        # Realiza a consulta com joins e filtros
+        materiais_data = db.session.query(
+            turma.nome.label('nome_turma'),  # Nome da turma
+            horario.foto           # Imagem da lista de materiais
+        ).join(alunoturma, alunoturma.codturma == turma.codigo) \
+         .join(aluno, aluno.codigo == alunoturma.codaluno) \
+         .join(horario, horario.codturma == turma.codigo) \
+         .filter(aluno.codresponsavel == codigo_responsavel) \
+         .distinct()  # Remove duplicações (considerando todas as colunas)
+
+        materiais_data = materiais_data.all()  # Chama o método all() após a aplicação do distinct
+
+        print("Dados retornados da consulta:", materiais_data)  # LOG
+
+        # Formatar os resultados em uma lista de dicionários
+        materiais = [
+            {
+                "nome_turma": item.nome_turma,
+                "foto": item.foto
+            }
+            for item in materiais_data
+        ]
+
+        for material in materiais:
+            print(f"Turma: {material['nome_turma']}, Foto: {material['foto'][:30]}...")  # LOG Melhorado
+        
+        return materiais  # Retorna a lista de materiais diretamente
+    except Exception as e:
+        raise e
