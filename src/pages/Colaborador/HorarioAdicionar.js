@@ -5,8 +5,6 @@ import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as ImagePicker from 'expo-image-picker';
 
-
-
 export default function HorarioAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
@@ -283,5 +281,5 @@ const styles = StyleSheet.create({
         height: 200,
         marginTop: 10,
         borderRadius: 10,
-    },
+    }, 
 });

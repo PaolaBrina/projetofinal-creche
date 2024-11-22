@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView,Image } from 'react-native';
 import HorarioAdicionar from './HorarioAdicionar';
 
-
 import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function HorarioCadastro({navigation,route}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [selectedAluno, setSelectedAluno] = useState(null);
 
     const { codigo } = route.params || {};
 
-    const openModal = () => {
+    const openAddModal = () => {
         setModalVisible(true);
     };
 
-    const closeModal = () => {
+    const closeAddModal = () => {
         setModalVisible(false);
+    };
+
+    const toggleAlunoDetails = (aluno) => {
+        setSelectedAluno((prevAluno) => (prevAluno && prevAluno.codigo === aluno.codigo ? null : aluno));
+    };
+
+    const handleDelete = (codigo) => {
+        Alert.alert('Excluir', `Deseja excluir o aluno com código ${codigo}?`, [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Excluir', onPress: () => console.log('Aluno excluído:', codigo) }
+        ]);
     };
 
     const fetchHorarios = async () => {
@@ -47,7 +59,7 @@ export default function HorarioCadastro({navigation,route}) {
         <KeyboardAvoidingView style={styles.container} behavior="padding">
             <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador, { codigo }')}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador', { codigo })}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
                         <Text style={styles.topBarTxt}>Cadastro Horário</Text>
@@ -58,48 +70,66 @@ export default function HorarioCadastro({navigation,route}) {
                 <Text style={styles.buttonText}>Buscar Horários</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={openModal}>
+            <TouchableOpacity style={styles.button} onPress={openAddModal}>
                 <Text style={styles.buttonText}>Adicionar Horário</Text>
             </TouchableOpacity>
             </View>
+            </ScrollView>
 
             {loading ? (
                 <Text>Carregando...</Text>
             ) : (
-                horarios.length > 0 ? (
-                    <FlatList
-                        data={horarios}
-                        keyExtractor={(item) => item.codigo.toString()} 
-                        renderItem={({ item }) => (
-                            <View style={styles.horarioText}>
-                                <Text style={styles.horarioText}>Codturma: {item.codturma}</Text>
-                                <Text style={styles.horarioText}>CPF: {item.cpf}</Text>
-                                <Text style={styles.horarioText}>Data de Nascimento: {item.datanascimento}</Text>
+                <FlatList
+                    data={horarios}
+                    keyExtractor={(item) => item.codigo.toString()}
+                    renderItem={({ item }) => (
+                        <View style={styles.alunoItemContainer}>
+                            <View style={styles.alunoRow}>
+                                <TouchableOpacity style={styles.alunoInfo} onPress={() => toggleAlunoDetails(item)}>
+                                    <MaterialIcons name="person" size={24} color="black" />
+                                    <Text style={styles.alunoName}>{item.codigo}</Text>
+                                </TouchableOpacity>
+                                <View style={styles.iconsContainer}>
+                                    <TouchableOpacity  style={styles.iconButton}>
+                                        <MaterialIcons name="edit" size={25} color="blue" />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => handleDelete(item.codigo)} style={styles.iconButton}>
+                                        <MaterialIcons name="delete" size={25} color="red" />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        )}
-                    />
-                ) : (
-                   <Text></Text>
-                )
+                            {selectedAluno && selectedAluno.codigo === item.codigo && (
+                                <View style={styles.alunoDetails}>
+                                    <Text style={styles.alunoText}>Cod Turma: {item.codturma}</Text>
+                                    {item.foto && (
+                                        <Image
+                                            source={{ uri: `data:image/jpeg;base64,${item.foto}` }}
+                                            style={styles.alunoImage}
+                                        />
+                                    )}
+                                </View>
+                            )}
+                        </View>
+                    )}
+                />
             )}
 
-
+            {/* Modal de Adicionar Aluno */}
             <Modal
                 visible={modalVisible}
                 animationType="slide"
                 transparent={true}
-                onRequestClose={closeModal}
+                onRequestClose={closeAddModal}
             >
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
-                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                        <TouchableOpacity onPress={closeAddModal} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
-                        <HorarioAdicionar closeModal={closeModal} />
+                        <HorarioAdicionar closeModal={closeAddModal} />
                     </View>
                 </View>
             </Modal>
-            </ScrollView>
         </KeyboardAvoidingView>
     );
 }
@@ -174,5 +204,83 @@ const styles = StyleSheet.create({
     closeButtonText: {
         fontSize: 18,
         color: 'red',
+    },
+    viewbutton: {
+        justifyContent: 'space-around',
+        marginTop: 40, // Aumentei a distância entre os botões e os alunos
+        paddingHorizontal: 20,
+    },
+    alunoItemContainer: {
+        marginBottom: 20, // Aumentei o espaçamento entre os itens
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    alunoIconContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between', // Adicionando a distribuição entre os elementos
+    },
+    alunoName: {
+        fontSize: 18,
+        marginLeft: 10,
+        flex: 1, // Para garantir que o nome ocupe o espaço disponível
+    },
+    iconButton: {
+        marginLeft: 10,
+    },
+    alunoDetails: {
+        marginTop: 10,
+        paddingLeft: 10,
+    },
+    alunoText: {
+        fontSize: 16,
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '90%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+    },
+    closeButton: {
+        alignSelf: 'flex-end',
+        padding: 5,
+    },
+    closeButtonText: {
+        fontSize: 18,
+        color: 'red',
+    },
+    alunoImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 10,
+        marginTop: 10,
+        alignSelf: 'center',
+    },
+    alunoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between', // Distribui o espaço entre o nome e os ícones
+    },
+    alunoInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1, // Garante que o texto ocupe o espaço disponível
+    },
+    iconsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end', // Alinha os ícones à direita
     },
 });
