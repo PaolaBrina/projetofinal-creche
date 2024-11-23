@@ -1,7 +1,8 @@
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { AuthProvider } from './src/pages/AuthContext';
-
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
 import Suporte from './src/pages/Suporte';
@@ -42,18 +43,46 @@ import ListadeMateriaisResponsavel from './src/pages/Responsavel/ListadeMateriai
 import AtividadesResponsavel from './src/pages/Responsavel/AtividadesResponsavel';
 import CalendarioResponsavel from './src/pages/Responsavel/CalendarioResponsavel';
 import HorarioResponsavel from './src/pages/Responsavel/HorarioResponsavel';
-  
-export default function App(){
-  const Stack = createStackNavigator();
 
-  return(
+
+export default function App() {
+  const Stack = createStackNavigator();
+  const Drawer1 = createDrawerNavigator();
+  const Drawer2 = createDrawerNavigator();
+  const Drawer3 = createDrawerNavigator();
+
+  // Drawer para Home 1
+  const DrawerColaborador = () => (
+    <Drawer1.Navigator>
+      <Drawer1.Screen name="Home Colaborador" component={HomeColaborador} />
+      <Drawer1.Screen name="Suporte" component={Suporte} />
+    </Drawer1.Navigator>
+  );
+
+  // Drawer para Home 2
+  const DrawerProfessor = () => (
+    <Drawer2.Navigator>
+      <Drawer2.Screen name="Home Professor" component={HomeProfessor} />
+      <Drawer2.Screen name="Suporte" component={Suporte} />
+    </Drawer2.Navigator>
+  );
+  
+ // Drawer para Home 2
+ const DrawerResponsavel = () => (
+  <Drawer3.Navigator>
+    <Drawer3.Screen name="Home Responsavel" component={HomeResponsavel} />
+    <Drawer3.Screen name="Suporte" component={Suporte} />
+  </Drawer3.Navigator>
+);
+
+
+  return (
     <AuthProvider>
-    <NavigationContainer> 
-        <Stack.Navigator>
-          <Stack.Screen options={{headerShown:false}} name='Login' component={Login}/>
-          <Stack.Screen options={{headerShown:false}} name='Suporte' component={Suporte}/>
-          <Stack.Screen options={{headerShown:false}} name='HomeSelecao' component={HomeSelecao}/> 
-          <Stack.Screen options={{headerShown:false}} name='HomeColaborador' component={HomeColaborador}/> 
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="HomeSelecao" component={HomeSelecao} options={{ headerShown: false }} />
+          <Stack.Screen options={{headerShown:false}} name='Homecolaborador' component={DrawerColaborador}/> 
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoAdicionar' component={AlunoAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoEditar' component={AlunoEditar}/>
@@ -73,7 +102,7 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='AvisosCadastro' component={AvisosCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AvisoAdicionar' component={AvisoAdicionar}/>
 
-          <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={HomeProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='Homeprofessor' component={DrawerProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesCadastro' component={AtividadesCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfAdicionar' component={AtividadesProfAdicionar}/>
@@ -81,16 +110,15 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioProfessor' component={CalendarioProfessor}/>
 
-          <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={HomeResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='Homeresponsavel' component={DrawerResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesResponsavel' component={AtividadesResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioResponsavel' component={CalendarioResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='HorarioResponsavel' component={HorarioResponsavel}/>
-          
         </Stack.Navigator>
-    </NavigationContainer>
+      </NavigationContainer>
     </AuthProvider>
   );
 }

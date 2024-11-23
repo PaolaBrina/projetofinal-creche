@@ -31,7 +31,7 @@ export default function Login({ navigation }) {
       } else if (['responsavel', 'professor', 'colaborador'].includes(status)) {
         await storeUserData('userData', { telefone, role: status, nome, codigo });
         login({ telefone, role: status, nome, codigo });
-        navigation.navigate(`Home${status.charAt(0).toUpperCase() + status.slice(1)}`, { codigo });
+        navigation.navigate(`Home${status.charAt(0) + status.slice(1)}`, { codigo });
       } else {
         Alert.alert('Erro', 'Telefone não encontrado.');
       }
@@ -40,8 +40,6 @@ export default function Login({ navigation }) {
       Alert.alert('Erro', 'Erro ao verificar telefone.');
     }
   };
-
-
   return (
       <View style={styles.container}>
         <View style={styles.topo}>

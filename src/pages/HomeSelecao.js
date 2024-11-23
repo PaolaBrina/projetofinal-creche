@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { api } from '../api/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -15,18 +14,17 @@ export default function HomeSelecao({ navigation }) {
       if (!userData) {
         throw new Error('Nenhum dado de usuário encontrado.');
       }
-  
       const { telefone, roles, codigo } = JSON.parse(userData); // Obtém os dados do usuário
       if (roles && roles.length > 1) {
         const novoBotao = [];
         if (roles.includes('professor')) {
-          novoBotao.push({ name: 'Professor', route: 'HomeProfessor', codigo: codigo[roles.indexOf('professor')] });
+          novoBotao.push({ name: 'Professor', route: 'Homeprofessor', codigo: codigo[roles.indexOf('professor')] });
         }
         if (roles.includes('colaborador')) {
-          novoBotao.push({ name: 'Colaborador', route: 'HomeColaborador', codigo: codigo[roles.indexOf('colaborador')] });
+          novoBotao.push({ name: 'Colaborador', route: 'Homecolaborador', codigo: codigo[roles.indexOf('colaborador')] });
         }
         if (roles.includes('responsavel')) {
-          novoBotao.push({ name: 'Responsável', route: 'HomeResponsavel', codigo: codigo[roles.indexOf('responsavel')] });
+          novoBotao.push({ name: 'Responsável', route: 'Homeresponsavel', codigo: codigo[roles.indexOf('responsavel')] });
         }
         setBotao(novoBotao);
       } else {
@@ -40,7 +38,6 @@ export default function HomeSelecao({ navigation }) {
       setLoading(false);
     }
   };
-  
   
   useEffect(() => {
     fetchRoles();
