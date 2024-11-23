@@ -1,17 +1,22 @@
 import React from "react";
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground } from "react-native";
-import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function ChamadasResponsavel({navigation,route}) {
     return (
       <View style={styles.container}>
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}>
-            <Text style={styles.backText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Chamada</Text>
-        </View>
+        <View style={styles.container}>
+            <View style={styles.topBar}>
+                <TouchableOpacity
+                    style={styles.btnseta}
+                    onPress={() => navigation.navigate('HomeResponsavel', { codigo })}
+                >
+                    <AntDesign name="caretleft" size={30} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.topBarTxt}>Chamada</Text>
+            </View>
   
         {/* Seletor de turma e data */}
         <View style={styles.filterRow}>
@@ -40,6 +45,7 @@ export default function ChamadasResponsavel({navigation,route}) {
           ))}
         </ScrollView>
       </View>
+      </View>
     );
   };
   
@@ -48,6 +54,28 @@ export default function ChamadasResponsavel({navigation,route}) {
       flex: 1,
       backgroundColor: '#f9f9f9',
     },
+    topBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%',
+      padding: 10,
+      paddingTop: 60,
+      paddingLeft: 20,
+      paddingRight: 20,
+      backgroundColor: '#283673',
+  },
+  topBarTxt: {
+      color: '#fff',
+      fontSize: 20, // Aumentei a fonte do título
+      fontWeight: 'bold',
+      flex: 1,
+      textAlign: 'center',
+  },
+  btnseta: {
+      width: 30,
+      height: 30,
+      justifyContent: 'center',
+  },
     header: {
       flexDirection: 'row',
       alignItems: 'center',
