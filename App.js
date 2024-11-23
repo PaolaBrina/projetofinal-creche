@@ -24,6 +24,8 @@ import ListaMaterialCadastro from './src/pages/Colaborador/ListaMaterialCadastro
 import ListaMaterialAdicionar from './src/pages/Colaborador/ListaMaterialAdicionar';
 import CalendarioAdicionar from './src/pages/Colaborador/CalendarioAdicionar';
 import CalendarioCadastro from './src/pages/Colaborador/CalendarioCadastro';
+import AvisosCadastro from './src/pages/Colaborador/AvisosCadastro';
+import AvisoAdicionar from './src/pages/Colaborador/AvisosAdicionar';
 /* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
 import MeudiaProfessor from './src/pages/Professor/Meu_dia/MeudiaProfessor';
@@ -68,6 +70,8 @@ export default function App(){
           <Stack.Screen options={{headerShown:false}} name='ListaMaterialCadastro' component={ListaMaterialCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioCadastro' component={CalendarioCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioAdicionar' component={CalendarioAdicionar}/>
+          <Stack.Screen options={{headerShown:false}} name='AvisosCadastro' component={AvisosCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='AvisoAdicionar' component={AvisoAdicionar}/>
 
           <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={HomeProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
