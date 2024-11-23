@@ -87,7 +87,7 @@ export default function AuxiliarCadastro({navigation, route}) {
                 ListHeaderComponent={
                     <>
                         <View style={styles.topBar}>
-                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador, { codigo }')}>
+                        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeColaborador', { codigo })}>
                             <AntDesign name="caretleft" size={30} color="white"/>
                         </TouchableOpacity>
                         <Text style={styles.topBarTxt}>Cadastro Auxiliar</Text>

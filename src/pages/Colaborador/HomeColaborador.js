@@ -46,7 +46,7 @@ export default function HomeColaborador({ navigation, route }) {
         </View>
 
         <View style={styles.row}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('', { codigo })}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AvisosCadastro', { codigo })}>
             <Text style={styles.buttonText}>Avisos </Text>
           </TouchableOpacity>
 
