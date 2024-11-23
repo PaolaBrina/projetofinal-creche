@@ -20,6 +20,7 @@ from routes.listademateriaisRoutes import listademateriais
 from routes.calendarioRoutes import calendario
 from routes.listademateriaisRoutes import lista_materiais_bp
 from routes.horarioRoutes import horarios_bp
+from routes.both_meu_diaRoute import meu_dia_bp
 
 def default_routes(app):
     turma(app)
@@ -44,3 +45,4 @@ def default_routes(app):
     calendario(app)
     app.register_blueprint(lista_materiais_bp)  # Registrar o blueprint corretamente
     app.register_blueprint(horarios_bp)  # Registrar o blueprint corretamente
+    app.register_blueprint(meu_dia_bp)  # Registrar o blueprint corretamente
