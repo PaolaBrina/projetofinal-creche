@@ -1,18 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeColaborador({ navigation, route }) {
-  // Recupera o código passado via parâmetros
-  const { codigo } = route.params || {}; // Desestruturação com fallback caso o código não esteja disponível
+
+  const [codigo, setCodigo] = useState(null);
 
   useEffect(() => {
-    // Verifica se o código foi passado corretamente
-    if (codigo) {
-      console.log('Código do colaborador:', codigo); // Exibe o código no console para verificação
-    } else {
-      Alert.alert('Erro', 'Código não encontrado.');
-    }
-  }, [codigo]);
+    const fetchCodigo = async () => {
+      if (route.params?.codigo) {
+        setCodigo(route.params.codigo);
+      } else {
+        try {
+          const savedData = await AsyncStorage.getItem('selectedRole');
+          const parsedData = JSON.parse(savedData);
+          setCodigo(parsedData?.codigo);
+          console.log('Código recuperado do AsyncStorage:', parsedData?.codigo);
+        } catch (error) {
+          Alert.alert('Erro', 'Não foi possível recuperar o código.');
+        }
+      }
+    };
+    fetchCodigo();
+  }, [route.params]);
 
   return (
     <View style={styles.container}>

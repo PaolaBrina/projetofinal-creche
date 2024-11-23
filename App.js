@@ -82,7 +82,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="HomeSelecao" component={HomeSelecao} options={{ headerShown: false }} />
-          <Stack.Screen options={{headerShown:false}} name='Homecolaborador' component={DrawerColaborador}/> 
+          <Stack.Screen options={{headerShown:false}} name='HomeColaborador' component={DrawerColaborador}/> 
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoAdicionar' component={AlunoAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoEditar' component={AlunoEditar}/>
@@ -102,7 +102,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='AvisosCadastro' component={AvisosCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AvisoAdicionar' component={AvisoAdicionar}/>
 
-          <Stack.Screen options={{headerShown:false}} name='Homeprofessor' component={DrawerProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={DrawerProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesCadastro' component={AtividadesCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfAdicionar' component={AtividadesProfAdicionar}/>
@@ -110,7 +110,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioProfessor' component={CalendarioProfessor}/>
 
-          <Stack.Screen options={{headerShown:false}} name='Homeresponsavel' component={DrawerResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={DrawerResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>

@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, ScrollView } from "react-native";
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeResponsavel({ navigation, route }) {
-  const { codigo } = route.params || {}; 
+
+  const [codigo, setCodigo] = useState(null);
 
   useEffect(() => {
-    if (codigo) {
-      console.log('Código do responsável:', codigo); 
-    } else {
-      Alert.alert('Erro', 'Código não encontrado.');
-    }
-  }, [codigo]);
+    const fetchCodigo = async () => {
+      if (route.params?.codigo) {
+        setCodigo(route.params.codigo);
+      } else {
+        try {
+          const savedData = await AsyncStorage.getItem('selectedRole');
+          const parsedData = JSON.parse(savedData);
+          setCodigo(parsedData?.codigo);
+          console.log('Código recuperado do AsyncStorage:', parsedData?.codigo);
+        } catch (error) {
+          Alert.alert('Erro', 'Não foi possível recuperar o código.');
+        }
+      }
+    };
+    fetchCodigo();
+  }, [route.params]);
 
   return (
       <ImageBackground 
