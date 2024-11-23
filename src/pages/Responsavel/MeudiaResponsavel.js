@@ -12,36 +12,40 @@ export default function MeudiaResponsavel({ navigation, route }) {
   const fetchMeudiaManha = async () => {
     try {
       const response = await api.get(`/meudiamanha/${codigo}`);
-      const data = response.data?.data;
-      if (Array.isArray(data)) {
-        setManhaItems(data);
+      const { data } = response.data;
+  
+      // Acessar a propriedade data aninhada
+      if (Array.isArray(data?.data)) {
+        setManhaItems(data.data);
       } else {
-        console.warn('Dados inválidos recebidos para a manhã', data);
-        setManhaItems([]); // Caso os dados não sejam válidos, garante que manhaItems seja um array
+        console.warn('Estrutura de dados inesperada para a manhã', response.data);
+        setManhaItems([]);
       }
     } catch (error) {
       console.error('Erro ao buscar dados da manhã:', error);
-      setManhaItems([]); // Em caso de erro, manhaItems será um array vazio
+      setManhaItems([]);
     }
   };
   
-
-  // Fetch para "Meu Dia - Tarde"
   const fetchMeudiaTarde = async () => {
     try {
       const response = await api.get(`/meudiatarde/${codigo}`);
-      const data = response.data?.data;
-      if (Array.isArray(data)) {
-        setTardeItems(data); // Define o estado se for um array válido
+      const { data } = response.data;
+  
+      // Acessar a propriedade data aninhada
+      if (Array.isArray(data?.data)) {
+        setTardeItems(data.data);
       } else {
-        console.warn('Dados inválidos recebidos para a tarde', data);
-        setTardeItems([]); // Caso os dados não sejam válidos, garante que tardeItems seja um array
+        console.warn('Estrutura de dados inesperada para a tarde', response.data);
+        setTardeItems([]);
       }
     } catch (error) {
       console.error('Erro ao buscar dados da tarde:', error);
-      setTardeItems([]); // Em caso de erro, tardeItems será um array vazio
+      setTardeItems([]);
     }
   };
+  
+  
   
 
   useEffect(() => {
@@ -68,8 +72,8 @@ export default function MeudiaResponsavel({ navigation, route }) {
                 <Text style={styles.itemText}>sono: {item.sono}</Text>
                 <Text style={styles.itemText}>saude: {item.saude}</Text>
                 <Text style={styles.itemText}>medicacao: {item.medicacao}</Text>
-                <Text style={styles.itemText}>cafetarde: {item.cafetarde}</Text>
-                <Text style={styles.itemText}>janta: {item.janta}</Text>
+                <Text style={styles.itemText}>cafemanha: {item.cafemanha}</Text>
+                <Text style={styles.itemText}>almoco: {item.almoco}</Text>
               </View>
               {/* Outras informações semelhantes */}
             </View>
@@ -205,13 +209,18 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#e0e7ff',
     margin: 15,
-    padding: 15,
+    padding: 20, // Aumentando o padding para que o conteúdo tenha mais espaço
     borderRadius: 10,
+    maxWidth: '95%', // Garantir que o card não ocupe toda a largura da tela
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column', // Alterando para coluna para melhorar a organização
     marginBottom: 10,
+  },
+  itemText: {
+    fontSize: 16, // Aumentando o tamanho da fonte para melhorar a legibilidade
+    marginBottom: 5, // Adicionando espaço entre os itens
+    color: '#333', // Cor mais escura para melhor contraste
   },
   title: {
     fontSize: 16,
