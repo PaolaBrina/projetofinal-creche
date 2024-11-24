@@ -26,6 +26,7 @@ export default function HomeResponsavel({ navigation, route }) {
   }, [route.params]);
 
   return (
+    <ScrollView>
       <ImageBackground 
         source={require("../../../assets/nuvem.png")} 
         style={styles.container} 
@@ -62,7 +63,7 @@ export default function HomeResponsavel({ navigation, route }) {
 
       {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('', { codigo }) }>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('FotosResponsavel', { codigo }) }>
           <Ionicons name="images" size={24} color="#000" />
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
@@ -88,7 +89,12 @@ export default function HomeResponsavel({ navigation, route }) {
       <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
+      <View style={styles.codeContainer}>
+        <Text style={styles.codeText}>Código do Colaborador: {codigo}</Text>
+      </View>
+      
   </ImageBackground>
+  </ScrollView>
   );
 }
 

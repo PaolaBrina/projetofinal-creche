@@ -50,11 +50,11 @@ export default function HomeResponsavel({ navigation, route }) {
 
       {/* Linha 2: Botões Vermelho e Azul */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]} onPress={() => navigation.navigate('CalendarioProfessor', { codigo })}>
           <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
           <Text style={styles.buttonText}>Calendário</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]}>
+        <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]} onPress={() => navigation.navigate('AtividadesCadastro', { codigo })}>
           <FontAwesome name="pencil-square-o" size={24} color="black" />
           <Text style={styles.buttonText}>Atividades</Text>
         </TouchableOpacity>
@@ -62,11 +62,11 @@ export default function HomeResponsavel({ navigation, route }) {
 
       {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('FotoProfessor', { codigo })}>
           <Ionicons name="images" size={24} color="#000" />
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]}>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('', { codigo })}>
           <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
           <Text style={styles.buttonText}>Chamadas</Text>
         </TouchableOpacity>
@@ -75,7 +75,7 @@ export default function HomeResponsavel({ navigation, route }) {
       {/* Linha 4: Botões Invisivel e Laranja */}
       <View style={styles.row}>
         <TouchableOpacity disabled={true} style={[styles.buttonLeft]} />
-        <TouchableOpacity style={[styles.buttonRight, styles.orange]}>
+        <TouchableOpacity style={[styles.buttonRight, styles.orange]} onPress={() => navigation.navigate('HorarioProfessor', { codigo })}>
           <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
           <Text style={styles.buttonText}>Horários</Text>
         </TouchableOpacity>

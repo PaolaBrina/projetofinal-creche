@@ -14,17 +14,24 @@ import AlunoEditar from './src/pages/Colaborador/AlunoEditar';
 
 import HorarioCadastro from './src/pages/Colaborador/HorarioCadastro';
 import HorarioAdicionar from './src/pages/Colaborador/HorarioAdicionar';
+
 import ProfessorCadastro from './src/pages/Colaborador/ProfessorCadastro';
 import ProfessorAdicionar from './src/pages/Colaborador/ProfessorAdicionar';
+
 import ResponsavelCadastro from './src/pages/Colaborador/ResponsavelCadastro';
+
 import TurmaCadastro from './src/pages/Colaborador/TurmaCadastro';
 import TurmaAdicionar from './src/pages/Colaborador/TurmaAdicionar';
+
 import AuxiliarCadastro from './src/pages/Colaborador/AuxiliarCadastro';
 import AuxiliarAdicionar from './src/pages/Colaborador/AuxiliarAdicionar';
+
 import ListaMaterialCadastro from './src/pages/Colaborador/ListaMaterialCadastro';
 import ListaMaterialAdicionar from './src/pages/Colaborador/ListaMaterialAdicionar';
+
 import CalendarioAdicionar from './src/pages/Colaborador/CalendarioAdicionar';
 import CalendarioCadastro from './src/pages/Colaborador/CalendarioCadastro';
+
 import AvisosCadastro from './src/pages/Colaborador/AvisosCadastro';
 import AvisoAdicionar from './src/pages/Colaborador/AvisosAdicionar';
 /* Professor */
@@ -35,6 +42,7 @@ import AtividadesProfAdicionar from './src/pages/Professor/Atividades/Atividades
 import AtividadesProfBuscar from './src/pages/Professor/Atividades/AtividadesBuscar';
 import FotoProfessor from './src/pages/Professor/FotoProfessor';
 import CalendarioProfessor from './src/pages/Professor/CalendarioProfessor';
+import HorarioProfessor from './src/pages/Professor/HorarioProfessor';
 /* Responsável */
 import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
@@ -43,6 +51,7 @@ import ListadeMateriaisResponsavel from './src/pages/Responsavel/ListadeMateriai
 import AtividadesResponsavel from './src/pages/Responsavel/AtividadesResponsavel';
 import CalendarioResponsavel from './src/pages/Responsavel/CalendarioResponsavel';
 import HorarioResponsavel from './src/pages/Responsavel/HorarioResponsavel';
+import FotosResponsavel from './src/pages/Responsavel/FotosResponsavel';
 
 
 export default function App() {
@@ -109,6 +118,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfBuscar' component={AtividadesProfBuscar}/>
           <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioProfessor' component={CalendarioProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='HorarioProfessor' component={HorarioProfessor}/>
 
           <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={DrawerResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
@@ -117,6 +127,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='AtividadesResponsavel' component={AtividadesResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioResponsavel' component={CalendarioResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='HorarioResponsavel' component={HorarioResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='FotosResponsavel' component={FotosResponsavel}/>
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
