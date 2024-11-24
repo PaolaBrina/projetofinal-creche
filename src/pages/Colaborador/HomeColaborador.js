@@ -7,7 +7,7 @@ export default function HomeColaborador({ navigation, route }) {
 
   useEffect(() => {
     if (codigo) {
-      console.log('Código do responsável:', { codigo }); 
+      console.log('Código do colaborador:', { codigo }); 
     } else {
       Alert.alert('Erro', 'Código não encontrado.');
     }
@@ -28,24 +28,21 @@ export default function HomeColaborador({ navigation, route }) {
           <MaterialIcons name="menu" size={24} color="black" />
         </TouchableOpacity>
         </View>
-        <View>
-          <Text>Código: {codigo}</Text>
-        </View>
       {/* Linha 1: Botão Amarelo */}
       <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('ResponsavelCadastro', { codigo }) }>
         <FontAwesome name="pencil-square-o" size={24} color="black" />
-      <Text style={styles.buttonText}>Cadastro Responsavel</Text>
+      <Text style={styles.buttonText}>Responsavel</Text>
       </TouchableOpacity>
 
       {/* Linha 2: Botões Vermelho e Azul */}
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]} onPress={() => navigation.navigate('ProfessorCadastro', { codigo }) }>
           <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
-          <Text style={styles.buttonText}>Cadastro Professor</Text>
+          <Text style={styles.buttonText}>Professor</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]} onPress={() => navigation.navigate('AlunoCadastro', { codigo }) }>
           <Octicons name="smiley" size={24} color="black" />
-          <Text style={styles.buttonText}>Cadastro Aluno</Text>
+          <Text style={styles.buttonText}>Aluno</Text>
         </TouchableOpacity>
       </View>
 
@@ -53,40 +50,51 @@ export default function HomeColaborador({ navigation, route }) {
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('ColaboradorCadastro', { codigo }) }>
           <Ionicons name="images" size={24} color="#000" />
-          <Text style={styles.buttonText}>Cadastro Colaborador</Text>
+          <Text style={styles.buttonText}>Colaborador</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('TurmaCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
-          <Text style={styles.buttonText}>Cadastro Turma</Text>
+          <MaterialCommunityIcons name="google-classroom" size={24} color="black" />
+          <Text style={styles.buttonText}>Turma</Text>
         </TouchableOpacity>
       </View>
 
       {/* Linha 4: Botões Rosa e Laranja */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('ListadeMateriaisCadastro', { codigo }) }>
-          <MaterialIcons name="list" size={24} color="#000" />
-          <Text style={styles.buttonText}>Lista de Materiais</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorariosCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
-          <Text style={styles.buttonText}>Horários</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Linha 4: Botões Ciano e Azul escuro */}
-      <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.cian, { marginTop: 65 }]} onPress={() => navigation.navigate('AuxiliarCadastro', { codigo }) }>
+        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('AuxiliarCadastro', { codigo }) }>
           <MaterialIcons name="list" size={24} color="#000" />
           <Text style={styles.buttonText}>Auxiliar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.darkblue, { marginBottom: 65 }]} onPress={() => navigation.navigate('CalendarioCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
-        <Text style={styles.buttonText}>Calendario</Text>
+        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('AvisosCadastro', { codigo }) }>
+          <MaterialCommunityIcons name="bell" size={24} color="#000" />
+          <Text style={styles.buttonText}>Avisos</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Linha 5: Botão Amarelo */}
-      <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
+      {/* Linha 5: Botões Marrom e Azul escuro */}
+      <View style={styles.row}>
+        <TouchableOpacity style={[styles.buttonLeft, styles.brown, { marginTop: 65 }]} onPress={() => navigation.navigate('CalendarioCadastro', { codigo }) }>
+          <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
+          <Text style={styles.buttonText}>Calendario</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.darkblue, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioCadastro', { codigo }) }>
+          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
+          <Text style={styles.buttonText}>Horario</Text>
+        </TouchableOpacity>
+      </View>
+
+
+      {/* Linha 6: Botões Invisivel e Ciano */}
+      <View style={styles.row}>
+        <TouchableOpacity disabled={true} style={[styles.buttonLeft]} >
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.buttonRight, styles.cian]} onPress={() => navigation.navigate('ListaMaterialCadastro', { codigo }) }>
+          <MaterialIcons name="list-alt" size={24} color="#000" />
+        <Text style={styles.buttonText}>Lista de Materiais</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Linha 7: Botão Amarelo */}
+      <TouchableOpacity disabled={true} style={[styles.buttonBottom, styles.yellow]}>
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
       <View style={styles.codeContainer}>
@@ -112,6 +120,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 60,
     backgroundColor: '#283673',
+    marginBottom: 30,
   },
   profilePic: {
     width: 50,
@@ -220,4 +229,5 @@ const styles = StyleSheet.create({
   orange: { backgroundColor: "#FFA500" },
   cian: { backgroundColor: "#16E0A4" },
   darkblue: { backgroundColor: "#627BF6" },
+  brown: { backgroundColor: "#C8A878" },
 });

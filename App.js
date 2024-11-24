@@ -2,14 +2,15 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useContext } from 'react';
 import { AuthProvider } from './src/pages/AuthContext';
+import { AuthContext } from './src/pages/AuthContext';
 
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
 import Suporte from './src/pages/Suporte';
+import Perfil from './src/pages/Perfil';
+import TrocarPapel from './src/pages/TrocaPapel';
 /* Colaborador */
 import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
 import AlunoCadastro from './src/pages/Colaborador/AlunoCadastro';
@@ -64,109 +65,85 @@ const Drawer2 = createDrawerNavigator();
 const Drawer3 = createDrawerNavigator();
 
 function DrawerResponsavel({ route, navigation }) {
+  const { user } = useContext(AuthContext);
   const { codigo } = route.params;
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.clear();
-      navigation.replace('Login');
-    } catch (error) {
-      console.error('Erro ao deslogar:', error);
-    }
-  }
   return (
     <Drawer1.Navigator initialRouteName="DrawerResponsavel">
+      <Drawer1.Screen
+        name="Perfil"
+        component={Perfil}
+        options={{ title: 'Perfil', headerShown: false }}
+      />
       <Drawer1.Screen
         name="DrawerResponsavel"
         component={HomeResponsavel}
         initialParams={{ codigo }}
-        options={{ headerShown: false }}
+        options={{ title: 'Home Responsavel', headerShown: false }}
       />
-      <Drawer1.Screen
-        name="Logout"
-        component={() => (
-          <View style={styles.logoutContainer}>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        options={{ headerShown: false }}
-      />
+      {user?.roles?.length > 1 && ( // Verifica se o user tem mais de um acesso e se sim mostra a tela troca papel
+        <Drawer1.Screen
+          name="Trocar Papel"
+          component={TrocarPapel} 
+          options={{ title: 'Trocar Acesso', headerShown: false }}
+        />
+      )}
     </Drawer1.Navigator>
   );
 }
 
 function DrawerColaborador({ route, navigation }) {
+  const { user } = useContext(AuthContext);
   const { codigo } = route.params;
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.clear();
-      navigation.replace('Login');
-    } catch (error) {
-      console.error('Erro ao deslogar:', error);
-    }
-  }
+ 
   return (
     <Drawer2.Navigator initialRouteName="DrawerColaborador">
+      <Drawer2.Screen
+        name="Perfil"
+        component={Perfil}
+        options={{ title: 'Perfil', headerShown: false }}
+      />
       <Drawer2.Screen
         name="DrawerColaborador"
         component={HomeColaborador}
         initialParams={{ codigo }}
-        options={{ headerShown: false }}
+        options={{ title: 'Home Colaborador', headerShown: false }}
       />
-      <Drawer2.Screen
-        name="Logout"
-        component={() => (
-          <View style={styles.logoutContainer}>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        options={{ headerShown: false }}
-      />
+      {user?.roles?.length > 1 && ( // Verifica se o user tem mais de um acesso e se sim mostra a tela troca papel
+        <Drawer2.Screen
+          name="Trocar Papel"
+          component={TrocarPapel} 
+          options={{ title: 'Trocar Acesso', headerShown: false }}
+        />
+      )}
     </Drawer2.Navigator>
   );
 }
 
 function DrawerProfessor({ route, navigation }) {
+  const { user } = useContext(AuthContext);
   const { codigo } = route.params;
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.clear();
-      navigation.replace('Login');
-    } catch (error) {
-      console.error('Erro ao deslogar:', error);
-    }
-  }
   return (
-    <Drawer3.Navigator initialRouteName="HomeProfessor">
+    <Drawer3.Navigator initialRouteName="DrawerProfessor">
       <Drawer3.Screen
-        name="HomeProfessor"
+        name="Perfil"
+        component={Perfil}
+        options={{ title: 'Perfil', headerShown: false }}
+      />
+      <Drawer3.Screen
+        name="DrawerProfessor"
         component={HomeProfessor}
         initialParams={{ codigo }}
-        options={{ headerShown: false }}
+        options={{ title: 'Home Professor', headerShown: false }}
       />
-      <Drawer3.Screen
-        name="Suporte"
-        component={Suporte}
-        initialParams={{ codigo }}
-        options={{ title: 'Suporte' }}
-      />
-      <Drawer3.Screen
-        name="Logout"
-        component={() => (
-          <View style={styles.logoutContainer}>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        options={{ headerShown: false }}
-      />
+      {user?.roles?.length > 1 && ( // Verifica se o user tem mais de um acesso e se sim mostra a tela troca papel
+        <Drawer3.Screen
+          name="Trocar Papel"
+          component={TrocarPapel} 
+          options={{ title: 'Trocar Papel', headerShown: false }}
+        />
+      )}
     </Drawer3.Navigator>
   );
 }
@@ -210,6 +187,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='HorarioProfessor' component={HorarioProfessor}/>
 
           <Stack.Screen name="HomeResponsavel" component={DrawerResponsavel} options={{ headerShown: false }} />
+          <Stack.Screen name="Suporte" component={Suporte} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>
@@ -222,25 +200,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  logoutContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    backgroundColor: '#ddd',
-    padding: 10,
-    alignItems: 'center',
-  },
-  logoutButton: {
-    backgroundColor: '#ff4d4d',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  logoutText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});

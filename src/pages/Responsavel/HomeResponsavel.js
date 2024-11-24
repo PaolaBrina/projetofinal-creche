@@ -83,7 +83,7 @@ export default function HomeResponsavel({ navigation, route }) {
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
       <View style={styles.codeContainer}>
-        <Text style={styles.codeText}>Código do Colaborador: {codigo}</Text>
+        <Text style={styles.codeText}>Código do responsavel: {codigo}</Text>
       </View>
       
   </ImageBackground>

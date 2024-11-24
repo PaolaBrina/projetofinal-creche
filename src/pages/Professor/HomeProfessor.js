@@ -7,7 +7,7 @@ export default function HomeProfessor({ navigation, route }) {
 
   useEffect(() => {
     if (codigo) {
-      console.log('Código do responsável:', { codigo }); 
+      console.log('Código do professor:', { codigo }); 
     } else {
       Alert.alert('Erro', 'Código não encontrado.');
     }
@@ -36,7 +36,7 @@ export default function HomeProfessor({ navigation, route }) {
         </View>
       </View>
       <View>
-      <Text>Código: {codigo}</Text>
+      <Text>Código do professor: {codigo}</Text>
     </View>
       {/* Linha 1: Botão Amarelo */}
       <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}>

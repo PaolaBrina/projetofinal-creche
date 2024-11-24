@@ -27,8 +27,14 @@ export default function Suporte({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <Text style={styles.topBarText}>Suporte</Text>
-      </View>
+                <TouchableOpacity
+                    style={styles.btnseta}
+                    onPress={handleVoltar}
+                >
+                    <AntDesign name="caretleft" size={30} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.topBarTxt}>Suporte</Text>
+            </View>
 
       <View style={styles.content}>
         <Text style={styles.title}>Precisa de ajuda?</Text>
@@ -52,9 +58,6 @@ export default function Suporte({ navigation }) {
         </Text>
       </View>
 
-      <TouchableOpacity style={styles.backButton} onPress={handleVoltar}>
-        <Text style={styles.buttonText}>Voltar</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -67,15 +70,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   topBar: {
-    width: '100%',
-    padding: 20,
-    backgroundColor: '#283673',
+    flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
+    padding: 10,
+    paddingTop: 60,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: '#283673',
   },
-  topBarText: {
+  topBarTxt: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 20, // Aumentei a fonte do título
     fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -114,18 +123,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  backButton: {
-    width: '80%',
-    height: 50,
-    backgroundColor: '#283673',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
   },
 });
