@@ -4,16 +4,28 @@ from models.avisos import avisos
 
 def avisosController():
         if request.method == 'POST':
-            try: 
+            try:
                 data = request.get_json()
-                print(data)
-                aviso = avisos(data['codturma'],data['datahora'], data['descricao'], data['foto'])
+                print("Dados recebidos:", data)  # Log do JSON recebido
+
+                # Cria o objeto usando argumentos nomeados
+                aviso = avisos(
+                    codturma=data['codturma'],
+                    titulo=data['titulo'],
+                    autor=data['autor'],
+                    datahora=data['datahora'],  # Conversão para datetime
+                    descricao=data['descricao'],
+                    foto=data['foto']
+                )
+                print("Objeto criado:", aviso.__dict__)  # Verifique os atributos do objeto
+
                 db.session.add(aviso)
                 db.session.commit()
-                return 'Avisos criado com sucesso', 200 
-            
+                return 'Aviso criado com sucesso', 200
             except Exception as e:
-                return 'Avisos nao foi criado, {}'.format(e), 405
+                print(f'Erro: {e}')  # Log de erro
+                return f'Avisos nao foi criado, {e}', 400
+                
 
 
         elif request.method == 'GET':
@@ -48,6 +60,8 @@ def avisosController():
               if aviso is None:
                    return 'fotos não encontrado', 404
               aviso.codturma = data.get('codturma', aviso.codturma)
+              aviso.titulo = data.get('titulo', aviso.titulo)
+              aviso.autor = data.get('autor', aviso.autor)
               aviso.datahora = data.get('datahora', aviso.datahora)
               aviso.descricao = data.get('descricao', aviso.descricao)
               aviso.foto = data.get('foto', aviso.foto)
