@@ -76,7 +76,7 @@ export default function CalendarioProfessor({ navigation, route }) {
             <View style={styles.topBar}>
                 <TouchableOpacity
                     style={styles.btnseta}
-                    onPress={() => navigation.navigate('HomeResponsavel', { codigo })}
+                    onPress={() => navigation.navigate('HomeProfessor', { codigo })}
                 >
                     <AntDesign name="caretleft" size={30} color="white" />
                 </TouchableOpacity>
