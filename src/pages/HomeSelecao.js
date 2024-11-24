@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert } fr
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function HomeSelecao({ navigation }) {
+export default function HomeSelecao({ navigation, route }) {
   const [botao, setBotao] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

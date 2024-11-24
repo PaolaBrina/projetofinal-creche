@@ -1,47 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, ScrollView } from "react-native";
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, ScrollView } from 'react-native';
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeResponsavel({ navigation, route }) {
-
-  const [codigo, setCodigo] = useState(null);
+  const { codigo } = route.params;
 
   useEffect(() => {
-    const fetchCodigo = async () => {
-      if (route.params?.codigo) {
-        setCodigo(route.params.codigo);
-      } else {
-        try {
-          const savedData = await AsyncStorage.getItem('selectedRole');
-          const parsedData = JSON.parse(savedData);
-          setCodigo(parsedData?.codigo);
-          console.log('Código recuperado do AsyncStorage:', parsedData?.codigo);
-        } catch (error) {
-          Alert.alert('Erro', 'Não foi possível recuperar o código.');
-        }
-      }
-    };
-    fetchCodigo();
-  }, [route.params]);
+    if (codigo) {
+      console.log('Código do responsável:', codigo);
+    } else {
+      Alert.alert('Erro', 'Código não encontrado.');
+    }
+  }, [codigo]);
 
   return (
+    <ScrollView>
       <ImageBackground 
         source={require("../../../assets/nuvem.png")} 
         style={styles.container} 
         resizeMode="cover" 
       >
-      <View style={styles.topBar}>
-        <TouchableOpacity style={styles.profilePic}></TouchableOpacity>
+       <View style={styles.topBar}>
+        <TouchableOpacity
+          style={styles.profilePic}
+          onPress={() => navigation.openDrawer()} // Abre o Drawer ao clicar
+        >
+          <MaterialIcons name="menu" size={24} color="black" />
+        </TouchableOpacity>
         <View style={styles.icons}>
-          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte', { codigo }) } >
-          <MaterialIcons name="support-agent" size={30} color="#000" />
+          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte', { codigo })}>
+            <MaterialIcons name="support-agent" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon}>
             <MaterialCommunityIcons name="bell" size={30} color="#fdd835" />
           </TouchableOpacity>
         </View>
-      </View>
+        </View>
       {/* Linha 1: Botão Amarelo */}
       <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('MeudiaResponsavel', { codigo }) }>
         <Octicons name="smiley" size={24} color="black" />
@@ -62,7 +56,7 @@ export default function HomeResponsavel({ navigation, route }) {
 
       {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('', { codigo }) }>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('FotosResponsavel', { codigo }) }>
           <Ionicons name="images" size={24} color="#000" />
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
@@ -88,7 +82,12 @@ export default function HomeResponsavel({ navigation, route }) {
       <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
+      <View style={styles.codeContainer}>
+        <Text style={styles.codeText}>Código do Colaborador: {codigo}</Text>
+      </View>
+      
   </ImageBackground>
+  </ScrollView>
   );
 }
 
@@ -101,7 +100,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', 
     alignItems: 'center',
     width: '100%',
     padding: 10,
@@ -115,13 +114,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 25,
     alignItems: 'center',
+    justifyContent: 'center', 
   },
   icons: {
-    flexDirection: 'row',
+    flexDirection: 'row', 
+    alignItems: 'center',
   },
   icon: {
-    marginHorizontal: 10,
-  },
+    marginHorizontal: 10, 
+  },  
   row: {
     flexDirection: "row",
     justifyContent: "center",

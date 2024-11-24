@@ -2,7 +2,11 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider } from './src/pages/AuthContext';
+
 import Login from './src/pages/Login';
 import HomeSelecao from './src/pages/HomeSelecao';
 import Suporte from './src/pages/Suporte';
@@ -17,6 +21,7 @@ import HorarioAdicionar from './src/pages/Colaborador/HorarioAdicionar';
 import ProfessorCadastro from './src/pages/Colaborador/ProfessorCadastro';
 import ProfessorAdicionar from './src/pages/Colaborador/ProfessorAdicionar';
 import ResponsavelCadastro from './src/pages/Colaborador/ResponsavelCadastro';
+import ResponsavelAdicionar from './src/pages/Colaborador/ResponsavelAdicionar';
 import TurmaCadastro from './src/pages/Colaborador/TurmaCadastro';
 import TurmaAdicionar from './src/pages/Colaborador/TurmaAdicionar';
 import AuxiliarCadastro from './src/pages/Colaborador/AuxiliarCadastro';
@@ -45,44 +50,128 @@ import CalendarioResponsavel from './src/pages/Responsavel/CalendarioResponsavel
 import HorarioResponsavel from './src/pages/Responsavel/HorarioResponsavel';
 
 
-export default function App() {
-  const Stack = createStackNavigator();
-  const Drawer1 = createDrawerNavigator();
-  const Drawer2 = createDrawerNavigator();
-  const Drawer3 = createDrawerNavigator();
+const Stack = createStackNavigator();
+const Drawer1 = createDrawerNavigator();
+const Drawer2 = createDrawerNavigator();
+const Drawer3 = createDrawerNavigator();
 
-  // Drawer para Home 1
-  const DrawerColaborador = () => (
-    <Drawer1.Navigator>
-      <Drawer1.Screen name="Home Colaborador" component={HomeColaborador} />
-      <Drawer1.Screen name="Suporte" component={Suporte} />
+function DrawerResponsavel({ route, navigation }) {
+  const { codigo } = route.params;
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+    }
+  }
+  return (
+    <Drawer1.Navigator initialRouteName="DrawerResponsavel">
+      <Drawer1.Screen
+        name="DrawerResponsavel"
+        component={HomeResponsavel}
+        initialParams={{ codigo }}
+        options={{ headerShown: false }}
+      />
+      <Drawer1.Screen
+        name="Logout"
+        component={() => (
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        options={{ headerShown: false }}
+      />
     </Drawer1.Navigator>
   );
+}
 
-  // Drawer para Home 2
-  const DrawerProfessor = () => (
-    <Drawer2.Navigator>
-      <Drawer2.Screen name="Home Professor" component={HomeProfessor} />
-      <Drawer2.Screen name="Suporte" component={Suporte} />
+function DrawerColaborador({ route, navigation }) {
+  const { codigo } = route.params;
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+    }
+  }
+  return (
+    <Drawer2.Navigator initialRouteName="DrawerColaborador">
+      <Drawer2.Screen
+        name="DrawerColaborador"
+        component={HomeColaborador}
+        initialParams={{ codigo }}
+        options={{ headerShown: false }}
+      />
+      <Drawer2.Screen
+        name="Logout"
+        component={() => (
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        options={{ headerShown: false }}
+      />
     </Drawer2.Navigator>
   );
-  
- // Drawer para Home 2
- const DrawerResponsavel = () => (
-  <Drawer3.Navigator>
-    <Drawer3.Screen name="Home Responsavel" component={HomeResponsavel} />
-    <Drawer3.Screen name="Suporte" component={Suporte} />
-  </Drawer3.Navigator>
-);
+}
 
+function DrawerProfessor({ route, navigation }) {
+  const { codigo } = route.params;
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.replace('Login');
+    } catch (error) {
+      console.error('Erro ao deslogar:', error);
+    }
+  }
+  return (
+    <Drawer3.Navigator initialRouteName="HomeProfessor">
+      <Drawer3.Screen
+        name="HomeProfessor"
+        component={HomeProfessor}
+        initialParams={{ codigo }}
+        options={{ headerShown: false }}
+      />
+      <Drawer3.Screen
+        name="Suporte"
+        component={Suporte}
+        initialParams={{ codigo }}
+        options={{ title: 'Suporte' }}
+      />
+      <Drawer3.Screen
+        name="Logout"
+        component={() => (
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        options={{ headerShown: false }}
+      />
+    </Drawer3.Navigator>
+  );
+}
+
+export default function App() {
   return (
     <AuthProvider>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="HomeSelecao" component={HomeSelecao} options={{ headerShown: false }} />
-          <Stack.Screen options={{headerShown:false}} name='HomeColaborador' component={DrawerColaborador}/> 
+
+          <Stack.Screen name="HomeColaborador" component={DrawerColaborador} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoAdicionar' component={AlunoAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AlunoEditar' component={AlunoEditar}/>
@@ -91,6 +180,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='ProfessorCadastro' component={ProfessorCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='ProfessorAdicionar' component={ProfessorAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='ResponsavelCadastro' component={ResponsavelCadastro}/>
+          <Stack.Screen options={{headerShown:false}} name='ResponsavelAdicionar' component={ResponsavelAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='TurmaCadastro' component={TurmaCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='TurmaAdicionar' component={TurmaAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='AuxiliarCadastro' component={AuxiliarCadastro}/>
@@ -102,7 +192,7 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='AvisosCadastro' component={AvisosCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AvisoAdicionar' component={AvisoAdicionar}/>
 
-          <Stack.Screen options={{headerShown:false}} name='HomeProfessor' component={DrawerProfessor}/>
+          <Stack.Screen name="HomeProfessor" component={DrawerProfessor} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesCadastro' component={AtividadesCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfAdicionar' component={AtividadesProfAdicionar}/>
@@ -110,15 +200,39 @@ export default function App() {
           <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioProfessor' component={CalendarioProfessor}/>
 
-          <Stack.Screen options={{headerShown:false}} name='HomeResponsavel' component={DrawerResponsavel}/>
+          <Stack.Screen name="HomeResponsavel" component={DrawerResponsavel} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesResponsavel' component={AtividadesResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='CalendarioResponsavel' component={CalendarioResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='HorarioResponsavel' component={HorarioResponsavel}/>
+
+
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  logoutContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#ddd',
+    padding: 10,
+    alignItems: 'center',
+  },
+  logoutButton: {
+    backgroundColor: '#ff4d4d',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+});
