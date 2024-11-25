@@ -183,7 +183,7 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
                 codturma: newcodturma,
                 datahora: dataHora,
                 descricao: newdescricao,
-                foto: newfoto,
+                foto: base64Image,
             };
             await api.post('/atividades', newItem);
             Alert.alert('Cadastro Atividades', 'Atividades adicionada com sucesso!', [

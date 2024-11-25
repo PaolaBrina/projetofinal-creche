@@ -178,7 +178,7 @@ export default function FotosProfAdicionar({ closeModal, route }) {
                 codturma: newcodturma,
                 datahora: dataHora,
                 descricao: newdescricao,
-                foto: newfoto,
+                foto: base64Image,
             };
             await api.post('/fotos', newItem);
             Alert.alert('Cadastro Fotos', 'Foto adicionada com sucesso!', [
