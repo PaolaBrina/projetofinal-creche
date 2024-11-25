@@ -11,6 +11,7 @@ import HomeSelecao from './src/pages/HomeSelecao';
 import Suporte from './src/pages/Suporte';
 import Perfil from './src/pages/Perfil';
 import TrocarPapel from './src/pages/TrocaPapel';
+import Avisos from './src/pages/Avisos';
 /* Colaborador */
 import HomeColaborador from './src/pages/Colaborador/HomeColaborador';
 import AlunoCadastro from './src/pages/Colaborador/AlunoCadastro';
@@ -155,6 +156,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="HomeSelecao" component={HomeSelecao} options={{ headerShown: false }} />
+          <Stack.Screen options={{headerShown:false}} name='Avisos' component={Avisos}/>
 
           <Stack.Screen name="HomeColaborador" component={DrawerColaborador} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='AlunoCadastro' component={AlunoCadastro}/>

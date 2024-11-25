@@ -133,9 +133,12 @@ export default function AvisosCadastro({ navigation, route }) {
                         {selectedAviso?.codigo === item.codigo && (
                             <View style={styles.avisoDetails}>
                                 <Text style={styles.avisoText}>Código: {item.codigo}</Text>
-                                <Text style={styles.avisoText}>Turma: {item.codturma}</Text>
+                                <Text style={styles.avisoText}>autor: {item.codturma}</Text>
+                                <Text style={styles.avisoText}>titulo: {item.codtitulo}</Text>
+                                <Text style={styles.avisoText}>autor: {item.codautor}</Text>
                                 <Text style={styles.avisoText}>Data e Hora: {item.datahora}</Text>
                                 <Text style={styles.avisoText}>Descrição: {item.descricao}</Text>
+                                <Text style={styles.avisoText}>Foto: {item.descricao}</Text>
                                 {item.foto && (
                                     <Image
                                         source={{ uri: `data:image/jpeg;base64,${item.foto}` }}

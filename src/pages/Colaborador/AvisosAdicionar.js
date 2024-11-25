@@ -14,6 +14,7 @@ registerTranslation('pt', pt);
 export default function AvisoAdicionar({ closeModal }) {
     const [newcodturma, setNewcodturma] = useState('');
     const [newdescricao, setNewdescricao] = useState('');
+    const [newtitulo, setNewtitulo] = useState('');
     const [newdatahora, setNewdatahora] = useState(undefined);
     const [open, setOpen] = useState(false);
     const [newfoto, setNewfoto] = useState('');
@@ -24,7 +25,7 @@ export default function AvisoAdicionar({ closeModal }) {
     const [isFocus, setIsFocus] = useState(false);
 
     const validateFields = () => {
-        return newcodturma && newdescricao && newdatahora && base64Image;
+        return newcodturma && newdescricao && newdatahora && base64Image && newtitulo;
     };
 
     useEffect(() => {
@@ -117,10 +118,13 @@ export default function AvisoAdicionar({ closeModal }) {
             const formattedDate = format(new Date(newdatahora), 'yyyy-MM-dd HH:mm');
             const newItem = {
                 codturma: newcodturma,
-                descricao: newdescricao,
-                datahora: formattedDate,
-                foto: base64Image,
+                titulo: newtitulo,         // O título correto
+                autor: 'Coordenação',      // O autor correto
+                datahora: formattedDate,   // Data e hora no formato correto
+                descricao: newdescricao,   // Descrição correta
+                foto: base64Image          // Foto em Base64
             };
+            
 
             await api.post('/avisos', newItem);
             Alert.alert('Cadastro Aviso', 'Aviso adicionado com sucesso!', [
@@ -197,6 +201,16 @@ export default function AvisoAdicionar({ closeModal }) {
                 </View> 
                 </View>
              
+
+                <View style={styles.inputGroup}>
+                    <Text style={styles.label}>Título:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite a titulo"
+                        value={newtitulo}
+                        onChangeText={setNewtitulo}
+                    />
+                </View>
 
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Descrição:</Text>
