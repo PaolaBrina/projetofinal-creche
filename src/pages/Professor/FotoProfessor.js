@@ -1,363 +1,266 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform } from 'react-native';
-import { api } from '../../api/api';
-import * as ImagePicker from 'expo-image-picker';
-import { Dropdown } from 'react-native-element-dropdown';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, KeyboardAvoidingView, ScrollView, Alert, Image, FlatList } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Foundation from '@expo/vector-icons/Foundation';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+/* import tela modal */
+import FotosProfAdicionar from './FotosProfAdicionar';
+import { api } from '../../api/api';
 
-import { Button } from 'react-native-paper';
-import { DatePickerModal, registerTranslation, pt,TimePickerModal } from 'react-native-paper-dates';
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale'; // Garantir o uso do português, se necessário.
-
-registerTranslation('pt', pt)
-
-export default function FotoProfessor({ closeModal, navigation }) {
-    const [newcodturma, setNewcodturma] = useState('')
-    const [dataturma, setDataturma] = useState([{label: "",value: ""}])
-    const [value, setValue] = useState(null);
-    const [isFocus, setIsFocus] = useState(false);
-
-    const [newdata, setNewdata] = useState(undefined);
-    const [open, setOpen] = useState(false);
-    const [timeOpen, setTimeOpen] = useState(false)
-    const [time, setTime] = useState({ hours: undefined, minutes: undefined });
-
-    const [newdescricao, setNewdescricao] = useState('');
-    const [newfoto, setNewfoto] = useState('');
-    const [feedbackMessage, setFeedbackMessage] = useState('');
+export default function FotoProfessor({ navigation, route }) {
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalContent, setModalContent] = useState(null);
+    const [fotos, setFotos] = useState([]);  // Estado para armazenar as fotos
+    const [loading, setLoading] = useState(false);  // Estado para controlar o carregamento
+    const [selectedFoto, setSelectedFoto] = useState(null); // Estado para armazenar a foto selecionada
+    const { codigo } = route.params || {};
     
+    // Função para fechar o modal
+    const closeModal = () => {
+        setModalVisible(false);
+        setModalContent(null);
+    };
 
-   
-    // Função para formatar a hora no formato brasileiro
-  const formatTime = () => {
-    if (time.hours === undefined || time.minutes === undefined) {
-      return 'Nenhum horário selecionado';
-    }
-    const horas = String(time.hours).padStart(2, '0');
-    const minutos = String(time.minutes).padStart(2, '0');
-    return `${horas}:${minutos}`;
-  };
-   
-    async function fetchTurma(){
+    // Função para abrir o modal de Adicionar Foto
+    const openFotosAdicionarModal = () => {
+        setModalContent('FotosProfAdicionar');  // Define o conteúdo do modal
+        setModalVisible(true);  // Abre o modal
+    };
+
+    // Função para buscar as fotos na API
+    const fetchBuscar = async () => {
+        setLoading(true);
         try {
-            const response = await api.get('/turma') 
-            const formattedData = response.data.map(item => ({
-                label: item.nome,  
-                value: item.codigo.toString() 
-            }));
-            setDataturma(formattedData)
+            const response = await api.get('/fotos'); // Rota da API para fotos
+            console.log('Resposta completa:', response);
+            
+            if (Array.isArray(response.data)) {
+                setFotos(response.data);  // Armazena as fotos no estado
+            } else if (response.data && response.data.fotos) {
+                setFotos(response.data.fotos);  // Armazena as fotos no estado
+            } else {
+                console.error('Formato inesperado dos dados:', response.data);
+                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
+            }
         } catch (error) {
-            console.log(error)
+            console.error('Erro ao buscar fotos:', error);
+            Alert.alert('Erro', 'Erro ao buscar fotos, veja o console para mais detalhes.');
+        } finally {
+            setLoading(false);
         }
-    }
-   
+    };
 
+    // Função para alternar a exibição dos detalhes da foto
+    const toggleFotoDetails = (foto) => {
+        setSelectedFoto((prevFoto) => (
+            prevFoto && prevFoto.codigo === foto.codigo ? null : foto
+        ));
+    };
+
+    // Carregar as fotos quando a tela for montada
     useEffect(() => {
-        fetchTurma()
-    },[])
-
-    const renderLabel = () => {
-        if (value || isFocus) {
-          return (
-            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
-              Dropdown label
-            </Text>
-          );
-        }
-        return null;
-      };
-
-      let timeDate = new Date();
-        if (time.hours !== undefined) {
-            timeDate.setHours(time.hours);
-        }
-        if (time.minutes !== undefined) {
-            timeDate.setMinutes(time.minutes);
-        }
-        console.log(timeDate); // Exibe a data/hora atualizada no console
-
-      
-      
-      const onConfirmTime = useCallback(({ hours, minutes }) => {
-        console.log('Horas:', hours, 'Minutos:', minutes); // Debug para garantir valores corretos
-        setTimeOpen(false); // Fechar o modal
-        setTime({ hours, minutes }); // Atualizar o estado com a hora e minutos selecionados
-      }, []);
-    
-      const onDismissTime = useCallback(() => {
-        setTimeOpen(false); // Fechar o modal sem selecionar nada
-      }, []);
-      
-
-    const validateFields = () => {
-        return newcodturma && newdata && newdata && time && newdescricao &&  newfoto;
-    };
-
-    const pickImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!permissionResult.granted) {
-            alert('Permission to access camera roll is required!');
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setNewfoto(result.assets[0].uri);
-        }
-    };
-
-    const onDismissSingle = useCallback(() => {
-        setOpen(false);
-      }, [setOpen]);
-    
-      const onConfirmSingle = useCallback(
-        (params) => {
-          setOpen(false);
-          setNewdata(params.date); // Armazenar a data selecionada
-        },
-        [setOpen, setNewdata]
-      );
-      
-
-    const CadAluno = async () => {
-        if (!validateFields()) {
-            setFeedbackMessage('Por favor, preencha todos os campos.');
-            return;
-        }
-
-        try {
-           // Formatar a data selecionada para 'yyyy-MM-dd'
-            const formattedDate = format(new Date(newdata), 'yyyy-MM-dd', { locale: ptBR });
-
-            // Garantir que a hora e minuto selecionados sejam formatados corretamente
-            const formattedTime = `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}:00`;
-
-            // Concatenar a data e hora para o formato final
-            const dataHora = `${formattedDate} ${formattedTime}`;
-
-            console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
-            const newItem = {
-                codturma: newcodturma,
-                datahora: dataHora,
-                descricao: newdescricao,
-                foto: newfoto,
-            };
-            await api.post('/fotos', newItem);
-            Alert.alert(
-                'Cadastro Fotos',
-                'Fotos adicionado com sucesso!',
-                [
-                  {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'OK',
-                    onPress: () => {
-                        navigation.navigate('HomeProfessor'); // Navegar para HomeProfessor
-                    },
-                  },
-                ]
-              );
-        } catch (error) {
-            console.error('Erro ao adicionar Fotos:', error);
-            console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
-            setFeedbackMessage('Erro ao adicionar o Fotos. Tente novamente.');
-        }
-    };
+        fetchBuscar();
+    }, []);
 
     return (
-        <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.form}>
-                {feedbackMessage !== '' && (
-                    <Text style={styles.feedbackText}>{feedbackMessage}</Text>
-                )}
-                <View style={styles.inputGroup}>
-                <Text style={styles.label}>Codigo da turma:</Text>
-                 <View style={styles.container}>
-                    {renderLabel()}
-                    <Dropdown
-                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
-                    iconStyle={styles.iconStyle}
-                    data={dataturma}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={!isFocus ? 'Selecione item' : '...'}
-                    searchPlaceholder="Procurar..."
-                    value={newcodturma}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
-                    onChange={item => {
-                        setNewcodturma(item.value);
-                        setIsFocus(false);
-                    }}
-                    renderLeftIcon={() => (
-                        <AntDesign
-                        style={styles.icon}
-                        color={isFocus ? 'blue' : 'black'}
-                        name="Safety"
-                        size={20}
-                        />
-                    )}
-                    />
-                </View> 
-                </View>
-    
-
-                <View style={styles.inputGroup}>
-                            <Text style={styles.label}>Data Hora:</Text>
-                        <SafeAreaProvider>
-                        <View style={styles.timeContainer}>
-                        <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                            <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined" style={styles.timeButton}>
-                            <Text> Escolher Data </Text>
-                            </Button>
-                            <DatePickerModal
-                            locale="pt"
-                            mode="single"
-                            visible={open}
-                            onDismiss={onDismissSingle}
-                            date={newdata}
-                            onConfirm={onConfirmSingle}
-                            />
-                        </View>
-                        <View>
-                            <Text>
-                               Data selecionada: {newdata ? format(newdata, 'dd/MM/yyyy', { locale: ptBR }) : 'Nenhuma data selecionada'}
-                            </Text>
-                        </View>
-
-                        <View style={{justifyContent: 'center', flex: 1, alignItems: 'center'}}>
-                            <Button onPress={() => setTimeOpen(true)} uppercase={false} mode="outlined" style={styles.timeButton}>
-                            {/* mode="contained-tonal" */}
-                            Escolher tempo
-                            </Button>
-                            <TimePickerModal
-                            locale="pt"
-                            visible={timeOpen}
-                            onDismiss={onDismissTime}
-                            onConfirm={onConfirmTime}
-                            hours={time.hours}
-                            minutes={time.minutes}
-                            />
-                        </View>
-                        <View>
-                        <Text style={{ fontSize: 18, marginTop: 20 }}>
-                            Horário selecionado: {formatTime()}
-                        </Text>
-                    </View>
-                        </View>
-
-                        </SafeAreaProvider>
-                        </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Descrição:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder='Digite uma descrição'
-                        value={newdescricao}
-                        onChangeText={setNewdescricao}
-                    />
-                </View>
-                <View style={styles.inputGroup}>
-                    <Text style={styles.label}>Foto:</Text>
-                    <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                        <Text style={styles.imagePickerText}>Escolher Foto</Text>
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
+            <ScrollView contentContainerStyle={styles.scrollView}>
+                <View style={styles.topBar}>
+                    <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeProfessor', { codigo })}>
+                        <AntDesign name="caretleft" size={30} color="white" />
                     </TouchableOpacity>
-                    {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
+                    <Text style={styles.topBarTxt}>Cadastro Fotos</Text>
                 </View>
-                <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
-                    <Text style={styles.btnTxt}>Cadastrar</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
+
+                <View style={styles.viewbutton}>
+                    <TouchableOpacity style={styles.button} onPress={fetchBuscar}>
+                        <Text style={styles.buttonText}>Buscar Fotos</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button} onPress={openFotosAdicionarModal}>
+                        <Text style={styles.buttonText}>Adicionar Fotos</Text>
+                    </TouchableOpacity>
+                    <View style={styles.codeContainer}>
+                        <Text style={styles.codeText}>Código do responsável: {codigo}</Text>
+                    </View>
+                </View>
+                </ScrollView>
+
+                {loading ? (
+                    <Text>Carregando Fotos...</Text>
+                ) : (
+                    <FlatList
+                        data={fotos}
+                        keyExtractor={(item) => item.codigo.toString()}
+                        renderItem={({ item }) => (
+                            <View style={styles.fotoItemContainer}>
+                                <View style={styles.fotoRow}>
+                                    <TouchableOpacity style={styles.fotoInfo} onPress={() => toggleFotoDetails(item)}>
+                                        <Foundation name="camera" size={24} color="black" />
+                                        <Text style={styles.fotoName}>{item.codigo}</Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.iconsContainer}>
+                                        <TouchableOpacity onPress={() => openEditModal(item)} style={styles.iconButton}>
+                                            <MaterialIcons name="edit" size={25} color="blue" />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => handleDelete(item.codigo)} style={styles.iconButton}>
+                                            <MaterialIcons name="delete" size={25} color="red" />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {selectedFoto && selectedFoto.codigo === item.codigo && (
+                                    <View style={styles.fotoDetails}>
+                                        <Text style={styles.fotoText}>Código Turma: {item.codturma}</Text>
+                                        <Text style={styles.fotoText}>Datahora: {item.datahora}</Text>
+                                        <Text style={styles.alunoText}>Descricao: {item.descricao}</Text>
+                                        {item.foto && (
+                                            <Image
+                                                source={{ uri: `data:image/jpeg;base64,${item.foto}` }}
+                                                style={styles.fotoImage}
+                                            />
+                                        )}
+                                    </View>
+                                )}
+                            </View>
+                        )}
+                    />
+                )}
+
+                <Modal
+                    visible={modalVisible}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={closeModal}
+                >
+                    <View style={styles.modalBackground}>
+                        <View style={styles.modalContainer}>
+                            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>X</Text>
+                            </TouchableOpacity>
+                            {modalContent === 'FotosProfAdicionar' && codigo && (
+                                <FotosProfAdicionar closeModal={closeModal} codigo={codigo} />
+                            )}
+                        </View>
+                    </View>
+                </Modal>
+
+           
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        flexGrow: 1,
+    container: {
+        backgroundColor: '#f5f5f5',
+    },
+    topBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 10,
+        paddingTop: 60,
+        backgroundColor: '#283673',
+    },
+    topBarTxt: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        flex: 1,
+    },
+    btnseta: {
+        width: 30,
+        height: 30,
         justifyContent: 'center',
     },
-    form: {
+    button: {
+        backgroundColor: '#FFEF95',
+        padding: 15,
+        borderRadius: 10,
+        marginTop: 20,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    viewbutton: {
+        justifyContent: 'space-around',
+        marginTop: 20,
+        paddingHorizontal: 20,
+    },
+    fotoItemContainer: {
+        marginBottom: 20, 
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    fotoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    fotoName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10,
+        flex: 1,
+    },
+    iconsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    },
+    iconButton: {
+        marginLeft: 10,
+    },
+    fotoDetails: {
+        marginTop: 10,
+        paddingLeft: 10,
+    },
+    fotoText: {
+        fontSize: 16,
+    },
+    fotoImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 10,
+        marginTop: 10,
+        alignSelf: 'center',
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContainer: {
+        width: '90%',
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 20,
     },
-    inputGroup: {
-        marginBottom: 15,
+    closeButton: {
+        alignSelf: 'flex-end',
+        padding: 5,
     },
-    label: {
-        fontSize: 16,
-        color: '#333',
-        marginBottom: 5,
-    },
-    input: {
-        width: '100%',
-        height: 45,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        backgroundColor: '#fafafa',
-    },
-    btnLogin: {
-        backgroundColor: '#FFEF95',
-        width: '100%',
-        height: 50,
-        borderRadius: 25,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-    },
-    btnTxt: {
-        color: '#000',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    feedbackText: {
-        textAlign: 'center',
-        marginBottom: 15,
+    closeButtonText: {
+        fontSize: 18,
         color: 'red',
-        fontSize: 16,
     },
-    aaa: {
-        width: 270,
-        height: 40,
-        display: 'flex',
+    fotoInfo: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: 10
+        flex: 1, 
     },
-    dropdown: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-      },
-      icon: {
-        marginRight: 5,
-      },
-      timeContainer: {
-        marginTop: 20, // Espaçamento entre este grupo e o próximo bloco
-        marginBottom: 20, // Espaçamento entre este grupo e o próximo bloco
-      },
-      timeButton: {
-        marginVertical: 10, // Espaçamento vertical entre os botões
-      },
+    codeContainer: {
+        marginTop: 10,
+        paddingHorizontal: 20,
+    },
+    codeText: {
+        fontSize: 16,
+    }
 });

@@ -1,21 +1,21 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, Platform, PermissionsAndroid } from 'react-native';
-import { api } from '../../../api/api';
+import { api } from '../../api/api';
 import * as ImagePicker from 'expo-image-picker';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
-
 import { Button } from 'react-native-paper';
-import { DatePickerModal, registerTranslation, pt,TimePickerModal } from 'react-native-paper-dates';
+import { DatePickerModal, registerTranslation, pt, TimePickerModal } from 'react-native-paper-dates';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale'; // Garantir o uso do português, se necessário.
+import { ptBR } from 'date-fns/locale'; 
+
 
 registerTranslation('pt', pt)
 
-export default function AtividadesProfAdicionar({ closeModal,route }) {
-    const [newcodturma, setNewcodturma] = useState('')
-    const [dataturma, setDataturma] = useState([{label: "",value: ""}])
+export default function FotosProfAdicionar({ closeModal, route }) {
+    const [newcodturma, setNewcodturma] = useState('');
+    const [dataturma, setDataturma] = useState([{ label: "", value: "" }]);
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
@@ -28,30 +28,28 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
     const [newfoto, setNewfoto] = useState('');
     const [base64Image, setBase64Image] = useState('');
     const [feedbackMessage, setFeedbackMessage] = useState('');
-    
 
-   
     // Função para formatar a hora no formato brasileiro
-  const formatTime = () => {
-    if (time.hours === undefined || time.minutes === undefined) {
-      return 'Nenhum horário selecionado';
-    }
-    const horas = String(time.hours).padStart(2, '0');
-    const minutos = String(time.minutes).padStart(2, '0');
-    return `${horas}:${minutos}`;
-  };
-   
-  async function fetchTurma(){
-    try {
-        const response = await api.get('/turma') 
-        const formattedData = response.data.map(item => ({
-            label: item.nome,  
-            value: item.codigo.toString() 
-        }));
-        setDataturma(formattedData)
-    } catch (error) {
-        console.log(error)
-    }
+    const formatTime = () => {
+        if (time.hours === undefined || time.minutes === undefined) {
+            return 'Nenhum horário selecionado';
+        }
+        const horas = String(time.hours).padStart(2, '0');
+        const minutos = String(time.minutes).padStart(2, '0');
+        return `${horas}:${minutos}`;
+    };
+
+    async function fetchTurma() {
+        try {
+            const response = await api.get('/turma');
+            const formattedData = response.data.map(item => ({
+                label: item.nome,
+                value: item.codigo.toString()
+            }));
+            setDataturma(formattedData);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     // Exemplo de uso do useEffect para chamar a função
@@ -61,40 +59,38 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
 
     const renderLabel = () => {
         if (value || isFocus) {
-          return (
-            <Text style={[styles.label, isFocus && { color: 'blue' }]}>
-              Dropdown label
-            </Text>
-          );
+            return (
+                <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+                    Dropdown label
+                </Text>
+            );
         }
         return null;
-      };
+    };
 
-      let timeDate = new Date();
-        if (time.hours !== undefined) {
-            timeDate.setHours(time.hours);
-        }
-        if (time.minutes !== undefined) {
-            timeDate.setMinutes(time.minutes);
-        }
-        console.log(timeDate); // Exibe a data/hora atualizada no console
+    let timeDate = new Date();
+    if (time.hours !== undefined) {
+        timeDate.setHours(time.hours);
+    }
+    if (time.minutes !== undefined) {
+        timeDate.setMinutes(time.minutes);
+    }
+    console.log(timeDate); // Exibe a data/hora atualizada no console
 
-      
-      
-      const onConfirmTime = useCallback(({ hours, minutes }) => {
+    const onConfirmTime = useCallback(({ hours, minutes }) => {
         console.log('Horas:', hours, 'Minutos:', minutes); // Debug para garantir valores corretos
         setTimeOpen(false); // Fechar o modal
         setTime({ hours, minutes }); // Atualizar o estado com a hora e minutos selecionados
-      }, []);
-    
-      const onDismissTime = useCallback(() => {
+    }, []);
+
+    const onDismissTime = useCallback(() => {
         setTimeOpen(false); // Fechar o modal sem selecionar nada
-      }, []);
-      
+    }, []);
 
     const validateFields = () => {
-        return newcodturma && newdata && newdata && time && newdescricao &&  newfoto;
+        return newcodturma && newdata && newdescricao && newfoto;
     };
+
     useEffect(() => {
         requestPermissions();
     }, []);
@@ -151,25 +147,24 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
 
     const onDismissSingle = useCallback(() => {
         setOpen(false);
-      }, [setOpen]);
-    
-      const onConfirmSingle = useCallback(
+    }, [setOpen]);
+
+    const onConfirmSingle = useCallback(
         (params) => {
-          setOpen(false);
-          setNewdata(params.date); // Armazenar a data selecionada
+            setOpen(false);
+            setNewdata(params.date); // Armazenar a data selecionada
         },
         [setOpen, setNewdata]
-      );
-      
+    );
 
-    const CadAluno = async () => {
+    const CadFoto = async () => {
         if (!validateFields()) {
             setFeedbackMessage('Por favor, preencha todos os campos.');
             return;
         }
 
         try {
-           // Formatar a data selecionada para 'yyyy-MM-dd'
+            // Formatar a data selecionada para 'yyyy-MM-dd'
             const formattedDate = format(new Date(newdata), 'yyyy-MM-dd', { locale: ptBR });
 
             // Garantir que a hora e minuto selecionados sejam formatados corretamente
@@ -178,27 +173,28 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
             // Concatenar a data e hora para o formato final
             const dataHora = `${formattedDate} ${formattedTime}`;
 
-            console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
+            console.log("1", newcodturma, "2", dataHora, "3", newdescricao, "4", newfoto);
             const newItem = {
                 codturma: newcodturma,
                 datahora: dataHora,
                 descricao: newdescricao,
                 foto: newfoto,
             };
-            await api.post('/atividades', newItem);
-            Alert.alert('Cadastro Atividades', 'Atividades adicionada com sucesso!', [
+            await api.post('/fotos', newItem);
+            Alert.alert('Cadastro Fotos', 'Foto adicionada com sucesso!', [
                 {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
-                {text: 'OK', onPress: () => closeModal('Atividades adicionada com sucesso!')
-            },
-                ]);
+                {
+                    text: 'OK', onPress: () => closeModal('Foto adicionada com sucesso!')
+                },
+            ]);
         } catch (error) {
-            console.error('Erro ao adicionar Atividades:', error);
-            console.log("1",newcodturma,"2",dataHora,"3",newdescricao,"4",newfoto)
-            setFeedbackMessage('Erro ao adicionar o Atividades. Tente novamente.');
+            console.error('Erro ao adicionar Foto:', error);
+            console.log("1", newcodturma, "2", dataHora, "3", newdescricao, "4", newfoto);
+            setFeedbackMessage('Erro ao adicionar a foto. Tente novamente.');
         }
     };
 
@@ -209,41 +205,40 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
                     <Text style={styles.feedbackText}>{feedbackMessage}</Text>
                 )}
                 <View style={styles.inputGroup}>
-                <Text style={styles.label}>Codigo da turma:</Text>
-                 <View style={styles.container}>
-                    {renderLabel()}
-                    <Dropdown
-                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
-                    iconStyle={styles.iconStyle}
-                    data={dataturma}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={!isFocus ? 'Selecione item' : '...'}
-                    searchPlaceholder="Procurar..."
-                    value={newcodturma}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
-                    onChange={item => {
-                        setNewcodturma(item.value);
-                        setIsFocus(false);
-                    }}
-                    renderLeftIcon={() => (
-                        <AntDesign
-                        style={styles.icon}
-                        color={isFocus ? 'blue' : 'black'}
-                        name="Safety"
-                        size={20}
+                    <Text style={styles.label}>Codigo da turma:</Text>
+                    <View style={styles.container}>
+                        {renderLabel()}
+                        <Dropdown
+                            style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            inputSearchStyle={styles.inputSearchStyle}
+                            iconStyle={styles.iconStyle}
+                            data={dataturma}
+                            search
+                            maxHeight={300}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={!isFocus ? 'Selecione item' : '...'}
+                            searchPlaceholder="Procurar..."
+                            value={newcodturma}
+                            onFocus={() => setIsFocus(true)}
+                            onBlur={() => setIsFocus(false)}
+                            onChange={item => {
+                                setNewcodturma(item.value);
+                                setIsFocus(false);
+                            }}
+                            renderLeftIcon={() => (
+                                <AntDesign
+                                    style={styles.icon}
+                                    color={isFocus ? 'blue' : 'black'}
+                                    name="Safety"
+                                    size={20}
+                                />
+                            )}
                         />
-                    )}
-                    />
-                </View> 
+                    </View>
                 </View>
-    
 
                 <View style={styles.inputGroup}>
                             <Text style={styles.label}>Data e hora de entrega atividade:</Text>
@@ -291,13 +286,14 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
 
                         </SafeAreaProvider>
                         </View>
+
                 <View style={styles.inputGroup}>
                     <Text style={styles.label}>Descrição:</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder='Digite uma descrição'
                         value={newdescricao}
                         onChangeText={setNewdescricao}
+                        placeholder="Digite a descrição da foto"
                     />
                 </View>
 
@@ -309,7 +305,9 @@ export default function AtividadesProfAdicionar({ closeModal,route }) {
                     {newfoto && <Image source={{ uri: newfoto }} style={styles.image} />}
                 </View>
 
-                <TouchableOpacity style={styles.btnLogin} onPress={CadAluno}>
+                
+
+                <TouchableOpacity style={styles.btnLogin} onPress={CadFoto}>
                     <Text style={styles.btnTxt}>Cadastrar</Text>
                 </TouchableOpacity>
             </View>
