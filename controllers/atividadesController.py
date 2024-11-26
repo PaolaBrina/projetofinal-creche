@@ -64,40 +64,44 @@ def atividadesController():
 def get_atividades_por_responsavel(codigo_responsavel):
     try:
         print(f"Código recebido no controlador: {codigo_responsavel}")  # LOG TEMPORÁRIO
+        print("1")
 
         # Realiza a consulta com joins e filtros
-        atividades_data = db.session.query(
-            turma.codigo.label('codturma'),  # Código da turma
+        atividades_data_query = db.session.query(
             turma.nome.label('nome_turma'),  # Nome da turma
-            atividades.datahora,            # Data e hora
-            atividades.descricao,           # Descrição
-            atividades.foto                 # Foto
+            atividades.datahora,                         # Data e hora da atividade
+            atividades.descricao,                        # Descrição da atividade
+            atividades.foto            # Imagem da lista de materiais
         ).join(alunoturma, alunoturma.codturma == turma.codigo) \
          .join(aluno, aluno.codigo == alunoturma.codaluno) \
          .join(atividades, atividades.codturma == turma.codigo) \
          .filter(aluno.codresponsavel == codigo_responsavel) \
-         .distinct()  # Remove duplicações
-
-        atividades_data = atividades_data.all()  # Chama o método all()
+         .distinct()  # Remove duplicações (considerando todas as colunas)
+        
+        print("2")
+        
+        # Obtemos os dados de atividades da consulta
+        atividades_data = atividades_data_query.all()  # Chama o método all() após o distinct
 
         print("Dados retornados da consulta:", atividades_data)  # LOG
 
         # Formatar os resultados em uma lista de dicionários
-        atividades = [
+        atividades_list = [
             {
-                "codturma": item.codturma,
                 "nome_turma": item.nome_turma,
-                "datahora": item.datahora.strftime('%d/%m/%Y %H:%M:%S') if item.datahora else None,  # Formata a data
+                "datahora": item.datahora.strftime('%Y-%m-%d %H:%M:%S') if item.datahora else None,
                 "descricao": item.descricao,
                 "foto": item.foto
             }
             for item in atividades_data
         ]
 
-        for atividade in atividades:
-            print(f"Turma: {atividade['nome_turma']}, Data: {atividade['datahora']}, Descrição: {atividade['descricao'][:30]}...")  # LOG Melhorado
+        for atividade in atividades_list:
+            print(f" Turma: {atividade['nome_turma']}, "
+                  f"DataHora: {atividade['datahora']}, Descrição: {atividade['descricao'][:30]}...")  # LOG Melhorado
         
-        return atividades  # Retorna a lista de atividades diretamente
+        return atividades_list  # Retorna a lista de atividades diretamente
     except Exception as e:
-        print(f"Erro no controlador: {str(e)}")  # LOG de erro
+        print("3")
+        print(e)
         raise e
