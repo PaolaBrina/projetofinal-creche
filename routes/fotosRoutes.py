@@ -12,7 +12,7 @@ def fotos(app):
 fotos_bp = Blueprint('fotos', __name__)
 
 # Rota para obter atividades por código do responsável
-@fotos_bp.route('/api/responsavel/<int:codigo_responsavel>/atividades', methods=['GET'])
+@fotos_bp.route('/api/responsavel/<int:codigo_responsavel>/fotos', methods=['GET'])
 def fotos_por_responsavel(codigo_responsavel):
     try:
         print(f"Código recebido na rota: {codigo_responsavel}")  # LOG TEMPORÁRIO

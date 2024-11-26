@@ -66,7 +66,7 @@ def get_fotos_por_responsavel(codigo_responsavel):
         print(f"Código recebido no controlador: {codigo_responsavel}")  # LOG TEMPORÁRIO
 
         # Realiza a consulta com joins e filtros
-        fotos_data = db.session.query(
+        fotos_data_query = db.session.query(
             turma.codigo.label('codturma'),  # Código da turma
             fotos.datahora,            # Data e hora
             fotos.descricao,           # Descrição
@@ -77,12 +77,12 @@ def get_fotos_por_responsavel(codigo_responsavel):
          .filter(aluno.codresponsavel == codigo_responsavel) \
          .distinct()  # Remove duplicações
 
-        fotos_data = fotos_data.all()  # Chama o método all()
+        fotos_data = fotos_data_query.all()  # Chama o método all()
 
         print("Dados retornados da consulta:", fotos_data)  # LOG
 
         # Formatar os resultados em uma lista de dicionários
-        fotos = [
+        fotos_list = [
             {
                 "codturma": item.codturma,
                 "datahora": item.datahora.strftime('%d/%m/%Y %H:%M:%S') if item.datahora else None,  # Formata a data
@@ -93,12 +93,10 @@ def get_fotos_por_responsavel(codigo_responsavel):
         ]
 
         # Log para verificar os dados que serão enviados
-        for fotos in fotos:
-            print(f"Código da Turma: {fotos['codturma']}, Data: {fotos['datahora']}, Descrição: {fotos['descricao'][:30]}...")
+        for foto in fotos_list:
+            print(f"Código da Turma: {foto['codturma']}, Data: {foto['datahora']}, Descrição: {foto['descricao'][:30]}...")
 
-        return fotos  # Retorna a lista de fotos diretamente
+        return fotos_list  # Retorna a lista de fotos diretamente
     except Exception as e:
         print(f"Erro no controlador: {str(e)}")  # LOG de erro
         raise e
-
-
