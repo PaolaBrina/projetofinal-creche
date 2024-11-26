@@ -12,7 +12,7 @@ export default function FotosResponsavel({ navigation, route }) {
     const { codigo } = route.params || {};
 
     useEffect(() => {
-        api.get(`/api/responsavel/${codigo}/atividades`)
+        api.get(`/api/responsavel/${codigo}/fotos`)
             .then((response) => {
                 if (response.status === 200 && response.data.length > 0) {
                     setAtividades(response.data);

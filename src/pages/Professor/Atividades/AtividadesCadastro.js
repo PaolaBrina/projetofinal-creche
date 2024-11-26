@@ -13,8 +13,11 @@ export default function AtividadesCadastro({ navigation, route }) {
     const [atividades, setAtividades] = useState([]);  // Estado para armazenar as atividades
     const [loading, setLoading] = useState(false);  // Estado para controlar o carregamento
     const [selectedAtividade, setSelectedAtividade] = useState(null); // Estado para armazenar a atividade selecionada
+    const [noActivities, setNoActivities] = useState(false);
+    const [fetching, setFetching] = useState(false);  // Novo estado para controlar a busca
+
     const { codigo } = route.params || {};
-    
+
     // Função para fechar o modal
     const closeModal = () => {
         setModalVisible(false);
@@ -27,34 +30,44 @@ export default function AtividadesCadastro({ navigation, route }) {
         setModalContent('AtividadesProfAdicionar');  // Define o conteúdo do modal
         setModalVisible(true);  // Abre o modal
         console.log('Codigo recebido:', codigo);
-
     };
 
-    
-    
-
-    // Função para buscar as atividades na API
-    const fetchBuscar = async () => {
-        setLoading(true);
-        try {
-            const response = await api.get('/atividades');
-            console.log('Resposta completa:', response);
-            
-            if (Array.isArray(response.data)) {
-                setAtividades(response.data);  // Armazena as atividades no estado
-            } else if (response.data && response.data.atividades) {
-                setAtividades(response.data.atividades);  // Armazena as atividades no estado
+    // Função para buscar as atividades
+    const fetchAtividades = () => {
+        if (codigo) {
+            setLoading(true);
+            setFetching(true);  // Ativa o estado de "fetching" para controlar a requisição
+            api.get(`/api/professor/${codigo}/atividades`)
+        .then((response) => {
+            console.log('Response Data:', response.data); // Certifique-se de que os dados chegam
+            const atividades = response.data.atividades; // Acessando a propriedade "atividades"
+            if (response.status === 200 && atividades.length > 0) {
+                setAtividades(atividades);
+                setNoActivities(false);
             } else {
-                console.error('Formato inesperado dos dados:', response.data);
-                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
+                setNoActivities(true);
             }
-        } catch (error) {
-            console.error('Erro ao buscar atividades:', error);
-            Alert.alert('Erro', 'Erro ao buscar atividades, veja o console para mais detalhes.');
-        } finally {
             setLoading(false);
+            setFetching(false);
+        })
+        .catch((error) => {
+            console.error('API Error:', error);
+            setNoActivities(true);
+            setLoading(false);
+            setFetching(false);
+        });
+
         }
     };
+
+    // Chama a função de buscar sempre que o "codigo" ou "fetching" mudar
+    useEffect(() => {
+        if (fetching) {
+            fetchAtividades();
+        }
+    }, [fetching, codigo]);
+  
+
 
     // Função para alternar a exibição dos detalhes da atividade
     const toggleAtividadeDetails = (atividade) => {
@@ -62,11 +75,6 @@ export default function AtividadesCadastro({ navigation, route }) {
             prevAtividade && prevAtividade.codigo === atividade.codigo ? null : atividade
         ));
     };
-
-    // Carregar as atividades quando a tela for montada
-    useEffect(() => {
-        fetchBuscar();
-    }, []);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -79,7 +87,7 @@ export default function AtividadesCadastro({ navigation, route }) {
                 </View>
 
                 <View style={styles.viewbutton}>
-                    <TouchableOpacity style={styles.button} onPress={fetchBuscar}>
+                    <TouchableOpacity style={styles.button} onPress={fetchAtividades}>
                         <Text style={styles.buttonText}>Buscar Atividades</Text>
                     </TouchableOpacity>
 
@@ -95,31 +103,33 @@ export default function AtividadesCadastro({ navigation, route }) {
                 {loading ? (
                     <Text>Carregando Atividades...</Text>
                 ) : (
-                    <FlatList
+                    atividades.length === 0 || noActivities ? (
+                        <Text style={styles.noActivitiesText}>Nenhuma atividade cadastrada</Text>
+                    ) : (
+                        <FlatList
                         data={atividades}
-                        keyExtractor={(item) => item.codigo.toString()}
+                        keyExtractor={(item, index) => index.toString()} // Usando índice como chave
                         renderItem={({ item }) => (
                             <View style={styles.alunoItemContainer}>
                                 <View style={styles.alunoRow}>
                                     <TouchableOpacity style={styles.alunoInfo} onPress={() => toggleAtividadeDetails(item)}>
                                         <Foundation name="clipboard-pencil" size={24} color="black" />
-                                        <Text style={styles.alunoName}>{item.codigo}</Text>
+                                        <Text style={styles.alunoName}>{item.codigo_atividade}</Text>
                                     </TouchableOpacity>
                                     <View style={styles.iconsContainer}>
                                         <TouchableOpacity onPress={() => openEditModal(item)} style={styles.iconButton}>
                                             <MaterialIcons name="edit" size={25} color="blue" />
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => handleDelete(item.codigo)} style={styles.iconButton}>
+                                        <TouchableOpacity onPress={() => handleDelete(item.codigo_atividade)} style={styles.iconButton}>
                                             <MaterialIcons name="delete" size={25} color="red" />
                                         </TouchableOpacity>
                                     </View>
-
                                 </View>
-                                {selectedAtividade && selectedAtividade.codigo === item.codigo && (
+                                {selectedAtividade === item && (
                                     <View style={styles.alunoDetails}>
-                                        <Text style={styles.alunoText}>Codigo Turma: {item.codturma}</Text>
-                                        <Text style={styles.alunoText}>Datahora: {item.datahora}</Text>
-                                        <Text style={styles.alunoText}>Descricao: {item.descricao}</Text>
+                                        <Text style={styles.alunoText}>Turma: {item.nome_turma}</Text>
+                                        <Text style={styles.alunoText}>Data/Hora: {item.datahora}</Text>
+                                        <Text style={styles.alunoText}>Descrição: {item.descricao}</Text>
                                         {item.foto && (
                                             <Image
                                                 source={{ uri: `data:image/jpeg;base64,${item.foto}` }}
@@ -130,8 +140,8 @@ export default function AtividadesCadastro({ navigation, route }) {
                                 )}
                             </View>
                         )}
-                    />
-                )}
+                    />                    
+                ))}
 
                 <Modal
                     visible={modalVisible}
