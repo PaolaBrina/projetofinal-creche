@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Button, TextInput, StyleSheet } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { api } from '../../../api/api'; // Importa a instância do Axios
+import { api } from '../../../api/api';
 
-const RadioButtonGroup = ({ title, options, selectedOption, setSelectedOption }) => {
+const RadioButtonGroup = ({ title, options, selectedOption, setSelectedOption, horizontal = false }) => {
     return (
-        <View style={styles.radioGroupContainer}>
+        <View style={[styles.radioGroupContainer, horizontal && { flexDirection: 'row', alignItems: 'center' }]}>
             <Text style={styles.radioTitle}>{title}</Text>
-            {options.map((option) => (
-                <TouchableOpacity
-                    key={option.value}
-                    style={styles.radioOption}
-                    onPress={() => setSelectedOption(option.value)}
-                >
-                    <View style={styles.radioCircle}>
-                        {selectedOption === option.value && <View style={styles.radioSelected} />}
-                    </View>
-                    <Text style={styles.radioLabel}>{option.label}</Text>
-                </TouchableOpacity>
-            ))}
+            <View style={[horizontal && { flexDirection: 'row' }]}>
+                {options.map((option) => (
+                    <TouchableOpacity
+                        key={option.value}
+                        style={[styles.radioOption, horizontal && { flexDirection: 'column', alignItems: 'center', marginHorizontal: 10 }]}
+                        onPress={() => setSelectedOption(option.value)}
+                    >
+                        <View style={styles.radioCircle}>
+                            {selectedOption === option.value && <View style={styles.radioSelected} />}
+                        </View>
+                        <Text style={styles.radioLabel}>{option.label}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
         </View>
     );
 };
@@ -27,11 +29,6 @@ const RadioButtonGroup = ({ title, options, selectedOption, setSelectedOption })
 export default function MeudiaProfessor({ navigation, route }) {
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [formData, setFormData] = useState({
-        saude: 'Bem',
-        medicacao: 'Nenhum',
-        recados: '',
-    });
     const [noAlunos, setNoAlunos] = useState(false);
 
     const { codigo } = route.params || {};
@@ -45,7 +42,19 @@ export default function MeudiaProfessor({ navigation, route }) {
         api.get(`/api/professor/${codigo}/alunos`)
             .then((response) => {
                 if (response.status === 200 && response.data.length > 0) {
-                    setAlunos(response.data);
+                    setAlunos(response.data.map((aluno) => ({
+                        ...aluno,
+                        formData: {
+                            saude: 'Bem',
+                            medicacao: 'Nenhum',
+                            recados: '',
+                            xixi: '',
+                            coco: '',
+                            sono: '',
+                            cafemanha: '',
+                            almoco: ''
+                        }
+                    })));
                     setNoAlunos(false);
                 } else {
                     setNoAlunos(true);
@@ -67,14 +76,14 @@ export default function MeudiaProfessor({ navigation, route }) {
           codturma: item.codturma,
           codprofessor: codigo,
           datahora, // Usando datahora fixa
-          recado: formData.recados || '',
-          xixi: formData.xixi || '',
-          coco: formData.coco || '',
-          sono: formData.sono || '',
-          saude: formData.saude || '',
-          medicacao: formData.medicacao || '',
-          cafemanha: formData.cafemanha || '',
-          almoco: formData.almoco || '',
+          recado: item.formData.recados || '',
+          xixi: item.formData.xixi || '',
+          coco: item.formData.coco || '',
+          sono: item.formData.sono || '',
+          saude: item.formData.saude || '',
+          medicacao: item.formData.medicacao || '',
+          cafemanha: item.formData.cafemanha || '',
+          almoco: item.formData.almoco || '',
       };
   
       // Printar as informações que estão sendo enviadas
@@ -82,13 +91,13 @@ export default function MeudiaProfessor({ navigation, route }) {
   
       api.post(`/meudiamanha`, dataCompleta)
           .then((response) => {
-            // Verifica se o status é 200 ou 201
-            if (response.status === 200 || response.status === 201) {
-                alert(`Meu Dia cadastrado com sucesso para o aluno ${item.nome}!`);
-            } else {
-                alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}. Status: ${response.status}`);
-            }
-        })
+              // Verifica se o status é 200 ou 201
+              if (response.status === 200 || response.status === 201) {
+                  alert(`Meu Dia cadastrado com sucesso para o aluno ${item.nome}!`);
+              } else {
+                  alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}. Status: ${response.status}`);
+              }
+          })
           .catch((error) => {
               if (error.response) {
                   console.error("Erro no servidor:", error.response.data);
@@ -98,8 +107,17 @@ export default function MeudiaProfessor({ navigation, route }) {
               }
               alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}.`);
           });
-        };
+  };
   
+
+
+     const handleOptionChange = (alunoCodigo, field, value) => {
+        setAlunos((prevAlunos) =>
+            prevAlunos.map((aluno) =>
+                aluno.codigo === alunoCodigo ? { ...aluno, formData: { ...aluno.formData, [field]: value } } : aluno
+            )
+        );
+    }; 
 
     return (
         <View style={styles.container}>
@@ -131,26 +149,12 @@ export default function MeudiaProfessor({ navigation, route }) {
                             </View>
 
                             <View style={styles.alunoDetails}>
-                                <RadioButtonGroup
-                                    title="Café da Manhã"
-                                    options={[
-                                        { label: '😋 Comeu Bem', value: 'comeu_bem' },
-                                        { label: '🍴 Comeu', value: 'comeu' },
-                                        { label: '🍴 Comeu Pouco', value: 'comeu_pouco' },
-                                    ]}
-                                    selectedOption={formData.cafemanha}
-                                    setSelectedOption={(value) => setFormData({ ...formData, cafemanha: value })}
-                                />
-
-                                <RadioButtonGroup
-                                    title="Almoço"
-                                    options={[
-                                        { label: '😋 Comeu Bem', value: 'comeu_bem' },
-                                        { label: '🍴 Comeu', value: 'comeu' },
-                                        { label: '🍴 Comeu Pouco', value: 'comeu_pouco' },
-                                    ]}
-                                    selectedOption={formData.almoco}
-                                    setSelectedOption={(value) => setFormData({ ...formData, almoco: value })}
+                                <Text style={styles.inputLabel}>Recado</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={item.formData.recados}
+                                    onChangeText={(text) => handleOptionChange(item.codigo, 'recados', text)}
+                                    placeholder="Recado"
                                 />
 
                                 <RadioButtonGroup
@@ -159,8 +163,9 @@ export default function MeudiaProfessor({ navigation, route }) {
                                         { label: 'Sim', value: 'sim' },
                                         { label: 'Não', value: 'nao' },
                                     ]}
-                                    selectedOption={formData.xixi}
-                                    setSelectedOption={(value) => setFormData({ ...formData, xixi: value })}
+                                    selectedOption={item.formData.xixi}
+                                    setSelectedOption={(value) => handleOptionChange(item.codigo, 'xixi', value)}
+                                    horizontal={true} // Alinhando as opções horizontalmente
                                 />
 
                                 <RadioButtonGroup
@@ -169,8 +174,9 @@ export default function MeudiaProfessor({ navigation, route }) {
                                         { label: 'Sim', value: 'sim' },
                                         { label: 'Não', value: 'nao' },
                                     ]}
-                                    selectedOption={formData.coco}
-                                    setSelectedOption={(value) => setFormData({ ...formData, coco: value })}
+                                    selectedOption={item.formData.coco}
+                                    setSelectedOption={(value) => handleOptionChange(item.codigo, 'coco', value)}
+                                    horizontal={true} // Alinhando as opções horizontalmente
                                 />
 
                                 <RadioButtonGroup
@@ -179,32 +185,48 @@ export default function MeudiaProfessor({ navigation, route }) {
                                         { label: 'Sim', value: 'sim' },
                                         { label: 'Não', value: 'nao' },
                                     ]}
-                                    selectedOption={formData.sono}
-                                    setSelectedOption={(value) => setFormData({ ...formData, sono: value })}
+                                    selectedOption={item.formData.sono}
+                                    setSelectedOption={(value) => handleOptionChange(item.codigo, 'sono', value)}
+                                    horizontal={true} // Alinhando as opções horizontalmente
                                 />
+
+                                <View style={styles.horizontalGroup}>
+                                    <RadioButtonGroup
+                                        title="Café da Manhã"
+                                        options={[
+                                            { label: '😋 Comeu Bem', value: 'comeu_bem' },
+                                            { label: '🍴 Comeu', value: 'comeu' },
+                                            { label: '🍴 Comeu Pouco', value: 'comeu_pouco' },
+                                        ]}
+                                        selectedOption={item.formData.cafemanha}
+                                        setSelectedOption={(value) => handleOptionChange(item.codigo, 'cafemanha', value)}
+                                    />
+                                    <RadioButtonGroup
+                                        title="Almoço"
+                                        options={[
+                                            { label: '😋 Comeu Bem', value: 'comeu_bem' },
+                                            { label: '🍴 Comeu', value: 'comeu' },
+                                            { label: '🍴 Comeu Pouco', value: 'comeu_pouco' },
+                                        ]}
+                                        selectedOption={item.formData.almoco}
+                                        setSelectedOption={(value) => handleOptionChange(item.codigo, 'almoco', value)}
+                                    />
+                                </View>
 
                                 <Text style={styles.inputLabel}>Saúde</Text>
                                 <TextInput
                                     style={styles.input}
-                                    value={formData.saude}
-                                    onChangeText={(text) => setFormData({ ...formData, saude: text })}
+                                    value={item.formData.saude}
+                                    onChangeText={(text) => handleOptionChange(item.codigo, 'saude', text)}
                                     placeholder="Saúde"
                                 />
 
                                 <Text style={styles.inputLabel}>Medicação</Text>
                                 <TextInput
                                     style={styles.input}
-                                    value={formData.medicacao}
-                                    onChangeText={(text) => setFormData({ ...formData, medicacao: text })}
+                                    value={item.formData.medicacao}
+                                    onChangeText={(text) => handleOptionChange(item.codigo, 'medicacao', text)}
                                     placeholder="Medicação"
-                                />
-
-                                <Text style={styles.inputLabel}>Recados</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    value={formData.recados}
-                                    onChangeText={(text) => setFormData({ ...formData, recados: text })}
-                                    placeholder="Recados"
                                 />
 
                                 <Button title="Salvar" onPress={() => handleSave(item)} />
@@ -221,16 +243,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ADD8E6',
-        alignItems: 'center',
     },
     topBar: {
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
         padding: 10,
-        paddingTop: 60,
-        paddingLeft: 20,
-        paddingRight: 20,
+        paddingTop: 50,
         backgroundColor: '#283673',
     },
     topBarTxt: {
@@ -240,60 +259,52 @@ const styles = StyleSheet.create({
         flex: 1,
         textAlign: 'center',
     },
-    inputLabel: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginTop: 10,
-    },
     btnseta: {
         width: 30,
         height: 30,
-        justifyContent: 'center',
     },
     listContainer: {
-        marginTop: 20,
+        padding: 20,
     },
     alunoItemContainer: {
-        marginBottom: 20,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 10,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 4,
-        elevation: 2,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        marginBottom: 15,
+        padding: 15,
     },
     alunoRow: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
     },
     alunoName: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginLeft: 10,
     },
-    alunoDetails: {
-        marginTop: 10,
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 15,
+        backgroundColor: '#fff',
     },
-    detailTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
+    horizontalGroup: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 15,
     },
     radioGroupContainer: {
-        marginBottom: 20,
+      marginBottom: 20,
     },
     radioTitle: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 5,
     },
     radioOption: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 5,
+        marginHorizontal: 10,  // Adicionando espaço entre as opções
     },
     radioCircle: {
         width: 20,
@@ -314,26 +325,15 @@ const styles = StyleSheet.create({
     radioLabel: {
         fontSize: 14,
     },
-    codeContainer: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
+    // Estilo para as opções de "Café da Manhã" e "Almoço" ficarem com mais espaçamento
+    horizontalGroup: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Mantém os itens alinhados e espaçados
+        marginBottom: 20, // Adiciona mais espaço entre as linhas
     },
-    codeText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    emptyText: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        marginHorizontal: 20,
+    sonoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center', // Garante que "Sono" estará centralizado
+        marginBottom: 15,
     },
 });
