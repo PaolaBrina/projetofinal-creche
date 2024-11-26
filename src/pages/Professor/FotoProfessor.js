@@ -13,6 +13,8 @@ export default function FotoProfessor({ navigation, route }) {
     const [fotos, setFotos] = useState([]);  // Estado para armazenar as fotos
     const [loading, setLoading] = useState(false);  // Estado para controlar o carregamento
     const [selectedFoto, setSelectedFoto] = useState(null); // Estado para armazenar a foto selecionada
+    const [noActivities, setNoActivities] = useState(false);
+    const [fetching, setFetching] = useState(false);  // Novo estado para controlar a busca
     const { codigo } = route.params || {};
     
     // Função para fechar o modal
@@ -28,27 +30,36 @@ export default function FotoProfessor({ navigation, route }) {
     };
 
     // Função para buscar as fotos na API
-    const fetchBuscar = async () => {
-        setLoading(true);
+   // Função para buscar as fotos na API
+const fetchBuscar = async () => {
+    if (codigo) {
         try {
-            const response = await api.get('/fotos'); // Rota da API para fotos
-            console.log('Resposta completa:', response);
-            
-            if (Array.isArray(response.data)) {
-                setFotos(response.data);  // Armazena as fotos no estado
-            } else if (response.data && response.data.fotos) {
-                setFotos(response.data.fotos);  // Armazena as fotos no estado
+            setLoading(true); // Ativa o estado de carregamento
+            const response = await api.get(`/api/professor/${codigo}/fotos`);
+
+            console.log('Response Data:', response.data); // Certifique-se de que os dados chegam
+            const fotos = response.data.fotos; // Acessando a propriedade "fotos"
+
+            if (response.status === 200 && fotos.length > 0) {
+                setFotos(fotos);
+                setNoActivities(false);
             } else {
-                console.error('Formato inesperado dos dados:', response.data);
-                Alert.alert('Erro', 'Formato inesperado dos dados recebidos.');
+                setNoActivities(true); // Sem fotos
             }
         } catch (error) {
-            console.error('Erro ao buscar fotos:', error);
-            Alert.alert('Erro', 'Erro ao buscar fotos, veja o console para mais detalhes.');
+            if (error.response && error.response.status === 404) {
+                console.warn('Nenhuma foto encontrada para este professor.');
+                setNoActivities(true); // Atualiza estado para mostrar mensagem
+            } else {
+                console.error('Erro ao buscar fotos:', error);
+                Alert.alert('Erro', 'Não foi possível buscar as fotos. Tente novamente mais tarde.');
+            }
         } finally {
-            setLoading(false);
+            setLoading(false); // Desativa o estado de carregamento
+        }
         }
     };
+
 
     // Função para alternar a exibição dos detalhes da foto
     const toggleFotoDetails = (foto) => {
@@ -60,7 +71,7 @@ export default function FotoProfessor({ navigation, route }) {
     // Carregar as fotos quando a tela for montada
     useEffect(() => {
         fetchBuscar();
-    }, []);
+    }, [codigo]);
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -89,15 +100,18 @@ export default function FotoProfessor({ navigation, route }) {
                 {loading ? (
                     <Text>Carregando Fotos...</Text>
                 ) : (
-                    <FlatList
+                    fotos.length === 0 || noActivities ? (
+                        <Text style={styles.noActivitiesText}>Nenhuma foto cadastrada</Text>
+                    ) : (
+                        <FlatList
                         data={fotos}
-                        keyExtractor={(item) => item.codigo.toString()}
+                        keyExtractor={(item) => item.codigo ? item.codigo.toString() : Math.random().toString()} // Garante que a chave seja única
                         renderItem={({ item }) => (
                             <View style={styles.fotoItemContainer}>
                                 <View style={styles.fotoRow}>
                                     <TouchableOpacity style={styles.fotoInfo} onPress={() => toggleFotoDetails(item)}>
                                         <Foundation name="camera" size={24} color="black" />
-                                        <Text style={styles.fotoName}>{item.codigo}</Text>
+                                        <Text style={styles.fotoName}>{item.codigo_fotos}</Text>
                                     </TouchableOpacity>
                                     <View style={styles.iconsContainer}>
                                         <TouchableOpacity onPress={() => openEditModal(item)} style={styles.iconButton}>
@@ -116,15 +130,15 @@ export default function FotoProfessor({ navigation, route }) {
                                         {item.foto && (
                                             <Image
                                                 source={{ uri: `data:image/jpeg;base64,${item.foto}` }}
-                                                style={styles.fotoImage}
+                                                style={styles.alunoImage}
                                             />
                                         )}
                                     </View>
                                 )}
                             </View>
                         )}
-                    />
-                )}
+                    />                   
+                ))}
 
                 <Modal
                     visible={modalVisible}
@@ -262,5 +276,12 @@ const styles = StyleSheet.create({
     },
     codeText: {
         fontSize: 16,
-    }
+    },
+    alunoImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 10,
+        marginTop: 10,
+        alignSelf: 'center',
+    },
 });
