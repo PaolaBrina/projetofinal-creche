@@ -1,20 +1,39 @@
 from flask import request
 from database.db import db
 from models.meudiamanha import meudiamanha
+from datetime import datetime
 
 def meudiamanhaController():
 
         if request.method == 'POST':
-            try: 
+            try:
                 data = request.get_json()
-                print(data)
-                meudiamanhas = meudiamanha(data['codaluno'], data['codturma'], data['codprofessor'], data['datahora'], data['recado'], data['xixi'], data['coco'], data['sono'], data['saude'], data['medicacao'], data['cafemanha'], data['almoco'])
+                
+                # Converte datahora para o formato correto
+                datahora = datetime.strptime(data['datahora'], '%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d %H:%M:%S')
+                
+                meudiamanhas = meudiamanha(
+                    codaluno=data['codaluno'],
+                    codturma=data['codturma'],
+                    codprofessor=data['codprofessor'],
+                    datahora=datahora,
+                    recado=data['recado'],
+                    xixi=data['xixi'],
+                    coco=data['coco'],
+                    sono=data['sono'],
+                    saude=data['saude'],
+                    medicacao=data['medicacao'],
+                    cafemanha=data['cafemanha'],
+                    almoco=data['almoco'],
+                )
+                
                 db.session.add(meudiamanhas)
                 db.session.commit()
-                return 'meudiamanha criado com sucesso', 200 
+                return 'meudiamanha criado com sucesso', 200
             
             except Exception as e:
-                return 'meudiamanha nao foi criado, {}'.format(e), 405
+                return f'meudiamanha nao foi criado, {e}', 400
+
 
 
         elif request.method == 'GET':

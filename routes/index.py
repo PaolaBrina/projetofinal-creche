@@ -23,6 +23,7 @@ from routes.horarioRoutes import horarios_bp
 from routes.both_meu_diaRoute import meu_dia_bp
 from routes.atividadesRoutes import atividades_bp
 from routes.fotosRoutes import fotos_bp
+from routes.alunoRoutes import alunos_bp
 
 def default_routes(app):
     turma(app)
@@ -50,3 +51,4 @@ def default_routes(app):
     app.register_blueprint(meu_dia_bp)  # Registrar o blueprint corretamente
     app.register_blueprint(atividades_bp)  # Registrar o blueprint corretamente
     app.register_blueprint(fotos_bp)  # Registrar o blueprint corretamente
+    app.register_blueprint(alunos_bp)

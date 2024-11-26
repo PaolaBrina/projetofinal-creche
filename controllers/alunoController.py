@@ -1,6 +1,8 @@
 from flask import request
 from database.db import db
 from models.aluno import aluno
+from models.professorturma import professorturma
+from models.alunoturma import alunoturma
 
 def alunoController():
 
@@ -61,3 +63,30 @@ def alunoController():
             
             except Exception as e:
                 return 'nao foi possivel alterar aluno, {}'.format(str(e)), 405
+            
+            
+def get_alunos_por_professor(codigo_professor):
+    try:
+        # Busca as turmas associadas ao professor
+        turmas = professorturma.query.filter_by(codprofessor=codigo_professor).all()
+        if not turmas:
+            raise Exception('Nenhuma turma encontrada para este professor.')
+
+        # Obtém os códigos das turmas
+        cod_turmas = [turma.codturma for turma in turmas]
+
+        # Busca os alunos e suas turmas
+        alunos_turmas = (
+            db.session.query(aluno, alunoturma.codturma)  # Agora inclui o codturma
+            .join(alunoturma, aluno.codigo == alunoturma.codaluno)
+            .filter(alunoturma.codturma.in_(cod_turmas))
+            .all()
+        )
+
+        # Converte os alunos para uma lista de dicionários, incluindo o código da turma
+        return [
+            {"codigo": aluno.codigo, "nome": aluno.nome, "codturma": codturma}
+            for aluno, codturma in alunos_turmas
+        ]
+    except Exception as e:
+        raise Exception(f"Erro ao buscar alunos: {str(e)}")
