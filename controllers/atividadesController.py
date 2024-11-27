@@ -4,6 +4,8 @@ from models.atividades import atividades
 from models.turma import turma
 from models.alunoturma import alunoturma
 from models.aluno import aluno
+from models.professor import professor
+from models.professorturma import professorturma
 
 def atividadesController():
         if request.method == 'POST':
@@ -105,3 +107,50 @@ def get_atividades_por_responsavel(codigo_responsavel):
         print("3")
         print(e)
         raise e
+    
+def get_atividades_por_professor(codigo_professor):
+    try:
+        print(f"Código recebido no controlador: {codigo_professor}")  # LOG TEMPORÁRIO
+        print("1")
+
+        # Realiza a consulta com joins e filtros
+        atividades_data_query = db.session.query(
+            atividades.codigo.label('codigo_atividade'),  # Código da atividade
+            turma.nome.label('nome_turma'),  # Nome da turma
+            atividades.datahora,             # Data e hora da atividade
+            atividades.descricao,            # Descrição da atividade
+            atividades.foto                  # Imagem da lista de materiais
+        ).join(professorturma, professorturma.codturma == turma.codigo)  \
+         .join(atividades, atividades.codturma == turma.codigo) \
+         .filter(professorturma.codprofessor == codigo_professor)  \
+         .distinct()  
+        
+        print("2")
+        
+        # Obtemos os dados de atividades da consulta
+        atividades_data = atividades_data_query.all()  # Chama o método all() após o distinct
+
+        print("Dados retornados da consulta:", atividades_data)  # LOG
+
+        # Formatar os resultados em uma lista de dicionários
+        atividades_list = [
+            {
+                "codigo_atividade": item.codigo_atividade,  # Inclua o código da atividade
+                "nome_turma": item.nome_turma,
+                "datahora": item.datahora.strftime('%Y-%m-%d %H:%M:%S') if item.datahora else None,
+                "descricao": item.descricao,
+                "foto": item.foto
+            }
+            for item in atividades_data
+        ]
+
+        for atividade in atividades_list:
+            print(f"codigo_atividade: {atividade['codigo_atividade']}, Turma: {atividade['nome_turma']}, "
+                  f"DataHora: {atividade['datahora']}, Descrição: {atividade['descricao'][:30]}...")  # LOG Melhorado
+        
+        return atividades_list  # Retorna a lista de atividades diretamente
+    except Exception as e:
+        print("3")
+        print(e)
+        raise e
+

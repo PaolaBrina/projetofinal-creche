@@ -4,6 +4,7 @@ from models.fotos import fotos
 from models.turma import turma
 from models.alunoturma import alunoturma
 from models.aluno import aluno
+from models.professorturma import professorturma
 
 def fotosController():
         if request.method == 'POST':
@@ -99,4 +100,48 @@ def get_fotos_por_responsavel(codigo_responsavel):
         return fotos_list  # Retorna a lista de fotos diretamente
     except Exception as e:
         print(f"Erro no controlador: {str(e)}")  # LOG de erro
+        raise e
+
+def get_fotos_por_professor(codigo_professor):
+    try:
+        print(f"Código recebido no controlador: {codigo_professor}")  # LOG TEMPORÁRIO
+        print("1")
+
+        # Realiza a consulta com joins e filtros
+        fotos_data_query = db.session.query(
+            fotos.codigo.label('codigo_fotos'),  # Código da fotos
+            turma.nome.label('nome_turma'),  # Nome da turma
+            fotos.datahora,             # Data e hora da fotos
+            fotos.descricao,            # Descrição da atividade
+            fotos.foto                  # Imagem da lista de materiais
+        ).join(professorturma, professorturma.codturma == turma.codigo)  \
+         .join(fotos, fotos.codturma == turma.codigo) \
+         .filter(professorturma.codprofessor == codigo_professor)  \
+         .distinct()  
+     
+        # Obtemos os dados de fotos da consulta
+        fotos_data = fotos_data_query.all()  # Chama o método all() após o distinct
+
+        print("Dados retornados da consulta:", fotos_data)  # LOG
+
+        # Formatar os resultados em uma lista de dicionários
+        fotos_list = [
+        {
+            "codigo_fotos": item.codigo_fotos,  # Nome ajustado
+            "nome_turma": item.nome_turma,
+            "datahora": item.datahora.strftime('%Y-%m-%d %H:%M:%S') if item.datahora else None,
+            "descricao": item.descricao,
+            "foto": item.foto
+        }
+        for item in fotos_data
+    ]
+
+
+        for atividade in fotos_list:
+            print(f"codigo_fotos: {atividade['codigo_fotos']}, Turma: {atividade['nome_turma']}, "
+                  f"DataHora: {atividade['datahora']}, Descrição: {atividade['descricao'][:30]}...")  # LOG Melhorado
+        
+        return fotos_list  # Retorna a lista de fotos diretamente
+    except Exception as e:
+        print(e)
         raise e
