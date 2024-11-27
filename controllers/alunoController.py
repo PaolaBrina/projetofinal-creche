@@ -90,3 +90,21 @@ def get_alunos_por_professor(codigo_professor):
         ]
     except Exception as e:
         raise Exception(f"Erro ao buscar alunos: {str(e)}")
+    
+
+def get_aluno_por_codigo(codigo_aluno):
+    try:
+        # Realiza a consulta para buscar o aluno com o código fornecido
+        aluno_data = (
+            db.session.query(aluno)
+            .filter(aluno.codigo == codigo_aluno)
+            .first()
+        )
+
+        if not aluno_data:
+            raise Exception('Aluno não encontrado.')
+
+        # Retorna os dados do aluno como dicionário
+        return {"codigo": aluno_data.codigo, "nome": aluno_data.nome}
+    except Exception as e:
+        raise Exception(f"Erro ao buscar aluno por código: {str(e)}")

@@ -1,5 +1,6 @@
 from controllers.alunoController import alunoController
 from controllers.alunoController import get_alunos_por_professor
+from controllers.alunoController import get_aluno_por_codigo
 from flask import Blueprint, jsonify
 
 def aluno(app):
@@ -17,5 +18,18 @@ def alunos_por_professor(codigo_professor):
         # Chama a função no controller
         alunos = get_alunos_por_professor(codigo_professor)
         return jsonify(alunos), 200  # Retorna diretamente a lista
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+# Rota para obter o nome de um aluno pelo código
+@alunos_bp.route('/api/aluno/<int:codaluno>', methods=['GET'])
+def aluno_por_codigo(codaluno):
+    try:
+        aluno = get_aluno_por_codigo(codaluno)
+        if aluno:
+            return jsonify(aluno), 200
+        return jsonify({"error": "Aluno não encontrado"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
