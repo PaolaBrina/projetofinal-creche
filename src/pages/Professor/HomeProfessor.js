@@ -27,7 +27,7 @@ export default function HomeProfessor({ navigation, route }) {
           <MaterialIcons name="menu" size={24} color="black" />
         </TouchableOpacity>
         <View style={styles.icons}>
-          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte')} >
+          <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Suporte', { codigo })} >
             <MaterialIcons name="support-agent" size={30} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Avisos', { codigo })}>
@@ -35,9 +35,6 @@ export default function HomeProfessor({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
-      <View>
-      <Text>Código do professor: {codigo}</Text>
-    </View>
       {/* Linha 1: Botão Amarelo */}
       <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}>
         <Octicons name="smiley" size={24} color="black" />

@@ -36,6 +36,7 @@ import AvisoAdicionar from './src/pages/Colaborador/AvisosAdicionar';
 /* Professor */
 import HomeProfessor from './src/pages/Professor/HomeProfessor';
 import MeudiaProfessor from './src/pages/Professor/Meu_dia/MeudiaProfessor';
+import MeudiaProfessorBuscar from './src/pages/Professor/Meu_dia/MeudiaProfessorBuscar';
 import AtividadesCadastro from './src/pages/Professor/Atividades/AtividadesCadastro';
 import AtividadesProfAdicionar from './src/pages/Professor/Atividades/AtividadesProfAdicionar';
 import FotoProfessor from './src/pages/Professor/FotoProfessor';
@@ -174,6 +175,7 @@ export default function App() {
 
           <Stack.Screen name="HomeProfessor" component={DrawerProfessor} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='MeudiaProfessor' component={MeudiaProfessor}/>
+          <Stack.Screen options={{headerShown:false}} name='MeudiaProfessorBuscar' component={MeudiaProfessorBuscar}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesCadastro' component={AtividadesCadastro}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesProfAdicionar' component={AtividadesProfAdicionar}/>
           <Stack.Screen options={{headerShown:false}} name='FotoProfessor' component={FotoProfessor}/>

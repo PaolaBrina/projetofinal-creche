@@ -121,12 +121,33 @@ export default function MeudiaProfessor({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            {/* Top Bar */}
             <View style={styles.topBar}>
                 <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeProfessor', { codigo })}>
                     <AntDesign name="caretleft" size={30} color="white" />
                 </TouchableOpacity>
-                <Text style={styles.topBarTxt}>Lista de Alunos</Text>
+                <Text style={styles.topBarTxt}>Meu Dia</Text>
+            </View>
+
+            <View style={styles.tabsContainer}>
+                <TouchableOpacity
+                    style={[
+                        styles.tab,
+                        styles.activeTab,
+                        { borderBottomColor: '#283673', borderBottomWidth: 3 }, // Aba ativa
+                    ]}
+                    onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}
+                >
+                    <Text style={[styles.tabText, { color: '#283673', fontWeight: 'bold' }]}>Cadastro</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.tab,
+                        { borderBottomColor: '#f0f0f0', borderBottomWidth: 3 }, // Aba inativa
+                    ]}
+                    onPress={() => navigation.navigate('MeudiaProfessorBuscar', { codigo })}
+                >
+                    <Text style={[styles.tabText, { color: '#aaa' }]}>Procurar</Text>
+                </TouchableOpacity>
             </View>
 
             {loading ? (
@@ -194,9 +215,9 @@ export default function MeudiaProfessor({ navigation, route }) {
                                     <RadioButtonGroup
                                         title="Café da Manhã"
                                         options={[
-                                            { label: '😋 Comeu Bem', value: 'comeu_bem' },
-                                            { label: '🍴 Comeu', value: 'comeu' },
-                                            { label: '🍴 Comeu Pouco', value: 'comeu_pouco' },
+                                            { label: '😋 Comeu Bem', value: 'comeu bem' },
+                                            { label: '🍴 Comeu Pouco', value: 'comeu pouco' },
+                                            { label: '🍴 Não Comeu', value: 'nao comeu' },
                                         ]}
                                         selectedOption={item.formData.cafemanha}
                                         setSelectedOption={(value) => handleOptionChange(item.codigo, 'cafemanha', value)}
@@ -204,9 +225,9 @@ export default function MeudiaProfessor({ navigation, route }) {
                                     <RadioButtonGroup
                                         title="Almoço"
                                         options={[
-                                            { label: '😋 Comeu Bem', value: 'comeu_bem' },
-                                            { label: '🍴 Comeu', value: 'comeu' },
-                                            { label: '🍴 Comeu Pouco', value: 'comeu_pouco' },
+                                            { label: '😋 Comeu Bem', value: 'comeu bem' },
+                                            { label: '🍴 Comeu Pouco', value: 'comeu pouco' },
+                                            { label: '🍴 Não Comeu', value: 'nao comeu' },
                                         ]}
                                         selectedOption={item.formData.almoco}
                                         setSelectedOption={(value) => handleOptionChange(item.codigo, 'almoco', value)}
@@ -262,6 +283,31 @@ const styles = StyleSheet.create({
     btnseta: {
         width: 30,
         height: 30,
+    },
+    tabsContainer: {
+        flexDirection: 'row',
+        height: 50,
+        backgroundColor: '#ffffff',
+        elevation: 4,
+        marginHorizontal: 10,
+        borderRadius: 8,
+        marginTop: 20, // Espaço entre a TopBar e os botões
+        marginBottom: 15, // Espaço entre os botões e o restante do conteúdo
+      },
+    tab: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f9f9f9',
+        paddingVertical: 10,
+    },
+    tabText: {
+        fontSize: 16,
+        fontWeight: '500',
+    },
+    activeTab: {
+        backgroundColor: '#fff',
+        borderBottomColor: '#283673',
     },
     listContainer: {
         padding: 20,

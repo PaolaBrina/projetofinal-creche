@@ -69,7 +69,7 @@ export default function HomeResponsavel({ navigation, route }) {
       {/* Linha 4: Botões Rosa e Laranja */}
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('ListadeMateriaisResponsavel', { codigo }) }>
-          <MaterialIcons name="list" size={24} color="#000" />
+          <MaterialIcons name="list-alt" size={24} color="#000" />
           <Text style={styles.buttonText}>Lista de Materiais</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioResponsavel', { codigo }) }>
@@ -82,10 +82,6 @@ export default function HomeResponsavel({ navigation, route }) {
       <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
-      <View style={styles.codeContainer}>
-        <Text style={styles.codeText}>Código do responsavel: {codigo}</Text>
-      </View>
-      
   </ImageBackground>
   </ScrollView>
   );
@@ -167,17 +163,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-  },
-  codeContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
-  codeText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
   },
   yellow: { backgroundColor: "#FFD700" },
   red: { backgroundColor: "#FF6347" },

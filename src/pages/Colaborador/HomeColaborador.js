@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, ScrollView } from 'react-native';
-import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons, Octicons, FontAwesome5 } from "@expo/vector-icons";
 
 export default function HomeColaborador({ navigation, route }) {
   const { codigo } = route.params; 
@@ -30,18 +30,18 @@ export default function HomeColaborador({ navigation, route }) {
         </View>
       {/* Linha 1: Botão Amarelo */}
       <TouchableOpacity style={[styles.buttonTop, styles.yellow]} onPress={() => navigation.navigate('ResponsavelCadastro', { codigo }) }>
-        <FontAwesome name="pencil-square-o" size={24} color="black" />
+      <FontAwesome5 name="user-alt" size={24} color="#000" />      
       <Text style={styles.buttonText}>Responsavel</Text>
       </TouchableOpacity>
 
       {/* Linha 2: Botões Vermelho e Azul */}
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.red, { marginTop: 65 }]} onPress={() => navigation.navigate('ProfessorCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
+          <FontAwesome5 name="user-edit" size={24} color="#000" />          
           <Text style={styles.buttonText}>Professor</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.blue, { marginBottom: 65 }]} onPress={() => navigation.navigate('AlunoCadastro', { codigo }) }>
-          <Octicons name="smiley" size={24} color="black" />
+          <Octicons name="smiley" size={24} color="#000" />
           <Text style={styles.buttonText}>Aluno</Text>
         </TouchableOpacity>
       </View>
@@ -49,11 +49,11 @@ export default function HomeColaborador({ navigation, route }) {
       {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('ColaboradorCadastro', { codigo }) }>
-          <Ionicons name="images" size={24} color="#000" />
-          <Text style={styles.buttonText}>Colaborador</Text>
+        <FontAwesome5 name="user-cog" size={24} color="#000" />          
+        <Text style={styles.buttonText}>Colaborador</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('TurmaCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="google-classroom" size={24} color="black" />
+          <MaterialCommunityIcons name="google-classroom" size={24} color="#000" />
           <Text style={styles.buttonText}>Turma</Text>
         </TouchableOpacity>
       </View>
@@ -61,7 +61,7 @@ export default function HomeColaborador({ navigation, route }) {
       {/* Linha 4: Botões Rosa e Laranja */}
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('AuxiliarCadastro', { codigo }) }>
-          <MaterialIcons name="list" size={24} color="#000" />
+          <FontAwesome5 name="user-friends" size={24} color="#000" />
           <Text style={styles.buttonText}>Auxiliar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('AvisosCadastro', { codigo }) }>
@@ -73,7 +73,7 @@ export default function HomeColaborador({ navigation, route }) {
       {/* Linha 5: Botões Marrom e Azul escuro */}
       <View style={styles.row}>
         <TouchableOpacity style={[styles.buttonLeft, styles.brown, { marginTop: 65 }]} onPress={() => navigation.navigate('CalendarioCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="calendar-month" size={24} color="black" />
+          <MaterialCommunityIcons name="calendar-month" size={24} color="#000" />
           <Text style={styles.buttonText}>Calendario</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.darkblue, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioCadastro', { codigo }) }>
@@ -97,9 +97,6 @@ export default function HomeColaborador({ navigation, route }) {
       <TouchableOpacity disabled={true} style={[styles.buttonBottom, styles.yellow]}>
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
-      <View style={styles.codeContainer}>
-        <Text style={styles.codeText}>Código do Colaborador: {codigo}</Text>
-      </View>
     </ImageBackground>
   </ScrollView>
   );
@@ -166,17 +163,6 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 16,
     textAlign: 'center',
-  },
-  codeContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 5,
-  },
-  codeText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
   },
   buttonTop: {
     width: 190,
