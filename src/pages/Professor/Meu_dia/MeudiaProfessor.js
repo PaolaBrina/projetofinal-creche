@@ -69,48 +69,63 @@ export default function MeudiaProfessor({ navigation, route }) {
     }, [codigo]);
 
     const handleSave = (item) => {
-      const datahora = '2024-11-26T10:30:00Z'; // Data e hora fixas para testar o problema
-  
-      const dataCompleta = {
-          codaluno: item.codigo,
-          codturma: item.codturma,
-          codprofessor: codigo,
-          datahora, // Usando datahora fixa
-          recado: item.formData.recados || '',
-          xixi: item.formData.xixi || '',
-          coco: item.formData.coco || '',
-          sono: item.formData.sono || '',
-          saude: item.formData.saude || '',
-          medicacao: item.formData.medicacao || '',
-          cafemanha: item.formData.cafemanha || '',
-          almoco: item.formData.almoco || '',
-      };
-  
-      // Printar as informações que estão sendo enviadas
-      console.log('Informações enviadas para o servidor:', dataCompleta);
-  
-      api.post(`/meudiamanha`, dataCompleta)
-          .then((response) => {
-              // Verifica se o status é 200 ou 201
-              if (response.status === 200 || response.status === 201) {
-                  alert(`Meu Dia cadastrado com sucesso para o aluno ${item.nome}!`);
-              } else {
-                  alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}. Status: ${response.status}`);
-              }
-          })
-          .catch((error) => {
-              if (error.response) {
-                  console.error("Erro no servidor:", error.response.data);
-                  console.error("Status HTTP:", error.response.status);
-              } else {
-                  console.error("Erro inesperado:", error.message);
-              }
-              alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}.`);
-          });
-  };
-  
-
-
+        // Verificar se todos os campos obrigatórios dentro de item.formData estão preenchidos
+        const { recados, xixi, coco, sono, saude, medicacao, cafemanha, almoco } = item.formData;
+    
+        if (
+            !recados || 
+            !xixi || 
+            !coco || 
+            !sono || 
+            !saude || 
+            !medicacao || 
+            !cafemanha || 
+            !almoco
+        ) {
+            alert("Por favor, preencha todos os campos antes de salvar.");
+            return; // Não faz nada se algum campo estiver vazio
+        }
+    
+        const datahora = '2024-11-26T10:30:00Z'; // Data e hora fixas para testar o problema
+    
+        const dataCompleta = {
+            codaluno: item.codigo,
+            codturma: item.codturma,
+            codprofessor: codigo,
+            datahora, // Usando datahora fixa
+            recado: recados || '', // Usando item.formData
+            xixi: xixi || '',
+            coco: coco || '',
+            sono: sono || '',
+            saude: saude || '',
+            medicacao: medicacao || '',
+            cafemanha: cafemanha || '',
+            almoco: almoco || '',
+        };
+    
+        // Printar as informações que estão sendo enviadas
+        console.log('Informações enviadas para o servidor:', dataCompleta);
+    
+        api.post(`/meudiamanha`, dataCompleta)
+            .then((response) => {
+                // Verifica se o status é 200 ou 201
+                if (response.status === 200 || response.status === 201) {
+                    alert(`Meu Dia cadastrado com sucesso para o aluno ${item.nome}!`);
+                } else {
+                    alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}. Status: ${response.status}`);
+                }
+            })
+            .catch((error) => {
+                if (error.response) {
+                    console.error("Erro no servidor:", error.response.data);
+                    console.error("Status HTTP:", error.response.status);
+                } else {
+                    console.error("Erro inesperado:", error.message);
+                }
+                alert(`Erro ao cadastrar o Meu Dia para o aluno ${item.nome}.`);
+            });
+    };
+    
      const handleOptionChange = (alunoCodigo, field, value) => {
         setAlunos((prevAlunos) =>
             prevAlunos.map((aluno) =>
@@ -164,7 +179,6 @@ export default function MeudiaProfessor({ navigation, route }) {
                     renderItem={({ item }) => (
                         <View style={styles.alunoItemContainer}>
                             <View style={styles.alunoRow}>
-                                <MaterialIcons name="person" size={24} color="black" />
                                 <Text style={styles.alunoName}>{item.nome}</Text>
                                 <Text style={styles.dateTime}>{new Date().toLocaleString()}</Text>
                             </View>

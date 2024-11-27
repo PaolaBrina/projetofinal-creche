@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { AuthContext } from '../../AuthContext';
@@ -9,35 +9,28 @@ export default function MeudiaProfessorBuscar({ navigation, route }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { codigo } = route.params || {};
+  const { codigo } = route.params || {}; // O código do professor já vem do parâmetro
 
-  useEffect(() => {
-    fetchMeudiaManha();
-  }, []);
-
-  const fetchMeudiaManha = async () => {
-    if (!user || !user.codigo) {
+  const fetchMeudiaManha = useCallback(async () => {
+    if (!codigo) {
       Alert.alert('Erro', 'Código do professor não encontrado.');
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
-      const response = await api.get(`/meudiamanha`, {
-        params: { codprofessor: user.codigo },
-      });
-
-      if (response.status === 200 && response.data.meudiamanha) {
-        const registros = response.data.meudiamanha;
-
+      // Passando o código do professor como parâmetro na URL
+      const response = await api.get(`/meudiamanha?codprofessor=${codigo}`);
+      
+      if (response.status === 200 && response.data.meudiamanha.length > 0) {
         const registrosComNomes = await Promise.all(
-          registros.map(async (item) => {
-            const nome = await fetchNomeAluno(item.codaluno);
-            return { ...item, nome };
+          response.data.meudiamanha.map(async (aluno) => {
+            // Buscando nome do aluno
+            const nome = await fetchNomeAluno(aluno.codaluno); // Obtendo o nome correto
+            return { ...aluno, nome };
           })
         );
-
         setData(registrosComNomes);
       } else {
         Alert.alert('Aviso', 'Nenhum registro encontrado.');
@@ -48,54 +41,47 @@ export default function MeudiaProfessorBuscar({ navigation, route }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchNomeAluno = async (codaluno) => {
+  }, [codigo]);
+  
+  const fetchNomeAluno = useCallback(async (codaluno) => {
     try {
+      // Alterando para garantir que o código do aluno seja passado corretamente
       const response = await api.get(`/api/aluno/${codaluno}`);
       if (response.status === 200 && response.data) {
-        return response.data.nome;
+        return response.data.nome || 'Nome não encontrado';
       }
-      return 'Desconhecido';
+      return 'Nome não encontrado';
     } catch (error) {
       console.error('Erro ao buscar nome do aluno:', error);
       return 'Erro ao buscar';
     }
-  };
-
-  const getMensagemComEmoji = (campo) => {
-    switch (campo) {
-      case 'comeu bem':
-        return 'Comeu bem 🍽️';
-      case 'comeu pouco':
-        return 'Comeu pouco 🍴';
-      case 'não comeu':
-        return 'Não comeu 😕';
-      default:
-        return campo;
-    }
-  };
-
-  const getEmojiForStatus = (status, tipo) => {
-    let emoji = '';
-    let texto = '';
+  }, []);  
   
-    // Remove espaços extras e converte para minúsculas
-    const normalizedStatus = status.trim().toLowerCase();
+
+  useEffect(() => {
+    fetchMeudiaManha();
+  }, [fetchMeudiaManha]);  // Dependência para evitar chamadas desnecessárias
+
+  const getMensagemComEmoji = useCallback((campo) => {
+    const emojis = {
+      'comeu bem': '😋',
+      'comeu pouco': '🍴',
+      'não comeu': '😕',
+    };
+    return `${campo} ${emojis[campo] || ''}`;
+  }, []);
+
+  const getEmojiForStatus = useCallback((status, tipo) => {
+    const normalizedStatus = (status && typeof status === 'string' ? status.trim().toLowerCase() : 'nao');
+    const statusMap = {
+      sim: { xixi: 'Fez xixi ✔️', coco: 'Fez cocô ✔️', sono: 'Dormiu ✔️' },
+      nao: { xixi: 'Não fez xixi ❌', coco: 'Não fez cocô ❌', sono: 'Não dormiu ❌' },
+    };
   
-    if (normalizedStatus === 'sim') {
-      emoji = '✔️';
-      texto = tipo === 'xixi' ? 'Fez xixi' : tipo === 'coco' ? 'Fez cocô' : 'Dormiu';
-    } else if (normalizedStatus === 'nao') {
-      emoji = '❌';
-      texto = tipo === 'xixi' ? 'Não fez xixi' : tipo === 'coco' ? 'Não fez cocô' : 'Não dormiu';
-    } else {
-      emoji = '❓';
-      texto = tipo === 'xixi' ? 'Status de xixi não informado' :
-              tipo === 'coco' ? 'Status de cocô não informado' : 'Status de sono não informado';
-    }
-    return `${emoji} ${texto}`;
-  };
+    const defaultStatus = { xixi: 'Status de xixi não informado ❓', coco: 'Status de cocô não informado ❓', sono: 'Status de sono não informado ❓' };
+  
+    return `${statusMap[normalizedStatus]?.[tipo] || defaultStatus[tipo]}`;
+  }, []);
   
 
   const formatDate = (date) => {
@@ -104,51 +90,49 @@ export default function MeudiaProfessorBuscar({ navigation, route }) {
     return dateObj.toLocaleDateString('pt-BR', options);
   };
 
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.card}>
-        <View style={styles.row}>
-          <Text style={styles.title}>{item.nome}</Text>
-          <Text style={styles.dateHora}>{formatDate(item.datahora)}</Text>
-        </View>
-
-        <Text style={styles.label}>Recado:</Text>
-        <Text>{item.recado}</Text>
-
-        <View style={styles.row}>
-          <View style={styles.infoBlock}>
-            <Text style={styles.label}>Xixi:</Text>
-            <Text>{getEmojiForStatus(item.xixi, 'xixi')}</Text>
-          </View>
-          <View style={styles.infoBlock}>
-            <Text style={styles.label}>Cocô:</Text>
-            <Text>{getEmojiForStatus(item.coco, 'coco')}</Text>
-          </View>
-          <View style={styles.infoBlock}>
-            <Text style={styles.label}>Sono:</Text>
-            <Text>{getEmojiForStatus(item.sono, 'sono')}</Text>
-          </View>
-        </View>
-
-        <View style={styles.row}>
-          <View style={styles.infoBlock}>
-            <Text style={styles.label}>Café da Manhã:</Text>
-            <Text>{getMensagemComEmoji(item.cafemanha)}</Text>
-          </View>
-          <View style={styles.infoBlock}>
-            <Text style={styles.label}>Almoço:</Text>
-            <Text>{getMensagemComEmoji(item.almoco)}</Text>
-          </View>
-        </View>
-
-        <Text style={styles.label}>Saúde:</Text>
-        <Text>{item.saude}</Text>
-
-        <Text style={styles.label}>Medicação:</Text>
-        <Text>{item.medicacao}</Text>
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.row}>
+        <Text style={styles.title}>{item.nome}</Text>
+        <Text style={styles.dateHora}>{formatDate(item.datahora)}</Text>
       </View>
-    );
-  };
+
+      <Text style={styles.label}>Recado:</Text>
+      <Text>{item.recado}</Text>
+
+      <View style={styles.row}>
+        <View style={styles.infoBlock}>
+          <Text style={styles.label}>Xixi:</Text>
+          <Text>{getEmojiForStatus(item.xixi, 'xixi')}</Text>
+        </View>
+        <View style={styles.infoBlock}>
+          <Text style={styles.label}>Cocô:</Text>
+          <Text>{getEmojiForStatus(item.coco, 'coco')}</Text>
+        </View>
+        <View style={styles.infoBlock}>
+          <Text style={styles.label}>Sono:</Text>
+          <Text>{getEmojiForStatus(item.sono, 'sono')}</Text>
+        </View>
+      </View>
+
+      <View style={styles.row}>
+        <View style={styles.infoBlock}>
+          <Text style={styles.label}>Café da Manhã:</Text>
+          <Text>{getMensagemComEmoji(item.cafemanha)}</Text>
+        </View>
+        <View style={styles.infoBlock}>
+          <Text style={styles.label}>Almoço:</Text>
+          <Text>{getMensagemComEmoji(item.almoco)}</Text>
+        </View>
+      </View>
+
+      <Text style={styles.label}>Saúde:</Text>
+      <Text>{item.saude}</Text>
+
+      <Text style={styles.label}>Medicação:</Text>
+      <Text>{item.medicacao}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -160,19 +144,26 @@ export default function MeudiaProfessorBuscar({ navigation, route }) {
       </View>
 
       <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[styles.tab, styles.activeTab, { borderBottomColor: '#f0f0f0', borderBottomWidth: 3 }]}
-          onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}
-        >
-          <Text style={[styles.tabText, { color: '#aaa', fontWeight: 'bold' }]}>Cadastro</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, { borderBottomColor: '#283673', borderBottomWidth: 3 }]}
-          onPress={() => navigation.navigate('MeudiaProfessorBuscar', { codigo })}
-        >
-          <Text style={[styles.tabText, { color: '#283673' }]}>Procurar</Text>
-        </TouchableOpacity>
-      </View>
+                <TouchableOpacity
+                    style={[
+                        styles.tab,
+                        styles.activeTab,
+                        { borderBottomColor: '#f0f0f0', borderBottomWidth: 3 }, // Aba ativa
+                    ]}
+                    onPress={() => navigation.navigate('MeudiaProfessor', { codigo })}
+                >
+                    <Text style={[styles.tabText, { color: '#aaa', fontWeight: 'bold' }]}>Cadastro</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.tab,
+                        { borderBottomColor: '#283673', borderBottomWidth: 3 }, // Aba inativa
+                    ]}
+                    onPress={() => navigation.navigate('MeudiaProfessorBuscar', { codigo })}
+                >
+                    <Text style={[styles.tabText, { color: '#283673' }]}>Procurar</Text>
+                </TouchableOpacity>
+            </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         {loading ? (
@@ -221,8 +212,8 @@ const styles = StyleSheet.create({
     elevation: 4,
     marginHorizontal: 10,
     borderRadius: 8,
-    marginTop: 20, // Espaço entre a TopBar e os botões
-    marginBottom: 15, // Espaço entre os botões e o restante do conteúdo
+    marginTop: 20,
+    marginBottom: 15,
   },
   tab: {
     flex: 1,
@@ -254,7 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    flex: 1, // Alinha com a data
+    flex: 1,
   },
   dateHora: {
     fontSize: 14,
@@ -283,4 +274,3 @@ const styles = StyleSheet.create({
     color: '#aaa',
   },
 });
-
