@@ -7,6 +7,7 @@ from routes.responsavelRoutes import responsavel
 from routes.alunoRoutes import aluno
 from routes.alunoturmaRoutes import alunoturma
 from routes.avisosRoutes import avisos
+from routes.avisosRoutes import avisos_bp
 from routes.chamadaRoutes import chamada
 from routes.informacoesadicionaisRoutes import informacoesadicionais
 from routes.colaboradorRoutes import colaborador
@@ -57,3 +58,4 @@ def default_routes(app):
     app.register_blueprint(fotos_bp)  # Registrar o blueprint corretamente
     app.register_blueprint(fotos_professor_bp)  # Registrar o blueprint corretamente
     app.register_blueprint(alunos_bp)
+    app.register_blueprint(avisos_bp)

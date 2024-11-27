@@ -1,4 +1,4 @@
-from flask import request
+from flask import request,jsonify
 from database.db import db
 from models.avisos import avisos
 
@@ -39,17 +39,20 @@ def avisosController():
 
         elif request.method == 'DELETE':
             try:
-                data = request.get_json()
-                codigo = data['codigo']
+                # Acesso ao código diretamente na URL
+                codigo = request.view_args.get('codigo')
+                if not codigo:
+                    return 'Código do aviso não fornecido.', 400
+
                 aviso = avisos.query.get(codigo)
                 if aviso:
                     db.session.delete(aviso)
                     db.session.commit()
-                    return 'avisos excluído com sucesso', 200
+                    return 'Aviso excluído com sucesso', 200
                 else:
-                    return 'avisos não encontrado', 404
+                    return 'Aviso não encontrado', 404
             except Exception as e:
-                return 'Erro ao excluir avisos. Erro {}'.format(str(e)), 400
+                return f'Erro ao excluir aviso. Erro: {str(e)}', 400
 
 
         elif request.method == 'PUT':
@@ -72,3 +75,69 @@ def avisosController():
             except Exception as e:
                 return 'nao foi possivel alterar Avisos, {}'.format(str(e)), 405
 
+# Função para deletar avisos
+def delete_aviso(codigo):
+    try:
+        if not codigo:
+            return 'Código do aviso não fornecido.', 400
+
+        aviso = avisos.query.get(codigo)
+        if aviso:
+            db.session.delete(aviso)
+            db.session.commit()
+            return 'Aviso excluído com sucesso', 200
+        else:
+            return 'Aviso não encontrado', 404
+    except Exception as e:
+        return f'Erro ao excluir aviso. Erro: {str(e)}', 400
+
+def atualizar_aviso(data):
+    try:
+        # Verifica se o código foi fornecido
+        codigo = data.get('codigo')
+        if not codigo:
+            return jsonify({'message': 'Código do aviso é obrigatório'}), 400
+
+        # Busca o aviso pelo código
+        aviso = avisos.query.get(codigo)
+        if not aviso:
+            return jsonify({'message': 'Aviso não encontrado'}), 404
+
+        # Atualiza os campos, mantendo os valores existentes caso não sejam fornecidos
+        aviso.codturma = data.get('codturma', aviso.codturma)
+        aviso.titulo = data.get('titulo', aviso.titulo)
+        aviso.autor = data.get('autor', aviso.autor)
+        aviso.datahora = data.get('datahora', aviso.datahora)
+        aviso.descricao = data.get('descricao', aviso.descricao)
+        aviso.foto = data.get('foto', aviso.foto)
+
+        # Salva as alterações no banco de dados
+        db.session.commit()
+        return jsonify({'message': 'Aviso atualizado com sucesso'}), 200
+    except Exception as e:
+        return jsonify({'message': f'Erro ao atualizar aviso: {str(e)}'}), 500
+
+def atualizar_aviso(codigo):
+    try:
+        # Busca o aviso pelo código
+        aviso = avisos.query.get(codigo)
+        if not aviso:
+            return jsonify({'message': 'Aviso não encontrado'}), 404
+
+        # Obtém os dados enviados no corpo da requisição
+        data = request.get_json()
+
+        # Atualiza os campos fornecidos
+        aviso.codturma = data.get('codturma', aviso.codturma)
+        aviso.titulo = data.get('titulo', aviso.titulo)
+        aviso.autor = data.get('autor', aviso.autor)
+        aviso.datahora = data.get('datahora', aviso.datahora)
+        aviso.descricao = data.get('descricao', aviso.descricao)
+        aviso.foto = data.get('foto', aviso.foto)
+
+        # Salva as alterações no banco de dados
+        db.session.commit()
+        return jsonify({'message': 'Aviso atualizado com sucesso'}), 200
+
+    except Exception as e:
+        return jsonify({'message': f'Erro ao atualizar aviso: {str(e)}'}), 500
