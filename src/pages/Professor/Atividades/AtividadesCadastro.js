@@ -94,9 +94,6 @@ export default function AtividadesCadastro({ navigation, route }) {
                     <TouchableOpacity style={styles.button} onPress={openAtividadesProfAdicionarModal}>
                         <Text style={styles.buttonText}>Adicionar Atividades</Text>
                     </TouchableOpacity>
-                    <View style={styles.codeContainer}>
-                        <Text style={styles.codeText}>Código do responsavel: {codigo}</Text>
-                    </View>
                 </View>
                 </ScrollView>
 
@@ -275,15 +272,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1, // Garante que o texto ocupe o espaço disponível
     },
-    codeContainer: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
-      },
-      codeText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-      },
 });

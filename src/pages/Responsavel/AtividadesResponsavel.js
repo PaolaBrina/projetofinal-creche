@@ -129,11 +129,6 @@ export default function AtividadesResponsavel({ navigation, route }) {
                     )}
                 />
             )}
-
-            {/* Código do responsável */}
-            <View style={styles.codeContainer}>
-                <Text style={styles.codeText}>Código do Responsável: {codigo}</Text>
-            </View>
         </View>
     );
 }
@@ -165,17 +160,6 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         justifyContent: 'center',
-    },
-    codeContainer: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
-    },
-    codeText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
     },
     emptyContainer: {
         flex: 1,

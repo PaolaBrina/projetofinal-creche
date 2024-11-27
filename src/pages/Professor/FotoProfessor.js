@@ -91,9 +91,6 @@ const fetchBuscar = async () => {
                     <TouchableOpacity style={styles.button} onPress={openFotosAdicionarModal}>
                         <Text style={styles.buttonText}>Adicionar Fotos</Text>
                     </TouchableOpacity>
-                    <View style={styles.codeContainer}>
-                        <Text style={styles.codeText}>Código do responsável: {codigo}</Text>
-                    </View>
                 </View>
                 </ScrollView>
 
