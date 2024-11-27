@@ -74,7 +74,7 @@ export default function Avisos({ navigation, route }) {
         <TouchableOpacity style={styles.btnseta} onPress={handleVoltar}>
           <AntDesign name="caretleft" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.topBarTxt}>Cadastro Aluno</Text>
+        <Text style={styles.topBarTxt}>Avisos</Text>
       </View>
 
       <View style={styles.searchBar}>
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: '80%',
-    maxHeight: '80%',
+    maxHeight: '50%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,

@@ -10,8 +10,11 @@ export default function AtividadesResponsavel({ navigation, route }) {
     const [selectedAtividade, setSelectedAtividade] = useState(null);
     const [noActivities, setNoActivities] = useState(false);
     const [nomeTurma, setNomeTurma] = useState('');
+    const [selectedTab, setSelectedTab] = useState('pendentes'); // Aba selecionada
 
     const { codigo } = route.params || {};
+
+    const currentDate = new Date();
 
     useEffect(() => {
         api.get(`/api/responsavel/${codigo}/atividades`)
@@ -33,12 +36,22 @@ export default function AtividadesResponsavel({ navigation, route }) {
             });
     }, [codigo]);
 
-    // Função para alternar o estado de expansão
     const toggleAtividadeDetails = (item) => {
-        setSelectedAtividade((prevAtividade) => 
+        setSelectedAtividade((prevAtividade) =>
             prevAtividade && prevAtividade.codturma === item.codturma ? null : item
         );
     };
+
+    const handleTabChange = (tab) => {
+        setSelectedTab(tab);
+    };
+
+    const filteredAtividades = atividades.filter((item) => {
+        const atividadeDate = new Date(item.datahora);
+        return selectedTab === 'pendentes'
+            ? atividadeDate >= currentDate
+            : atividadeDate < currentDate;
+    });
 
     return (
         <View style={styles.container}>
@@ -48,6 +61,22 @@ export default function AtividadesResponsavel({ navigation, route }) {
                     <AntDesign name="caretleft" size={30} color="white" />
                 </TouchableOpacity>
                 <Text style={styles.topBarTxt}>Lista de Atividades</Text>
+            </View>
+
+            {/* Tabs */}
+            <View style={styles.tabsContainer}>
+                <TouchableOpacity
+                    style={[styles.tab, selectedTab === 'pendentes' && styles.activeTab]}
+                    onPress={() => handleTabChange('pendentes')}
+                >
+                    <Text style={[styles.tabText, selectedTab === 'pendentes' && styles.activeTabText]}>Pendentes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.tab, selectedTab === 'feitas' && styles.activeTab]}
+                    onPress={() => handleTabChange('feitas')}
+                >
+                    <Text style={[styles.tabText, selectedTab === 'feitas' && styles.activeTabText]}>Feitas</Text>
+                </TouchableOpacity>
             </View>
 
             {/* Verificações de carregamento e estado */}
@@ -61,7 +90,7 @@ export default function AtividadesResponsavel({ navigation, route }) {
                 </View>
             ) : (
                 <FlatList
-                    data={atividades}
+                    data={filteredAtividades}
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={styles.listContainer}
                     renderItem={({ item }) => (
@@ -69,7 +98,7 @@ export default function AtividadesResponsavel({ navigation, route }) {
                             <View
                                 style={[
                                     styles.atividadeItemContainer,
-                                    selectedAtividade?.codturma === item.codturma && styles.atividadeItemExpanded, // Expande o item ao clicar
+                                    selectedAtividade?.codturma === item.codturma && styles.atividadeItemExpanded,
                                 ]}
                             >
                                 <View style={styles.atividadeRow}>
@@ -208,5 +237,38 @@ const styles = StyleSheet.create({
         height: '90%',
         borderRadius: 10,
         resizeMode: 'contain',
+    },
+    tabsContainer: {
+        flexDirection: 'row',
+        marginTop: 20,
+        width: '100%',
+        height: 50,
+        backgroundColor: '#ffffff',
+        elevation: 4, // Sombra para destacar
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+    },
+    tab: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f0f0f0',
+        borderBottomWidth: 3,
+        borderBottomColor: 'transparent', // Transição suave entre Tabs
+    },
+    activeTab: {
+        backgroundColor: '#ffffff', // Fundo branco para a aba ativa
+        borderBottomColor: '#3b5998', // Destaque com uma linha
+    },
+    tabText: {
+        fontSize: 14,
+        color: '#555',
+        fontWeight: '500',
+    },
+    activeTabText: {
+        color: '#3b5998',
+        fontWeight: 'bold',
     },
 });
