@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, Image, Alert, FlatList, Modal, KeyboardAvoidingView, PermissionsAndroid, Platform } from 'react-native';
 import { api } from '../../api/api';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, FlatList, Alert, KeyboardAvoidingView, ScrollView, Image } from 'react-native';
-import AvisoAdicionar from './AvisosAdicionar';
-
+import * as ImagePicker from 'expo-image-picker';
+import { Button } from 'react-native-paper';
+import { DatePickerModal, registerTranslation, pt } from 'react-native-paper-dates';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { format } from 'date-fns';
+import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AvisoAdicionar from './AvisosAdicionar';
+registerTranslation('pt', pt);
 
 export default function AvisosCadastro({ navigation, route }) {
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalEditVisible, setModalEditVisible] = useState(false);
     const [avisos, setAvisos] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedAviso, setSelectedAviso] = useState(null);
-    const [modalEditVisible, setModalEditVisible] = useState(false); // Novo estado para controle do modal de edição
-    const [error, setError] = useState('');  // Estado para erro
+    const [dataturma, setDataturma] = useState([{ label: "", value: "" }]);
+    const [isFocus, setIsFocus] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState('');
+
+
 
     const { codigo } = route.params || {};
 
-    const openEditModal = (aviso) => {
-        setSelectedAviso(aviso);  // Define o aviso que será editado
-        setModalEditVisible(true); // Abre o modal de edição
+    const toggleAvisoDetails = (aviso) => {
+        setSelectedAviso((prevAviso) => (prevAviso && prevAviso.codigo === aviso.codigo ? null : aviso));
     };
 
+    // Funções para abrir e fechar o modal de adicionar aviso
     const openAddModal = () => {
         setModalVisible(true);
     };
@@ -29,26 +40,7 @@ export default function AvisosCadastro({ navigation, route }) {
         setModalVisible(false);
     };
 
-    const closeEditModal = () => {
-        setModalEditVisible(false);
-        setSelectedAviso(null); // Limpar aviso selecionado ao fechar o modal
-    };
-
-    const toggleAvisoDetails = (aviso) => {
-        setSelectedAviso((prevAviso) => (prevAviso && prevAviso.codigo === aviso.codigo ? null : aviso));
-    };
-
-    const handleDelete = (codigo) => {
-        Alert.alert('Excluir', `Deseja excluir o aviso com código ${codigo}?`, [
-            { text: 'Cancelar', style: 'cancel' },
-            { text: 'Excluir', onPress: () => console.log('Aviso excluído:', codigo) }
-        ]);
-    };
-
-    const handleSeta = () => {
-        navigation.navigate('HomeColaborador', { codigo });
-    };
-
+    
     const fetchAvisos = async () => {
         setLoading(true);
         setError(''); // Limpa a mensagem de erro ao iniciar a busca
@@ -71,6 +63,107 @@ export default function AvisosCadastro({ navigation, route }) {
             setLoading(false); 
         }
     };
+
+    const fetchTurma = async () => {
+        try {
+            const response = await api.get('/turma');
+            const formattedData = response.data.map(item => ({
+                label: item.nome,
+                value: item.codigo.toString()
+            }));
+            setDataturma(formattedData);
+        } catch (error) {
+            console.error('Erro ao buscar turmas:', error);
+        }
+    };
+
+    const openEditModal = (aviso) => {
+        setSelectedAviso(aviso);
+        setModalEditVisible(true);
+    };
+
+    const closeEditModal = () => {
+        setModalEditVisible(false);
+        setSelectedAviso(null);
+    };
+
+    const handleDelete = async (codigo) => {
+        Alert.alert('Excluir', `Deseja excluir o aviso com código ${codigo}?`, [
+            { text: 'Cancelar', style: 'cancel' },
+            { 
+                text: 'Excluir', 
+                onPress: async () => {
+                    try {
+                        const response = await api.delete(`/avisos/${codigo}`);
+                        if (response.status === 200 || response.status === 204) {
+                            // Atualiza a lista de avisos localmente
+                            setAvisos((prevAvisos) => prevAvisos.filter((aviso) => aviso.codigo !== codigo));
+                            Alert.alert('Sucesso', 'Aviso excluído com sucesso.');
+                        } else {
+                            console.error('Erro ao excluir o aviso:', response.data);
+                            Alert.alert('Erro', 'Não foi possível excluir o aviso.');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao excluir o aviso:', error);
+                        Alert.alert('Erro', 'Ocorreu um erro ao tentar excluir o aviso.');
+                    }
+                }
+            }
+        ]);
+    };
+
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+            base64: true,
+        });
+
+        if (!result.canceled) {
+            setSelectedAviso(prev => ({
+                ...prev,
+                foto: result.assets[0].base64
+            }));
+        }
+    };
+
+    const onDismissSingle = useCallback(() => {
+        setSelectedAviso(prev => ({ ...prev, datahora: undefined }));
+    }, []);
+
+    const onConfirmSingle = useCallback((params) => {
+        setSelectedAviso(prev => ({ ...prev, datahora: params.date }));
+    }, []);
+
+    const saveEdit = async () => {
+        try {
+            const formattedDate = format(new Date(selectedAviso.datahora), 'yyyy-MM-dd HH:mm');
+            const avisoToSave = {
+                ...selectedAviso,
+                datahora: formattedDate
+            };
+            await api.put(`/avisos/${selectedAviso.codigo}`, avisoToSave);
+            fetchAvisos();
+            closeEditModal();
+            Alert.alert('Sucesso', 'Aviso atualizado com sucesso.');
+        } catch (error) {
+            console.error('Erro ao atualizar aviso:', error);
+            Alert.alert('Erro', 'Erro ao atualizar aviso.');
+        }
+    };
+
+    useEffect(() => {
+        fetchAvisos();
+        fetchTurma();
+    }, []);
+
+
+    const handleSeta = () => {
+        navigation.navigate('HomeColaborador', { codigo });
+    };
+
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -127,8 +220,8 @@ export default function AvisosCadastro({ navigation, route }) {
                             <View style={styles.avisoDetails}>
                                 <Text style={styles.avisoText}>Código: {item.codigo}</Text>
                                 <Text style={styles.avisoText}>autor: {item.codturma}</Text>
-                                <Text style={styles.avisoText}>titulo: {item.codtitulo}</Text>
-                                <Text style={styles.avisoText}>autor: {item.codautor}</Text>
+                                <Text style={styles.avisoText}>titulo: {item.titulo}</Text>
+                                <Text style={styles.avisoText}>autor: {item.autor}</Text>
                                 <Text style={styles.avisoText}>Data e Hora: {item.datahora}</Text>
                                 <Text style={styles.avisoText}>Descrição: {item.descricao}</Text>
                                 <Text style={styles.avisoText}>Foto: {item.descricao}</Text>
@@ -158,28 +251,128 @@ export default function AvisosCadastro({ navigation, route }) {
                         </TouchableOpacity>
                         <Text>Adicionar Aviso</Text>
                         <AvisoAdicionar closeModal={closeAddModal} />
+                        
                         {/* Aqui você pode adicionar o formulário para adicionar o aviso */}
                     </View>
                 </View>
             </Modal>
 
             {/* Modal de Editar Aviso */}
+            {/* Modal de Adicionar Aviso */}
             <Modal
-                visible={modalEditVisible}
+                visible={modalEditVisible} // Modal só é visível quando modalEditVisible é true
                 animationType="slide"
                 transparent={true}
                 onRequestClose={closeEditModal}
             >
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContainer}>
-                        <TouchableOpacity onPress={closeEditModal} style={styles.closeButton}>
-                            <Text style={styles.closeButtonText}>X</Text>
+    <ScrollView contentContainerStyle={styles.scrollView}>
+        <View style={styles.form}>
+            <TouchableOpacity onPress={closeEditModal} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Adicionar Aviso</Text>
+
+            {/* Campo: Código da turma */}
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Código da turma:</Text>
+                <Dropdown
+                    style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={dataturma}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder={!isFocus ? 'Selecione item' : '...'}
+                    searchPlaceholder="Procurar..."
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={(item) => {
+                        setSelectedAviso({ ...selectedAviso, codturma: item.value });
+                        setIsFocus(false);
+                    }}
+                    renderLeftIcon={() => (
+                        <AntDesign
+                            style={styles.icon}
+                            color={isFocus ? 'blue' : 'black'}
+                            name="Safety"
+                            size={20}
+                        />
+                    )}
+                />
+            </View>
+
+            {/* Campos adicionais do aviso */}
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Título:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Digite o título"
+                    value={selectedAviso?.titulo || ''}
+                    onChangeText={(text) => setSelectedAviso({ ...selectedAviso, titulo: text })}
+                />
+            </View>
+
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Descrição:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Digite a descrição"
+                    value={selectedAviso?.descricao || ''}
+                    onChangeText={(text) => setSelectedAviso({ ...selectedAviso, descricao: text })}
+                />
+            </View>
+
+            {/* Campo: Data e Hora */}
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Data e Hora:</Text>
+                <SafeAreaProvider>
+                    <Button onPress={() => setOpen(true)} uppercase={false} mode="outlined">
+                        <Text>Escolher data e hora</Text>
+                    </Button>
+                    <DatePickerModal
+                        locale="pt"
+                        mode="single"
+                        visible={open}
+                        onDismiss={() => setOpen(false)}
+                        date={selectedAviso?.datahora ? new Date(selectedAviso.datahora) : undefined}
+                        onConfirm={(params) => {
+                            setSelectedAviso({
+                                ...selectedAviso,
+                                datahora: params.date.toISOString(),
+                            });
+                            setOpen(false);
+                        }}
+                    />
+                </SafeAreaProvider>
+                {selectedAviso?.datahora && (
+                    <Text style={styles.selectedDate}>
+                        Data e hora selecionadas: {format(new Date(selectedAviso.datahora), 'dd/MM/yyyy HH:mm')}
+                    </Text>
+                )}
+            </View>
+
+            {/* Campo: Foto */}
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Foto:</Text>
+                <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+                    <Text style={styles.imagePickerText}>Escolher Foto</Text>
+                </TouchableOpacity>
+                {selectedAviso?.foto && <Image source={{ uri: selectedAviso.foto }} style={styles.image} />}
+            </View>
+
+            {/* Botão para salvar as alterações */}
+            <TouchableOpacity onPress={saveEdit} style={styles.btnSave}>
+                            <Text>Salvar</Text>
                         </TouchableOpacity>
-                        <Text>Editar Aviso</Text>
-                        {/* Aqui você pode adicionar o formulário para editar o aviso */}
-                    </View>
-                </View>
-            </Modal>
+                        
+        </View>
+    </ScrollView>
+</Modal>
+
         </KeyboardAvoidingView>
     );
 }
@@ -294,5 +487,90 @@ const styles = StyleSheet.create({
         color: 'red',
         textAlign: 'center',
         marginTop: 20,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginTop: 10,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        marginTop: 5,
+    },
+    scrollView: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    form: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        width: '90%',
+        alignItems: 'center',
+    },
+    btnSave: {
+        marginTop: 15,
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        width: '100%',
+    },
+    btnCancel: {
+        marginTop: 10,
+        backgroundColor: '#f44336',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        width: '100%',
+    },
+    closeButton: {
+        alignSelf: 'flex-end',
+    },
+    closeButtonText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 15,
+    },
+    inputGroup: {
+        marginBottom: 15,
+        width: '100%',
+    },
+    dropdown: {
+        marginTop: 5,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingLeft: 10,
+        paddingVertical: 10,
+    },
+    imagePicker: {
+        width: '100%',
+        height: 50,
+        backgroundColor: '#ccc',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    imagePickerText: {
+        color: '#333',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
