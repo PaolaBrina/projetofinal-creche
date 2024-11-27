@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from "react-native";
 import { MaterialIcons, Ionicons, MaterialCommunityIcons, Octicons, FontAwesome } from "@expo/vector-icons";
@@ -59,20 +63,12 @@ export default function HomeProfessor({ navigation, route }) {
           <Ionicons name="images" size={24} color="#000" />
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('', { codigo })}>
-          <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
-          <Text style={styles.buttonText}>Chamadas</Text>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioProfessor', { codigo })}>
+        <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
+        <Text style={styles.buttonText}>Horarios</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Linha 4: Botões Invisivel e Laranja */}
-      <View style={styles.row}>
-        <TouchableOpacity disabled={true} style={[styles.buttonLeft]} />
-        <TouchableOpacity style={[styles.buttonRight, styles.orange]} onPress={() => navigation.navigate('HorarioProfessor', { codigo })}>
-          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
-          <Text style={styles.buttonText}>Horários</Text>
-        </TouchableOpacity>
-      </View>
       <TouchableOpacity disabled={true} style={[styles.buttonBottom, styles.yellow]}>
         <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
@@ -95,7 +91,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 50,
     backgroundColor: '#283673',
-    marginBottom: 50,
+    marginBottom: 90,
   },
   profilePic: {
     width: 50,

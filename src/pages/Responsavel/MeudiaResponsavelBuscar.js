@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-nati
 import { api } from '../../api/api';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function MeudiaResponsavel({ navigation, route }) {
+export default function MeudiaResponsavelBuscar({ navigation, route }) {
   const [manhaItems, setManhaItems] = useState([]);
   const { codigo } = route.params || {};
 
@@ -17,9 +17,9 @@ export default function MeudiaResponsavel({ navigation, route }) {
 
   const fetchMeudiaManha = async () => {
     setManhaItems([]); // Limpar os dados anteriores
-    const today = getCurrentDate();
   
     try {
+      // Fazendo uma chamada à API sem filtro de data
       const response = await api.get(`/meudiamanha/${codigo}`);
       const { data } = response.data;
   
@@ -27,20 +27,14 @@ export default function MeudiaResponsavel({ navigation, route }) {
         console.log('Nenhum dado retornado para a manhã');
         setManhaItems([]);
       } else if (Array.isArray(data)) {
-        // Filtrar os itens que têm a mesma data de hoje
-        const filteredItems = data.filter((item) => {
-          const itemDate = new Date(item.datahora).toISOString().split('T')[0]; // Extrai a data no formato "YYYY-MM-DD"
-          return itemDate === today;
-        });
-  
-        setManhaItems(filteredItems);
+        setManhaItems(data); // Atualiza o estado com os cadastros retornados
       } else {
         console.log('Estrutura de dados inesperada para a manhã', response.data);
         setManhaItems([]);
       }
     } catch (error) {
       console.error('Erro ao buscar dados da manhã:', error);
-      setManhaItems([]);
+      setManhaItems([]); // Garante que o estado seja resetado em caso de erro
     }
   };
   
@@ -149,16 +143,16 @@ export default function MeudiaResponsavel({ navigation, route }) {
 
       <View style={styles.tabsContainer}>
         <TouchableOpacity
-          style={[styles.tab, styles.activeTab, { borderBottomColor: '#283673', borderBottomWidth: 3 }]}
+          style={[styles.tab, styles.activeTab, { borderBottomColor: '#f0f0f0', borderBottomWidth: 3 }]}
           onPress={() => navigation.navigate('MeudiaResponsavel', { codigo })}
         >
-          <Text style={[styles.tabText, { color: '#283673', fontWeight: 'bold' }]}>Hoje</Text>
+          <Text style={[styles.tabText, { color: '#aaa', fontWeight: 'bold' }]}>Hoje</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, { borderBottomColor: '#f0f0f0', borderBottomWidth: 3 }]}
+          style={[styles.tab, { borderBottomColor: '#283673', borderBottomWidth: 3 }]}
           onPress={() => navigation.navigate('MeudiaResponsavelBuscar', { codigo })}
         >
-          <Text style={[styles.tabText, { color: '#aaa' }]}>Procurar</Text>
+          <Text style={[styles.tabText, { color: '#283673' }]}>Procurar</Text>
         </TouchableOpacity>
       </View>
 

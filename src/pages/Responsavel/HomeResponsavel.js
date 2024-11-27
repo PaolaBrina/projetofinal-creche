@@ -60,27 +60,25 @@ export default function HomeResponsavel({ navigation, route }) {
           <Ionicons name="images" size={24} color="#000" />
           <Text style={styles.buttonText}>Fotos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('ChamadasResponsavel', { codigo }) }>
-          <MaterialCommunityIcons name="checkbox-outline" size={24} color="black" />
-          <Text style={styles.buttonText}>Chamadas</Text>
+        <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioResponsavel', { codigo }) }>
+        <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
+        <Text style={styles.buttonText}>Horários</Text>
         </TouchableOpacity>
       </View>
 
       {/* Linha 4: Botões Rosa e Laranja */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('ListadeMateriaisResponsavel', { codigo }) }>
-          <MaterialIcons name="list-alt" size={24} color="#000" />
-          <Text style={styles.buttonText}>Lista de Materiais</Text>
+        <TouchableOpacity disabled={true} style={[styles.buttonLeft]}>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioResponsavel', { codigo }) }>
-          <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
-          <Text style={styles.buttonText}>Horários</Text>
+        <TouchableOpacity style={[styles.buttonRight, styles.pink]} onPress={() => navigation.navigate('ListadeMateriaisResponsavel', { codigo }) }>
+        <MaterialIcons name="list-alt" size={24} color="#000" />
+        <Text style={styles.buttonText}>Lista de Materiais</Text>
         </TouchableOpacity>
       </View>
 
       {/* Linha 5: Botão Amarelo */}
       <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
-        <Text style={styles.buttonText}></Text>
+      <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
   </ImageBackground>
   </ScrollView>
@@ -102,7 +100,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 50,
     backgroundColor: '#283673',
-    marginBottom: 50,
+    marginBottom: 90,
   },
   profilePic: {
     width: 50,
@@ -136,11 +134,11 @@ const styles = StyleSheet.create({
   buttonBottom: {
     width: 190,
     height: 110,
-    margin: 0,
     justifyContent: "center",
     alignItems: "center",
     borderBottomRightRadius: 40,
     borderBottomLeftRadius: 40,
+    marginBottom: 0, // Remova qualquer espaço abaixo
   },
   buttonLeft: {
     width: 160,
@@ -149,6 +147,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomLeftRadius: 40,
     borderTopLeftRadius: 40,
+    marginBottom: 0, // Remova a margem inferior
   },
   buttonRight: {
     width: 160,
@@ -157,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomRightRadius: 40,
     borderTopRightRadius: 40,
+    marginBottom: 0, // Remova a margem inferior
   },
   buttonText: {
     color: "#000",

@@ -61,11 +61,7 @@ export default function HomeSelecao({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topo}>
-        <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('Login')}>
-          <AntDesign name="caretleft" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
+      <View style={styles.topo}></View>
 
       <View style={styles.viewTxt}>
         <Text style={styles.txt}>Selecione seu login:</Text>
@@ -104,6 +100,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 60,
     paddingLeft: 30,
+    paddingBottom: 50,
     backgroundColor: '#283673',
   },
   viewTxt: {

@@ -48,9 +48,9 @@ export default function HomeColaborador({ navigation, route }) {
 
       {/* Linha 3: Botões Roxo e Verde */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('ColaboradorCadastro', { codigo }) }>
-        <FontAwesome5 name="user-cog" size={24} color="#000" />          
-        <Text style={styles.buttonText}>Colaborador</Text>
+        <TouchableOpacity style={[styles.buttonLeft, styles.purple, { marginTop: 65 }]} onPress={() => navigation.navigate('AuxiliarCadastro', { codigo }) }>
+        <FontAwesome5 name="user-friends" size={24} color="#000" />     
+        <Text style={styles.buttonText}>Auxiliar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.green, { marginBottom: 65 }]} onPress={() => navigation.navigate('TurmaCadastro', { codigo }) }>
           <MaterialCommunityIcons name="google-classroom" size={24} color="#000" />
@@ -60,9 +60,9 @@ export default function HomeColaborador({ navigation, route }) {
 
       {/* Linha 4: Botões Rosa e Laranja */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('AuxiliarCadastro', { codigo }) }>
-          <FontAwesome5 name="user-friends" size={24} color="#000" />
-          <Text style={styles.buttonText}>Auxiliar</Text>
+        <TouchableOpacity style={[styles.buttonLeft, styles.pink, { marginTop: 65 }]} onPress={() => navigation.navigate('CalendarioCadastro', { codigo }) }>
+          <MaterialCommunityIcons name="calendar-month" size={24} color="#000" />
+          <Text style={styles.buttonText}>Calendário</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.orange, { marginBottom: 65 }]} onPress={() => navigation.navigate('AvisosCadastro', { codigo }) }>
           <MaterialCommunityIcons name="bell" size={24} color="#000" />
@@ -72,9 +72,9 @@ export default function HomeColaborador({ navigation, route }) {
 
       {/* Linha 5: Botões Marrom e Azul escuro */}
       <View style={styles.row}>
-        <TouchableOpacity style={[styles.buttonLeft, styles.brown, { marginTop: 65 }]} onPress={() => navigation.navigate('CalendarioCadastro', { codigo }) }>
-          <MaterialCommunityIcons name="calendar-month" size={24} color="#000" />
-          <Text style={styles.buttonText}>Calendario</Text>
+        <TouchableOpacity style={[styles.buttonLeft, styles.brown, { marginTop: 65 }]} onPress={() => navigation.navigate('ListaMaterialCadastro', { codigo }) }>
+          <MaterialIcons name="list-alt" size={24} color="#000" />
+          <Text style={styles.buttonText}>Lista de Materiais</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.buttonRight, styles.darkblue, { marginBottom: 65 }]} onPress={() => navigation.navigate('HorarioCadastro', { codigo }) }>
           <MaterialCommunityIcons name="clock-time-eight-outline" size={24} color="#000" />
@@ -87,9 +87,9 @@ export default function HomeColaborador({ navigation, route }) {
       <View style={styles.row}>
         <TouchableOpacity disabled={true} style={[styles.buttonLeft]} >
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.buttonRight, styles.cian]} onPress={() => navigation.navigate('ListaMaterialCadastro', { codigo }) }>
-          <MaterialIcons name="list-alt" size={24} color="#000" />
-        <Text style={styles.buttonText}>Lista de Materiais</Text>
+        <TouchableOpacity style={[styles.buttonRight, styles.cian]} onPress={() => navigation.navigate('ColaboradorCadastro', { codigo }) }>
+        <FontAwesome5 name="user-cog" size={24} color="#000" />          
+        <Text style={styles.buttonText}>Colaborador</Text>
         </TouchableOpacity>
       </View>
 

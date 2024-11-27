@@ -98,13 +98,6 @@ export default function AvisosCadastro({ navigation, route }) {
                         {loading && <Text>Carregando...</Text>}
                     </>
                 }
-                ListEmptyComponent={
-                    error ? (
-                        <Text style={styles.errorText}>{error}</Text> // Exibe a mensagem de erro
-                    ) : (
-                        <Text style={styles.errorText}>Avisos não cadastrados.</Text> // Caso não haja avisos
-                    )
-                }
                 renderItem={({ item }) => (
                     <View style={styles.avisoItemContainer}>
                         <View style={styles.avisoRow}>

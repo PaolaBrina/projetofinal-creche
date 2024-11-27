@@ -217,7 +217,7 @@ export default function MeudiaProfessor({ navigation, route }) {
                                         options={[
                                             { label: '😋 Comeu Bem', value: 'comeu bem' },
                                             { label: '🍴 Comeu Pouco', value: 'comeu pouco' },
-                                            { label: '🍴 Não Comeu', value: 'nao comeu' },
+                                            { label: '😕 Não Comeu', value: 'nao comeu' },
                                         ]}
                                         selectedOption={item.formData.cafemanha}
                                         setSelectedOption={(value) => handleOptionChange(item.codigo, 'cafemanha', value)}
@@ -227,7 +227,7 @@ export default function MeudiaProfessor({ navigation, route }) {
                                         options={[
                                             { label: '😋 Comeu Bem', value: 'comeu bem' },
                                             { label: '🍴 Comeu Pouco', value: 'comeu pouco' },
-                                            { label: '🍴 Não Comeu', value: 'nao comeu' },
+                                            { label: '😕 Não Comeu', value: 'nao comeu' },
                                         ]}
                                         selectedOption={item.formData.almoco}
                                         setSelectedOption={(value) => handleOptionChange(item.codigo, 'almoco', value)}

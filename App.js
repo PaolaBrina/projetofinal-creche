@@ -46,6 +46,7 @@ import HorarioProfessor from './src/pages/Professor/HorarioProfessor';
 /* Responsável */
 import HomeResponsavel from './src/pages/Responsavel/HomeResponsavel';
 import MeudiaResponsavel from './src/pages/Responsavel/MeudiaResponsavel';
+import MeudiaResponsavelBuscar from './src/pages/Responsavel/MeudiaResponsavelBuscar';
 import ChamadasResponsavel from './src/pages/Responsavel/ChamadasResponsavel';
 import ListadeMateriaisResponsavel from './src/pages/Responsavel/ListadeMateriaisResponsavel';
 import AtividadesResponsavel from './src/pages/Responsavel/AtividadesResponsavel';
@@ -186,6 +187,7 @@ export default function App() {
           <Stack.Screen name="HomeResponsavel" component={DrawerResponsavel} options={{ headerShown: false }} />
           <Stack.Screen name="Suporte" component={Suporte} options={{ headerShown: false }} />
           <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavel' component={MeudiaResponsavel}/>
+          <Stack.Screen options={{headerShown:false}} name='MeudiaResponsavelBuscar' component={MeudiaResponsavelBuscar}/>
           <Stack.Screen options={{headerShown:false}} name='ChamadasResponsavel' component={ChamadasResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='ListadeMateriaisResponsavel' component={ListadeMateriaisResponsavel}/>
           <Stack.Screen options={{headerShown:false}} name='AtividadesResponsavel' component={AtividadesResponsavel}/>
