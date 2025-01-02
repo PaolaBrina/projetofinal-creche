@@ -86,7 +86,7 @@ export default function MeudiaProfessor({ navigation, route }) {
             return; // Não faz nada se algum campo estiver vazio
         }
     
-        const datahora = '2024-11-26T10:30:00Z'; // Data e hora fixas para testar o problema
+        const datahora = '2024-11-27T10:30:00Z'; // Data e hora fixas para testar o problema
     
         const dataCompleta = {
             codaluno: item.codigo,

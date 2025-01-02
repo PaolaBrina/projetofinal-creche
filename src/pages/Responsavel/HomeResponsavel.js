@@ -80,6 +80,7 @@ export default function HomeResponsavel({ navigation, route }) {
       <TouchableOpacity style={[styles.buttonBottom, styles.yellow]}>
       <Text style={styles.buttonText}></Text>
       </TouchableOpacity>
+      <View style={{height: 50}}></View>
   </ImageBackground>
   </ScrollView>
   );

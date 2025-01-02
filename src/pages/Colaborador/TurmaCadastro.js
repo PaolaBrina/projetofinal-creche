@@ -14,6 +14,7 @@ export default function TurmaCadastro({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const [selectedTab, setSelectedTab] = useState('turma'); // Aba selecionada
     const [selectedAluno, setSelectedAluno] = useState(null);
+    const [busca, setBusca] = useState('');
     const { codigo } = route.params || {};
 
     const closeModal = () => {
@@ -109,7 +110,14 @@ export default function TurmaCadastro({ navigation, route }) {
 
              {/* Search Bar and Add Button */}
              <View style={styles.searchAndButton}>
-                <TextInput style={styles.searchBox} placeholder="Pesquisar" />
+             <View style={styles.searchBar}>
+                <TextInput
+                    style={styles.searchBox}
+                    placeholder="Pesquisar"
+                    value={busca}
+                    onChangeText={(texto) => setBusca(texto)}
+                    />
+                </View>
                  {/* Botão para adicionar (modal) */}
                 <TouchableOpacity style={styles.addButton} onPress={openModal}>
                     <Text style={styles.addButtonText}>
@@ -146,7 +154,7 @@ export default function TurmaCadastro({ navigation, route }) {
                                         <MaterialIcons name="edit" size={25} color="blue" />
                                     </TouchableOpacity>
                                     <TouchableOpacity 
-                                        onPress={() => handleDelete(item.codigo)} 
+                                        onPress={() => handleDelete(item.nome)} 
                                         style={styles.iconButton}
                                     >
                                         <MaterialIcons name="delete" size={25} color="red" />

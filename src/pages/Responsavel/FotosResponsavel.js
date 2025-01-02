@@ -35,7 +35,7 @@ export default function FotosResponsavel({ navigation, route }) {
                 <TouchableOpacity style={styles.btnseta} onPress={() => navigation.navigate('HomeResponsavel', { codigo })}>
                     <AntDesign name="caretleft" size={30} color="white" />
                 </TouchableOpacity>
-                <Text style={styles.topBarTxt}>Fotos das Atividades</Text>
+                <Text style={styles.topBarTxt}>Fotos</Text>
             </View>
 
             {/* Verificações de carregamento e estado */}
@@ -71,11 +71,6 @@ export default function FotosResponsavel({ navigation, route }) {
                     )}
                 />
             )}
-
-            {/* Código do responsável */}
-            <View style={styles.codeContainer}>
-                <Text style={styles.codeText}>Código do Responsável: {codigo}</Text>
-            </View>
         </View>
     );
 }

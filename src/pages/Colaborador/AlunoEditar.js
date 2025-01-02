@@ -54,8 +54,10 @@ const RadioButton = ({ selectedOption, setSelectedOption }) => {
   );
 };
 
-export default function AlunoEditar({ closeModal, codigoAluno }) {
-  const [newcodresponsavel, setNewcodresponsavel] = useState('');
+export default function AlunoEditar({ codigoAluno, closeModal, onUpdate }) {
+  console.log("codigo alu",codigoAluno)
+
+  const [newcodresponsavel, setNewcodresponsavel] = useState('');''
   const [newnome, setNewnome] = useState('');
   const [newdatanascimento, setNewdatanascimento] = useState(undefined);
   const [open, setOpen] = useState(false);
@@ -65,34 +67,47 @@ export default function AlunoEditar({ closeModal, codigoAluno }) {
   const [base64Image, setBase64Image] = useState('');  // Para enviar base64
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [aluno, setAluno] = useState(null);  // Adicionando estado para o aluno
+  
+   // Valida se codigoAluno é um array ou trata como único item
+   console.log(aluno)
+   const teste = Array.isArray(codigoAluno)
+   ? codigoAluno.map((item) => item.codigoAluno)
+   : codigoAluno;
+
+ console.log("Teste:", teste);
 
   const validateFields = () => {
+    console.log(codigoAluno,"1",newcodresponsavel,"2",newnome,"3",newdatanascimento,"4",newsexo,"5",newendereco,"6",)
     return newcodresponsavel && newnome && newdatanascimento && newsexo && newendereco && base64Image;
   };
 
   const loadAlunoData = async (codigoAluno) => {
     try {
-      const response = await api.get(`/aluno/${codigoAluno}`);
-      const aluno = response.data;
-
-      if (!aluno) {
+      const response = await api.get(`/api/aluno/${codigoAluno}`);
+      console.log(response)
+      const alunoData = response.data;
+  
+      if (!alunoData) {
         setFeedbackMessage('Aluno não encontrado.');
         return;
       }
-
-      setNewcodresponsavel(aluno.codresponsavel);
-      setNewnome(aluno.nome);
-      setNewdatanascimento(aluno.datanascimento ? new Date(aluno.datanascimento) : undefined);
-      setNewsexo(aluno.sexo);
-      setNewendereco(aluno.endereco);
-      setNewfoto(aluno.foto); // Atualiza foto do aluno
-      setBase64Image(aluno.foto); // Se necessário para envio
+  
+      setAluno(alunoData);  // Salvando os dados do aluno
+      setNewcodresponsavel(alunoData.codresponsavel);
+      setNewnome(alunoData.nome);
+      setNewdatanascimento(alunoData.datanascimento ? new Date(alunoData.datanascimento) : undefined);
+      setNewsexo(alunoData.sexo);
+      setNewendereco(alunoData.endereco);
+      setNewfoto(alunoData.foto); // Atualiza foto
+      setBase64Image(alunoData.foto); // Base64
       setIsEditing(true);
     } catch (error) {
       console.error('Erro ao carregar os dados do aluno:', error);
       setFeedbackMessage('Erro ao carregar os dados do aluno.');
     }
   };
+  
 
   useEffect(() => {
     if (codigoAluno) {
@@ -113,6 +128,9 @@ export default function AlunoEditar({ closeModal, codigoAluno }) {
       }
     }
   };
+  useEffect(() => {
+    requestPermissions();
+}, []);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -143,34 +161,30 @@ export default function AlunoEditar({ closeModal, codigoAluno }) {
     [setOpen, setNewdatanascimento]
   );
 
-  const updateAluno = async () => {
-    if (!codigoAluno) {
-      setFeedbackMessage('Codigo do aluno não encontrado.');
-      console.log(codigoAluno);
-      return;
-    }
-
-    if (!validateFields()) {
+  const updateAluno = async (codigoAluno) => {
+    if (!aluno || !validateFields()) {
       setFeedbackMessage('Por favor, preencha todos os campos.');
       return;
     }
 
     try {
       const formattedDate = format(new Date(newdatanascimento), 'yyyy-MM-dd');
+
       const updatedItem = {
         codresponsavel: newcodresponsavel,
         nome: newnome,
         datanascimento: formattedDate,
         sexo: newsexo,
         endereco: newendereco,
-        foto: base64Image, // Usando base64 para envio
+        foto: base64Image,
       };
 
-      await api.put(`/aluno/${codigoAluno}`, updatedItem);
-      Alert.alert('Atualização', 'Aluno atualizado com sucesso!', [
-        {
-          text: 'OK',
-          onPress: () => closeModal('Aluno atualizado com sucesso!'),
+      await api.put(`/api/aluno/${codigoAluno}`, updatedItem);
+      Alert.alert('Sucesso', 'Aluno atualizado com sucesso!', [
+        { text: 'OK', onPress: () => {
+            onUpdate(); // Atualiza a lista de alunos no componente pai
+            closeModal();
+          }
         },
       ]);
     } catch (error) {

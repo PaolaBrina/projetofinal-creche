@@ -25,9 +25,11 @@ export default function AlunoCadastro({ navigation,route }) {
     };
 
     const openEditModal = (aluno) => {
-        setSelectedAluno(aluno);  // Define o aluno que será editado
+        console.log("Codigo aluno: ", aluno.codigo)
+        setSelectedAluno(aluno.codigo);  // Define o aluno que será editado
         setModalEditVisible(true); // Abre o modal de edição
     };
+    
 
     const closeEditModal = () => {
         setModalEditVisible(false);
@@ -99,9 +101,10 @@ export default function AlunoCadastro({ navigation,route }) {
                                     <Text style={styles.alunoName}>{item.nome}</Text>
                                 </TouchableOpacity>
                                 <View style={styles.iconsContainer}>
-                                    <TouchableOpacity onPress={() => openEditModal(item)} style={styles.iconButton}>
-                                        <MaterialIcons name="edit" size={25} color="blue" />
-                                    </TouchableOpacity>
+                                <TouchableOpacity onPress={() => openEditModal(item)} style={styles.iconButton}>
+                                    <MaterialIcons name="edit" size={25} color="blue" />
+                                </TouchableOpacity>
+
                                     <TouchableOpacity onPress={() => handleDelete(item.codigo)} style={styles.iconButton}>
                                         <MaterialIcons name="delete" size={25} color="red" />
                                     </TouchableOpacity>
@@ -149,6 +152,7 @@ export default function AlunoCadastro({ navigation,route }) {
                 animationType="slide"
                 transparent={true}
                 onRequestClose={closeEditModal}
+                
             >
                 <View style={styles.modalBackground}>
                     <View style={styles.modalContainer}>
@@ -156,7 +160,14 @@ export default function AlunoCadastro({ navigation,route }) {
                             <Text style={styles.closeButtonText}>X</Text>
                         </TouchableOpacity>
                         {/* Passando o selectedAluno para o modal de edição */}
-                        <AlunoEditar aluno={selectedAluno} closeModal={closeEditModal} />
+                        <AlunoEditar 
+                            codigoAluno={selectedAluno} 
+                            closeModal={closeEditModal} 
+                            onUpdate={fetchAlunos}  // Atualiza a lista de alunos após edição
+                        />
+                        
+
+                    
                     </View>
                 </View>
             </Modal>
